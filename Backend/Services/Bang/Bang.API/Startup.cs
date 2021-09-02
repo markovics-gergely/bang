@@ -1,16 +1,30 @@
+using Bang.BLL.Application.Commands.Commands;
+using Bang.BLL.Application.Commands.Handlers;
+using Bang.BLL.Application.Interfaces;
+using Bang.BLL.Application.MappingProfiles;
+using Bang.BLL.Application.Exceptions;
+using Bang.BLL.Infrastructure.Queries.Handlers;
+using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
+using Bang.BLL.Infrastructure.Stores;
+using Bang.DAL;
+
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Hellang.Middleware.ProblemDetails;
+using MediatR;
 
 namespace Bang.API
 {
@@ -23,29 +37,70 @@ namespace Bang.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+
+            services.AddScoped<ICharacterStore, CharacterStore>();
+
+            services.AddScoped<IRequestHandler<GetCharacterQuery, CharacterViewModel>, CharacterQueryHandler>();
+            services.AddScoped<IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>, CharacterQueryHandler>();
+            services.AddScoped<IRequestHandler<CreateCharacterCommand, long>, CharacterCommandHandler>();
+            services.AddScoped<IRequestHandler<UpdateCharacterCommand, Unit>, CharacterCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteCharacterCommand, Unit>, CharacterCommandHandler>();
+
+            services.AddAutoMapper(typeof(CharacterProfile));
+
+            services.AddMvc();
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+
+            services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseDefaultTypeSerializer()
+                .UseMemoryStorage()
+            );
+            services.AddHangfireServer();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bang.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "School.API", Version = "v1" });
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
+            services.AddProblemDetails(options =>
+            {
+                options.IncludeExceptionDetails = (ctx, ex) => false;
+                options.Map<EntityNotFoundException>(
+                (ctx, ex) =>
+                {
+                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status404NotFound);
+                    pd.Title = ex.Message;
+                    return pd;
+                }
+                );
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bang.API v1"));
-            }
+            app.UseProblemDetails();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "School.API v1"));
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("Cors");
 
             app.UseAuthorization();
 
@@ -53,6 +108,13 @@ namespace Bang.API
             {
                 endpoints.MapControllers();
             });
+
+            app.UseHangfireDashboard();
+            recurringJobManager.AddOrUpdate(
+                "",
+                () => Debug.WriteLine(""),
+                Cron.Hourly
+            );
         }
     }
 }
