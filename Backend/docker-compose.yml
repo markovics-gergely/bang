@@ -3,6 +3,8 @@ version: '3.4'
 services:
   bang.api:
     image: ${DOCKER_REGISTRY-}bangapi
-    build:
-      context: .
-      dockerfile: Services/Bang/Bang.API/Dockerfile
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server"

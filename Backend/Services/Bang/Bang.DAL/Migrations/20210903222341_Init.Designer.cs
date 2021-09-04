@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    [Migration("20210902231413_Init")]
+    [Migration("20210903222341_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
