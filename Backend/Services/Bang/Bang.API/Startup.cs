@@ -39,7 +39,7 @@ namespace Bang.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ICharacterStore, CharacterStore>();
 
@@ -69,11 +69,13 @@ namespace Bang.API
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
-                    });
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
             });
 
             services.AddProblemDetails(options =>
