@@ -1,5 +1,9 @@
-﻿using Bang.DAL.Domain;
-
+﻿using Bang.DAL.Constants;
+using Bang.DAL.Domain;
+using Bang.DAL.Domain.Catalog.Cards;
+using Bang.DAL.Domain.Catalog.Characters;
+using Bang.DAL.Domain.Joins;
+using Bang.DAL.Domain.Joins.GameBoardCards;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bang.DAL
@@ -12,12 +16,35 @@ namespace Bang.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Character>().HasData(
-                new Character() { Id = 1, Name = "Sheriff", Health = 5 },
-                new Character() { Id = 2, Name = "Sheriff helyettes", Health = 4 },
-                new Character() { Id = 3, Name = "Bandita", Health = 4 },
-                new Character() { Id = 4, Name = "Renegát", Health = 4 }
-            );
+            modelBuilder.Entity<GameBoard>()
+                .HasMany(g => g.Players)
+                .WithOne(p => p.GameBoard);
+
+            modelBuilder.Entity<GameBoard>()
+                .HasOne(g => g.ActualPlayer)
+                .WithOne(p => p.GameBoard);
+
+            modelBuilder.Entity<GameBoard>()
+                .HasMany(g => g.DrawableGameBoardCards)
+                .WithOne(d => d.GameBoard);
+
+            modelBuilder.Entity<GameBoard>()
+                .HasMany(g => g.DiscardedGameBoardCards)
+                .WithOne(d => d.GameBoard);
+
+            modelBuilder.Entity<GameBoardCard>()
+                .HasDiscriminator(g => g.StatusType)
+                .HasValue<GameBoardCard>(GameBoardCardConstants.Base)
+                .HasValue<DrawableGameBoardCard>(GameBoardCardConstants.DrawableCard)
+                .HasValue<DiscardedGameBoardCard>(GameBoardCardConstants.DiscardedCard);
+
+            modelBuilder.Entity<Card>()
+                .HasDiscriminator(c => c.EffectType)
+                .HasValue<Card>(CardConstants.Base)
+                .HasValue<ActiveCard>(CardConstants.ActiveCard)
+                .HasValue<PassiveCard>(CardConstants.PassiveCard);
+
+            
         }
 
         public DbSet<Character> Characters { get; set; }

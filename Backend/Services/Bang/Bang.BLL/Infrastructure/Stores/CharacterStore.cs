@@ -1,7 +1,7 @@
 ﻿using Bang.BLL.Application.Exceptions;
 using Bang.BLL.Application.Interfaces;
 using Bang.DAL;
-using Bang.DAL.Domain;
+using Bang.DAL.Domain.Catalog.Characters;
 
 using System.Collections.Generic;
 using System.Linq;
