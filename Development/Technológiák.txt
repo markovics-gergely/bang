@@ -1,0 +1,9 @@
+SQL Server
+SignalR
+Hangfire
+Docker, docker-compose
+Ocelot
+Mediator
+Identity Server
+Automapper
+MediatR
