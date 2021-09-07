@@ -4,6 +4,6 @@ Hangfire
 Docker, docker-compose
 Ocelot
 Mediator
-Identity Server
+IdentityServer4
 Automapper
 MediatR

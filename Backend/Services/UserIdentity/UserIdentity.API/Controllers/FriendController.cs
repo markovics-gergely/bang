@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
+using UserIdentity.BLL.Infrastructure.Queries.Friend.ViewModels;
+using UserIdentity.BLL.Infrastructure.Queries.Friend.Queries;
 
 namespace UserIdentity.API.Controllers
 {
@@ -24,7 +26,7 @@ namespace UserIdentity.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FriendViewModel>>> GetFriendsAsync(CancellationToken cancellationToken)
         {
-            var command = new GetFriendsCommand();
+            var command = new GetFriendsQuery();
 
             return await _mediator.Send(command, cancellationToken);
         }
@@ -32,7 +34,7 @@ namespace UserIdentity.API.Controllers
         [HttpGet("unaccapted")]
         public async Task<ActionResult<IEnumerable<FriendViewModel>>> GetUnacceptedFriendsAsync(CancellationToken cancellationToken)
         {
-            var command = new GetUnacceptedFriendsCommand();
+            var command = new GetUnacceptedFriendsQuery();
 
             return await _mediator.Send(command, cancellationToken);
         }
