@@ -1,14 +1,15 @@
 ﻿using UserIdentity.BLL.Application.Commands.Commands;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
+using UserIdentity.BLL.Infrastructure.Queries.Queries;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
-using UserIdentity.BLL.Infrastructure.Queries.Friend.ViewModels;
-using UserIdentity.BLL.Infrastructure.Queries.Friend.Queries;
 
 namespace UserIdentity.API.Controllers
 {
@@ -26,17 +27,17 @@ namespace UserIdentity.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FriendViewModel>>> GetFriendsAsync(CancellationToken cancellationToken)
         {
-            var command = new GetFriendsQuery();
+            var query = new GetFriendsQuery();
 
-            return await _mediator.Send(command, cancellationToken);
+            return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
         [HttpGet("unaccapted")]
         public async Task<ActionResult<IEnumerable<FriendViewModel>>> GetUnacceptedFriendsAsync(CancellationToken cancellationToken)
         {
-            var command = new GetUnacceptedFriendsQuery();
+            var query = new GetUnacceptedFriendsQuery();
 
-            return await _mediator.Send(command, cancellationToken);
+            return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
         [HttpPost]

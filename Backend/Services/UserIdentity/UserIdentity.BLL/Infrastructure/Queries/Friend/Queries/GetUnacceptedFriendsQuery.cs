@@ -6,7 +6,7 @@ using MediatR;
 
 namespace UserIdentity.BLL.Infrastructure.Queries.Queries
 {
-    public class GetFriendsQuery : IRequest<IEnumerable<FriendViewModel>>  
+    public class GetUnacceptedFriendsQuery : IRequest<IEnumerable<FriendViewModel>>
     {
     }
 }

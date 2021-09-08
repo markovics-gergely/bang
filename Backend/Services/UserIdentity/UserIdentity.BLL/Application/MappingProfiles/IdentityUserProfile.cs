@@ -2,9 +2,9 @@
 
 namespace UserIdentity.BLL.Application.MappingProfiles
 {
-    public class IdentityUserProfiles : Profile
+    public class IdentityUserProfile : Profile
     {
-        public IdentityUserProfiles()
+        public IdentityUserProfile()
         {
 
         }

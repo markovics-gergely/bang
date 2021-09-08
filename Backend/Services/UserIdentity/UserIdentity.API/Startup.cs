@@ -44,7 +44,7 @@ namespace UserIdentity.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserIdentity.API", Version = "v1" });
             });
 
-            services.AddAutoMapper(typeof(IdentityUserProfiles));
+            services.AddAutoMapper(typeof(IdentityUserProfile));
 
             services.AddHttpContextAccessor();
 
