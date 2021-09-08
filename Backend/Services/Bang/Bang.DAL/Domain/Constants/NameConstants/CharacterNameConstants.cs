@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bang.DAL.Domain.Constants.NameConstants
+﻿namespace Bang.DAL.Domain.Constants.NameConstants
 {
     public static class CharacterNameConstants
     {

@@ -1,5 +1,4 @@
 using UserIdentity.DAL;
-using UserIdentity.DAL.Domain;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -31,9 +30,9 @@ namespace UserIdentity.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UserIdentityDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<UserIdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
 
             services.AddMvc();
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
@@ -48,7 +47,7 @@ namespace UserIdentity.API
 
             services.AddHttpContextAccessor();
 
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<UserIdentityDbContext>();
 
@@ -69,7 +68,7 @@ namespace UserIdentity.API
                 .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
                 .AddInMemoryApiScopes(Configuration.GetSection("IdentityServer:ApiScopes"))
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
-                .AddAspNetIdentity<User>();
+                .AddAspNetIdentity<IdentityUser>();
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>

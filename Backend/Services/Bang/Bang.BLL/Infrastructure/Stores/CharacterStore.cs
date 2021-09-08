@@ -1,5 +1,8 @@
 ﻿using Bang.BLL.Application.Exceptions;
+using Bang.BLL.Application.Interfaces;
 using Bang.DAL;
+using Bang.DAL.Domain.Catalog;
+using Bang.DAL.Domain.Constants.Enums;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +10,6 @@ using System.Threading.Tasks;
 using System.Threading;
 
 using Microsoft.EntityFrameworkCore;
-using Bang.BLL.Application.Interfaces.Catalog;
-using Bang.DAL.Domain.Catalog;
-using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Stores
 {

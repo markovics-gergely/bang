@@ -20,18 +20,18 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Friend>> GetFriendsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken)
         {
             return await _dbContext.Friends.Where(user => 
-                    user.SenderId == "Bejelntkezett felhasznalo" || user.ReceiverId == "Bejelntkezett felhasznalo"
+                    user.SenderId == ownId || user.ReceiverId == ownId
                 ).ToListAsync(cancellationToken);
         }
 
-        public async Task AddFriendsAsync(string friendId, CancellationToken cancellationToken)
+        public async Task AddFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
             Friend friend = new Friend()
             {
-                SenderId = "Bejelentkezett felhasználó",
+                SenderId = ownId,
                 ReceiverId = friendId
             };
 
@@ -39,11 +39,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteFriendsAsync(string friendId, CancellationToken cancellationToken)
+        public async Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
             var friends = _dbContext.Friends.Where(user => 
-                    (user.SenderId == "Bejelentkezett felhasználó" && user.ReceiverId == friendId) ||
-                    (user.SenderId == friendId && user.ReceiverId == "Bejelentkezett felhasználó")
+                    (user.SenderId == ownId && user.ReceiverId == friendId) ||
+                    (user.SenderId == friendId && user.ReceiverId == ownId)
                 );
 
             if(friends != null || friends.Count() != 0)

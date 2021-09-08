@@ -8,8 +8,8 @@ namespace UserIdentity.BLL.Application.Interfaces
 {
     public interface IFriendStore
     {
-        Task<IEnumerable<Friend>> GetFriendsAsync(CancellationToken cancellationToken);
-        Task AddFriendsAsync(string friendId, CancellationToken cancellationToken);
-        Task DeleteFriendsAsync(string friendId, CancellationToken cancellationToken);
+        Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken);
+        Task AddFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
+        Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
     }
 }

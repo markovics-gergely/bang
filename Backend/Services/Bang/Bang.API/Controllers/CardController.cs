@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Bang.DAL.Domain.Constants.Enums;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.Queries;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Queries;
 
 namespace Bang.API.Controllers
 {

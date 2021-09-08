@@ -40,20 +40,24 @@ namespace UserIdentity.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> AddFriendAsync(string id, CancellationToken cancellationToken)
         {
             var command = new AddFriendCommand(id);
 
-            return await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFriendAsync(string id, CancellationToken cancellationToken)
         {
             var command = new AddFriendCommand(id);
 
-            return await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
     }

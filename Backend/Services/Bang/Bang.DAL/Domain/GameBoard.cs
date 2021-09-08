@@ -1,10 +1,6 @@
-﻿using Bang.DAL.Domain.Catalog.Cards;
-using Bang.DAL.Domain.Joins.GameBoardCards;
-using System;
+﻿using Bang.DAL.Domain.Joins.GameBoardCards;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bang.DAL.Domain
 {

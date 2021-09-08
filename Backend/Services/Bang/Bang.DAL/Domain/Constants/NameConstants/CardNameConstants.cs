@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bang.DAL.Domain.Constants.NameConstants
+﻿namespace Bang.DAL.Domain.Constants.NameConstants
 {
     public static class CardNameConstants
     {
@@ -19,11 +13,11 @@ namespace Bang.DAL.Domain.Constants.NameConstants
         public const string Panic = "Pánik!";
         public const string Saloon = "";
         public const string Stagecoach = "";
-        public const string WellsFarg = "";
+        public const string WellsFargo = "W";
         public const string Guns = "";
-        public const string Horses = "";
+        public const string Horses = "Musztáng";
         public const string Barrel = "";
-        public const string Dynamite = "";
-        public const string Jail = "";
+        public const string Dynamite = "Dinamit";
+        public const string Jail = "Börtön";
     }
 }

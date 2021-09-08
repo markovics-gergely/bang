@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using Bang.BLL.Infrastructure.Queries.Catalog.Role.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Catalog.Role.Queries;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.API.Controllers

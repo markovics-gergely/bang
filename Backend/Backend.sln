@@ -19,11 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserIdentity", "UserIdentity", "{9AD30517-E2A1-465E-9849-E9F3D66490D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentity.BLL", "Services\UserIdentity\UserIdentity.BLL\UserIdentity.BLL.csproj", "{2B4B9D16-FAF4-4363-A770-AA28FB3E04F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIdentity.BLL", "Services\UserIdentity\UserIdentity.BLL\UserIdentity.BLL.csproj", "{2B4B9D16-FAF4-4363-A770-AA28FB3E04F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentity.DAL", "Services\UserIdentity\UserIdentity.DAL\UserIdentity.DAL.csproj", "{69F80F90-C499-4796-BE79-34F2021E9C16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIdentity.DAL", "Services\UserIdentity\UserIdentity.DAL\UserIdentity.DAL.csproj", "{69F80F90-C499-4796-BE79-34F2021E9C16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentity.API", "Services\UserIdentity\UserIdentity.API\UserIdentity.API.csproj", "{7B0F8F2F-A543-4FD3-A175-6DEC822453A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIdentity.API", "Services\UserIdentity\UserIdentity.API\UserIdentity.API.csproj", "{7B0F8F2F-A543-4FD3-A175-6DEC822453A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

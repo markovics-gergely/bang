@@ -7,6 +7,7 @@ using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Constants.NameConstants;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Bang.DAL
@@ -119,7 +120,7 @@ namespace Bang.DAL
                     new ActiveCard { Id = 14, Name = CardNameConstants.Panic, Description = CardDescriptionConstants.Panic, CardType = ActiveCardType.Panic, CardEffectType = CardConstants.ActiveCard },
                     new ActiveCard { Id = 15, Name = CardNameConstants.Saloon, Description = CardDescriptionConstants.Saloon, CardType = ActiveCardType.Saloon, CardEffectType = CardConstants.ActiveCard },
                     new ActiveCard { Id = 16, Name = CardNameConstants.Stagecoach, Description = CardDescriptionConstants.Stagecoach, CardType = ActiveCardType.Stagecoach, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 17, Name = CardNameConstants.WellsFarg, Description = CardDescriptionConstants.WellsFarg, CardType = ActiveCardType.WellsFargo, CardEffectType = CardConstants.ActiveCard }
+                    new ActiveCard { Id = 17, Name = CardNameConstants.WellsFargo, Description = CardDescriptionConstants.WellsFarg, CardType = ActiveCardType.WellsFargo, CardEffectType = CardConstants.ActiveCard }
                 );
 
             modelBuilder.Entity<PassiveCard>()

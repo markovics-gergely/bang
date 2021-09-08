@@ -28,7 +28,7 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync(cancellationToken);
+            var domain = await _friendStore.GetFriendsAsync("Bejelentkezett felhasználó", cancellationToken);
 
             List<Friend> unacceptedFriends = new List<Friend>();
             foreach (var unacceptedFriend in domain)
@@ -37,14 +37,12 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
                     unacceptedFriends.Add(unacceptedFriend);
             }
 
-            var list = _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
-
-            return list.Select(friend => { friend.IsAccepted = true; return friend; });
+            return _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
         }
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetUnacceptedFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync(cancellationToken);
+            var domain = await _friendStore.GetFriendsAsync("Bejelentkezett felhasználó", cancellationToken);
 
             List<Friend> unacceptedFriends = new List<Friend>();
             foreach (var unacceptedFriend in domain)
@@ -53,9 +51,7 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
                     unacceptedFriends.Add(unacceptedFriend);
             }
 
-            var list = _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
-
-            return list.Select(friend => { friend.IsAccepted = false; return friend; });
+            return _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
         }
     }
 }

@@ -1,8 +1,11 @@
 using Bang.BLL.Application.Commands.Commands;
 using Bang.BLL.Application.Commands.Handlers;
-using Bang.BLL.Application.MappingProfiles;
 using Bang.BLL.Application.Exceptions;
+using Bang.BLL.Application.Interfaces;
+using Bang.BLL.Application.MappingProfiles;
 using Bang.BLL.Infrastructure.Queries.Handlers;
+using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Stores;
 using Bang.DAL;
 
@@ -22,15 +25,6 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using Bang.BLL.Application.Interfaces.Catalog;
-using Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries;
-using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Catalog.Character.Handlers;
-using Bang.BLL.Infrastructure.Queries.Catalog.Role.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Catalog.Role.Queries;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.Queries;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.Handlers;
 
 namespace Bang.API
 {

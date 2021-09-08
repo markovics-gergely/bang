@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
-using Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries;
-using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.API.Controllers

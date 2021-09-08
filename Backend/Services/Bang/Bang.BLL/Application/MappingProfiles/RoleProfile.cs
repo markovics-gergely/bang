@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Bang.DAL.Domain.Catalog;
-using Bang.BLL.Infrastructure.Queries.Catalog.Role.ViewModels;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
 
 namespace Bang.BLL.Application.MappingProfiles
 {

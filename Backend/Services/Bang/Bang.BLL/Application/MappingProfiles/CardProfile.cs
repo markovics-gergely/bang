@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Bang.BLL.Infrastructure.Queries.Catalog.Card.ViewModels;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Catalog.Cards;
 
 namespace Bang.BLL.Application.MappingProfiles
