@@ -1,7 +1,8 @@
 ﻿using Bang.BLL.Application.Commands.DataTransferObjects;
-using AutoMapper;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Catalog;
+
+using AutoMapper;
 
 namespace Bang.BLL.Application.MappingProfiles
 {
