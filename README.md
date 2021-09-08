@@ -1,6 +1,7 @@
 Backend kialakítás konvenciók:
 - usingra figyelni
    - törölni ami nem kell, minden ABC sorrend
+   - minden kategória között sortörés
    - elől az project referenciák
    - utána System
    - utána Microsotft
