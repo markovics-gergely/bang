@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bang.DAL.Constants
+namespace Bang.DAL.Domain.Constants
 {
     public static class CardConstants
     {

@@ -31,6 +31,5 @@ namespace Bang.DAL.Domain
         public int MaxHP { get; init; }
 
         public ICollection<PlayerCard> PlayerCards { get; set; }
-        public ICollection<Card> OwnCards { get; set; }
     }
 }

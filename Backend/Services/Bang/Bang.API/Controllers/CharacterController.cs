@@ -1,8 +1,5 @@
 ﻿using Bang.BLL.Application.Commands.DataTransferObjects;
 using Bang.BLL.Application.Commands.Commands;
-using Bang.BLL.Infrastructure.Queries.ViewModels;
-using Bang.BLL.Infrastructure.Queries.Queries;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,6 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.API.Controllers
 {
@@ -29,6 +29,14 @@ namespace Bang.API.Controllers
         public async Task<ActionResult<CharacterViewModel>> GetCharacterAsync(int id, CancellationToken cancellationToken)
         {
             var query = new GetCharacterQuery(id);
+
+            return await _mediator.Send(query, cancellationToken);
+        }
+
+        [HttpGet("{type}")]
+        public async Task<ActionResult<CharacterViewModel>> GetRoleByTypeAsync(CharacterType type, CancellationToken cancellationToken)
+        {
+            var query = new GetCharacterByTypeQuery(type);
 
             return await _mediator.Send(query, cancellationToken);
         }

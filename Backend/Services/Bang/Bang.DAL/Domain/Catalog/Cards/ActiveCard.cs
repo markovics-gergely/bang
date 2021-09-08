@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bang.DAL.Domain.Constants.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Bang.DAL.Domain.Catalog.Cards
 {
     public class ActiveCard : Card
     {
+        public ActiveCardType CardType { get; set; }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Bang.BLL.Application.Exceptions;
-using Bang.BLL.Application.Interfaces;
 using Bang.DAL;
-using Bang.DAL.Domain.Catalog.Characters;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +7,9 @@ using System.Threading.Tasks;
 using System.Threading;
 
 using Microsoft.EntityFrameworkCore;
+using Bang.BLL.Application.Interfaces.Catalog;
+using Bang.DAL.Domain.Catalog;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -21,9 +22,15 @@ namespace Bang.BLL.Infrastructure.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<Character> GetCharacterAsync(long id, CancellationToken cancellationToken)
+        public async Task<Character> GetCharacterAsync(int id, CancellationToken cancellationToken)
         {
             return await _dbContext.Characters.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Character not found!");
+        }
+
+        public async Task<Character> GetCharacterByTypeAsync(CharacterType type, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Characters.Where(c => c.CharacterType == type).FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Character not found!");
         }
 
@@ -32,7 +39,8 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Characters.ToListAsync(cancellationToken);
         }
 
-        public async Task<long> CreateCharacterAsync(Character character, CancellationToken cancellationToken)
+        // TODO Feles
+        public async Task<int> CreateCharacterAsync(Character character, CancellationToken cancellationToken)
         {
             await _dbContext.Characters.AddAsync(character, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -40,7 +48,7 @@ namespace Bang.BLL.Infrastructure.Stores
             return character.Id;
         }
 
-        public async Task UpdateCharacterAsync(long id, Character character, CancellationToken cancellationToken)
+        public async Task UpdateCharacterAsync(int id, Character character, CancellationToken cancellationToken)
         {
             character.Id = id;
             var entry = _dbContext.Attach(character);
@@ -58,7 +66,7 @@ namespace Bang.BLL.Infrastructure.Stores
             }
         }
 
-        public async Task DeleteCharacterAsync(long id, CancellationToken cancellationToken)
+        public async Task DeleteCharacterAsync(int id, CancellationToken cancellationToken)
         {
             _dbContext.Characters.Remove(new Character() { Id = id });
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bang.DAL.Domain.Joins
+namespace Bang.DAL.Domain.Joins.GameBoardCards
 {
     public class GameBoardCard
     {
