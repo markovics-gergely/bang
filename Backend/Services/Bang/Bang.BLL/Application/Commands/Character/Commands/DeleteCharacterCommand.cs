@@ -1,6 +1,4 @@
-﻿using Bang.BLL.Application.Commands.DataTransferObjects;
-
-using MediatR;
+﻿using MediatR;
 
 namespace Bang.BLL.Application.Commands.Commands
 {

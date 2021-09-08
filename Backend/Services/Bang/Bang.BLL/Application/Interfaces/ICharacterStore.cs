@@ -1,8 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Bang.DAL.Domain.Catalog;
+﻿using Bang.DAL.Domain.Catalog;
 using Bang.DAL.Domain.Constants.Enums;
+
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bang.BLL.Application.Interfaces
 {

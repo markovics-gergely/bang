@@ -1,5 +1,6 @@
 ﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
+
 using MediatR;
 
 namespace Bang.BLL.Infrastructure.Queries.Queries
