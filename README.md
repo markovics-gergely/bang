@@ -10,5 +10,5 @@ Backend kialakítás konvenciók:
 - Handler -> {Név}QueryHandler.cs/{Név}CommandHandler.cs pl: CharacterQueryHandler.cs
 - ViewModel, Dto {Név}ViewModel.cs/{Név}Dto.cs pl: CharacterViewModel.cs
 
--Queryn, Commandon belüli típus mappákat nem jelölni a namespaceben
-   -pl: Queries -> Card -> Handlers a mappa struktúra --> namespace ...Queries.Handlers
+- Queryn, Commandon belüli típus mappákat nem jelölni a namespaceben
+   - pl: Queries -> Card -> Handlers a mappa struktúra --> namespace ...Queries.Handlers
