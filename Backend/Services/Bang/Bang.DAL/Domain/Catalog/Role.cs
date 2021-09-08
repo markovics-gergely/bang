@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bang.DAL.Domain.Constants.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ namespace Bang.DAL.Domain.Catalog
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string RoleType { get; set; }
+        public RoleType RoleType { get; set; }
     }
 }

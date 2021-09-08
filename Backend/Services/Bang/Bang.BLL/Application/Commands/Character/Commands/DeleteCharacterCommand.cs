@@ -6,9 +6,9 @@ namespace Bang.BLL.Application.Commands.Commands
 {
     public class DeleteCharacterCommand : IRequest
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
-        public DeleteCharacterCommand(long id)
+        public DeleteCharacterCommand(int id)
         {
             Id = id;
         }

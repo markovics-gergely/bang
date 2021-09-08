@@ -1,11 +1,8 @@
 using Bang.BLL.Application.Commands.Commands;
 using Bang.BLL.Application.Commands.Handlers;
-using Bang.BLL.Application.Interfaces;
 using Bang.BLL.Application.MappingProfiles;
 using Bang.BLL.Application.Exceptions;
 using Bang.BLL.Infrastructure.Queries.Handlers;
-using Bang.BLL.Infrastructure.Queries.Queries;
-using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Stores;
 using Bang.DAL;
 
@@ -25,6 +22,15 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using Bang.BLL.Application.Interfaces.Catalog;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.Handlers;
+using Bang.BLL.Infrastructure.Queries.Catalog.Role.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Catalog.Role.Queries;
+using Bang.BLL.Infrastructure.Queries.Catalog.Card.Queries;
+using Bang.BLL.Infrastructure.Queries.Catalog.Card.ViewModels;
+using Bang.BLL.Infrastructure.Queries.Catalog.Card.Handlers;
 
 namespace Bang.API
 {
@@ -42,14 +48,28 @@ namespace Bang.API
             services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ICharacterStore, CharacterStore>();
+            services.AddScoped<IRoleStore, RoleStore>();
+            services.AddScoped<ICardStore, CardStore>();
 
             services.AddScoped<IRequestHandler<GetCharacterQuery, CharacterViewModel>, CharacterQueryHandler>();
+            services.AddScoped<IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddScoped<IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>, CharacterQueryHandler>();
             services.AddScoped<IRequestHandler<CreateCharacterCommand, long>, CharacterCommandHandler>();
             services.AddScoped<IRequestHandler<UpdateCharacterCommand, Unit>, CharacterCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteCharacterCommand, Unit>, CharacterCommandHandler>();
 
+            services.AddScoped<IRequestHandler<GetRoleQuery, RoleViewModel>, RoleQueryHandler>();
+            services.AddScoped<IRequestHandler<GetRoleByTypeQuery, RoleViewModel>, RoleQueryHandler>();
+            services.AddScoped<IRequestHandler<GetRolesQuery, IEnumerable<RoleViewModel>>, RoleQueryHandler>();
+
+            services.AddScoped<IRequestHandler<GetCardQuery, CardViewModel>, CardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetPassiveCardByTypeQuery, CardViewModel>, CardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetActiveCardByTypeQuery, CardViewModel>, CardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetCardsQuery, IEnumerable<CardViewModel>>, CardQueryHandler>();
+
             services.AddAutoMapper(typeof(CharacterProfile));
+            services.AddAutoMapper(typeof(RoleProfile));
+            services.AddAutoMapper(typeof(CardProfile));
 
             services.AddMvc();
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);

@@ -19,8 +19,5 @@ namespace Bang.DAL.Domain
         public ICollection<Player> Players;
         public ICollection<DrawableGameBoardCard> DrawableGameBoardCards;
         public ICollection<DiscardedGameBoardCard> DiscardedGameBoardCards;
-
-        public ICollection<Card> DrawableCards;
-        public ICollection<Card> DiscardedCards;
     }
 }

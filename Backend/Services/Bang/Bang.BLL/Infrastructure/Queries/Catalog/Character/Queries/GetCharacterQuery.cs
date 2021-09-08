@@ -1,8 +1,7 @@
-﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
-
+﻿using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
 using MediatR;
 
-namespace Bang.BLL.Infrastructure.Queries.Queries
+namespace Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries
 {
     public class GetCharacterQuery : IRequest<CharacterViewModel>
     {

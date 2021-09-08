@@ -1,12 +1,10 @@
 ﻿using Bang.BLL.Application.Commands.Commands;
-using Bang.BLL.Application.Interfaces;
-using Bang.DAL.Domain;
-
 using System.Threading;
 using System.Threading.Tasks;
-
 using AutoMapper;
 using MediatR;
+using Bang.BLL.Application.Interfaces.Catalog;
+using Bang.DAL.Domain.Catalog;
 
 namespace Bang.BLL.Application.Commands.Handlers
 {

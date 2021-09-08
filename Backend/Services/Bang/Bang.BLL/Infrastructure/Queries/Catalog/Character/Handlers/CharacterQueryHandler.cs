@@ -1,18 +1,17 @@
-﻿using Bang.BLL.Application.Interfaces;
-using Bang.BLL.Infrastructure.Queries.Queries;
-using Bang.BLL.Infrastructure.Queries.ViewModels;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
 using AutoMapper;
 using MediatR;
+using Bang.BLL.Application.Interfaces.Catalog;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.Queries;
+using Bang.BLL.Infrastructure.Queries.Catalog.Character.ViewModels;
 
-namespace Bang.BLL.Infrastructure.Queries.Handlers
+namespace Bang.BLL.Infrastructure.Queries.Catalog.Character.Handlers
 {
     public class CharacterQueryHandler :
         IRequestHandler<GetCharacterQuery, CharacterViewModel>,
+        IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>,
         IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>
     {
         private readonly IMapper _mapper;
@@ -36,6 +35,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             var domain = await _characterStore.GetCharactersAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<CharacterViewModel>>(domain);
+        }
+
+        public async Task<CharacterViewModel> Handle(GetCharacterByTypeQuery request, CancellationToken cancellationToken)
+        {
+            var domain = await _characterStore.GetCharacterByTypeAsync(request.Type, cancellationToken);
+
+            return _mapper.Map<CharacterViewModel>(domain);
         }
     }
 }
