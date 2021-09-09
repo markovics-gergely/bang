@@ -7,9 +7,9 @@ namespace Bang.DAL.Domain
 {
     public class Player
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string UserId { get; set; }
-        public int GameBoardId { get; set; }
+        public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }
         public string CharacterType { get; set; }
         public string RoleType { get; set; }

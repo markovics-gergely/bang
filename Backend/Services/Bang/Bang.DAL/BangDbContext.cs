@@ -164,5 +164,10 @@ namespace Bang.DAL
         public DbSet<Character> Characters { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<GameBoard> GameBoards { get; set; }
+        public DbSet<Player> Players { get; set; }
+        public DbSet<GameBoardCard> GameBoardCards { get; set; }
+        public DbSet<PlayerCard> PlayerCards { get; set; }
     }
 }

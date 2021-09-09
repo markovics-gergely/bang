@@ -6,14 +6,14 @@ namespace Bang.DAL.Domain
 {
     public class GameBoard
     {
-        public int Id { get; set; }
-        public int ActualPlayerId { get; set; }
+        public long Id { get; set; }
+        public long ActualPlayerId { get; set; }
         public Player ActualPlayer { get; set; }
         public int MaxTurnTime { get; set; }
         public bool IsOver { get; set; } = false;
 
-        public ICollection<Player> Players;
-        public ICollection<DrawableGameBoardCard> DrawableGameBoardCards;
-        public ICollection<DiscardedGameBoardCard> DiscardedGameBoardCards;
+        public ICollection<Player> Players { get; set; }
+        public ICollection<DrawableGameBoardCard> DrawableGameBoardCards { get; set; }
+        public ICollection<DiscardedGameBoardCard> DiscardedGameBoardCards { get; set; }
     }
 }

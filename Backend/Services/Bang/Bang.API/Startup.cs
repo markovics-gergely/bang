@@ -44,6 +44,8 @@ namespace Bang.API
             services.AddScoped<ICharacterStore, CharacterStore>();
             services.AddScoped<IRoleStore, RoleStore>();
             services.AddScoped<ICardStore, CardStore>();
+            services.AddScoped<IPlayerStore, PlayerStore>();
+            services.AddScoped<IGameBoardStore, GameBoardStore>();
 
             services.AddScoped<IRequestHandler<GetCharacterQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddScoped<IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>, CharacterQueryHandler>();
@@ -61,9 +63,18 @@ namespace Bang.API
             services.AddScoped<IRequestHandler<GetActiveCardByTypeQuery, CardViewModel>, CardQueryHandler>();
             services.AddScoped<IRequestHandler<GetCardsQuery, IEnumerable<CardViewModel>>, CardQueryHandler>();
 
+            services.AddScoped<IRequestHandler<GetPlayerQuery, PlayerViewModel>, PlayerQueryHandler>();
+            services.AddScoped<IRequestHandler<GetPlayersByGameBoardQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
+            services.AddScoped<IRequestHandler<GetPlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
+
+            services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
+
             services.AddAutoMapper(typeof(CharacterProfile));
             services.AddAutoMapper(typeof(RoleProfile));
             services.AddAutoMapper(typeof(CardProfile));
+            services.AddAutoMapper(typeof(PlayerProfile));
+            services.AddAutoMapper(typeof(GameBoardProfile));
 
             services.AddMvc();
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
