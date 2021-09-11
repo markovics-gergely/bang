@@ -14,7 +14,7 @@ namespace UserIdentity.DAL.Domain
 
         public bool Equals(Friend friend)
         {
-            return friend.SenderId == SenderId && friend.ReceiverId == SenderId;
+            return friend.SenderId == ReceiverId && friend.ReceiverId == SenderId;
         }
     }
 }
