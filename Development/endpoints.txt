@@ -1,0 +1,17 @@
+1.  POST   	gameboard					-> létrehozza a gameboardot, és a kártya kapcsolatokat
+2.  GET    	gameboard/{id}/drawable-cards?number		-> visszaadja az x számú húzható kártyát
+3.  GET		gameboard/{id}/discarded-card			-> eldobott pakli tetején lévő lap
+4.  POST	gameboard/{id}/shuffle-cards			-> ha kifogyott keverje a paklit
+5.  POST	gameboard/{id}/discard-card/{type}		-> hozzáadja a discard listához
+6.  POST 	gameboard/{id}/discard-card-from-drawable	-> húzhatóból a discardedba	
+7.  POST	gameboard/{id}/end-turn
+8.  PUT		gameboard/{id}/target-player			-> seteli a target player id-ját
+
+9.  POST	player/{id}/add-card/{type}			-> a gameboardból odaadja a playernek
+10. PUT		player/{id}/decrease-health			-> csökkenti a playe hpját
+11. DELETE  	player/{id}/discard-card/{type}			-> playertől a discardedba
+12. PUT		player/{id}/play-card/{type}			-> figyelni külön hogy a type az active vagy passive
+
+
+Körkezdés 		-> 2. 9. 6.
+Bang/Duel kijátszás 	-> 12. 11. 5. 8. (a 8. után eldöntheti, hogy játszik tovább vagy csökkenti a hpját) 7.
