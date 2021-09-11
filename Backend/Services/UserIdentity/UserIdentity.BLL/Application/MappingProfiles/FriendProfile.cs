@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace UserIdentity.BLL.Application.MappingProfiles
 {
-    class FriendProfile : Profile
+    public class FriendProfile : Profile
     {
         public FriendProfile()
         {

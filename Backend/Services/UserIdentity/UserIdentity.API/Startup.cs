@@ -1,4 +1,8 @@
+using UserIdentity.BLL.Application.Interfaces;
+using UserIdentity.BLL.Application.MappingProfiles;
+using UserIdentity.BLL.Infrastructure.Stores;
 using UserIdentity.DAL;
+using UserIdentity.DAL.Domain;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -15,7 +19,13 @@ using Microsoft.OpenApi.Models;
 
 using IdentityServer4.Configuration;
 using MediatR;
-using UserIdentity.BLL.Application.MappingProfiles;
+using UserIdentity.BLL.Infrastructure.Queries.Queries;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
+using UserIdentity.BLL.Infrastructure.Queries.Handlers;
+using System.Collections.Generic;
+using UserIdentity.BLL.Application.Commands.Commands;
+using UserIdentity.BLL.Application.Commands.User.Handlers;
+using System;
 
 namespace UserIdentity.API
 {
@@ -32,7 +42,14 @@ namespace UserIdentity.API
         {
             services.AddDbContext<UserIdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IAccountStore, AccountStore>();
+            services.AddScoped<IFriendStore, FriendStore>();
 
+            services.AddScoped<IRequestHandler<GetFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
+            services.AddScoped<IRequestHandler<GetUnacceptedFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
+            services.AddScoped<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
+            services.AddScoped<IRequestHandler<LoginAccountCommand, Unit>, AccountCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();
 
             services.AddMvc();
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
@@ -43,13 +60,14 @@ namespace UserIdentity.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserIdentity.API", Version = "v1" });
             });
 
-            services.AddAutoMapper(typeof(IdentityUserProfile));
+            services.AddAutoMapper(typeof(AccountProfile));
+            services.AddAutoMapper(typeof(FriendProfile));
 
             services.AddHttpContextAccessor();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<UserIdentityDbContext>();
+            services.AddIdentity<Account, IdentityRole>()
+                .AddEntityFrameworkStores<UserIdentityDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>
             {
@@ -62,25 +80,7 @@ namespace UserIdentity.API
                 };
                 options.Authentication.CookieAuthenticationScheme = IdentityConstants.ApplicationScheme;
             })
-                .AddDeveloperSigningCredential()
-                .AddInMemoryPersistedGrants()
-                .AddInMemoryIdentityResources(Configuration.GetSection("IdentityServer:IdentityResources"))
-                .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
-                .AddInMemoryApiScopes(Configuration.GetSection("IdentityServer:ApiScopes"))
-                .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
-                .AddAspNetIdentity<IdentityUser>();
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = Configuration.GetValue<string>("Authentication:Authority");
-                    options.Audience = Configuration.GetValue<string>("Authentication:Audience");
-                    options.RequireHttpsMetadata = false;
-                });
+            .AddAspNetIdentity<Account>();
 
             services.AddCors(options =>
             {
@@ -107,6 +107,7 @@ namespace UserIdentity.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

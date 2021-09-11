@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UserIdentity.DAL
 {
-    public class UserIdentityDbContext : IdentityDbContext<IdentityUser>
+    public class UserIdentityDbContext : IdentityDbContext<Account>
     {
         public UserIdentityDbContext(DbContextOptions<UserIdentityDbContext> options) : base(options){}
 

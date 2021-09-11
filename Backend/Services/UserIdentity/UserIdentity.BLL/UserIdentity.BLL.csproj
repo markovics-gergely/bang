@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Exceptions\" />
-    <Folder Include="Infrastructure\Queries\User\Handlers\" />
-    <Folder Include="Infrastructure\Queries\User\ViewModels\" />
-    <Folder Include="Infrastructure\Queries\User\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>

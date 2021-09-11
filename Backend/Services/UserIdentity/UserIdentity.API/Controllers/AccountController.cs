@@ -1,40 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using UserIdentity.BLL.Application.Commands.Commands;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
+using UserIdentity.BLL.Infrastructure.Queries.Queries;
+
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using UserIdentity.BLL.Application.Commands.User.DataTransferObject;
 
 namespace UserIdentity.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IMediator _mediator;
+
+        public AccountController(IMediator mediator)
         {
-            return new string[] { "value1", "value2" };
+            _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<bool>> CreateAccountAsync(RegistrationDto registerDto, CancellationToken cancellationToken)
         {
-            return "value";
+            var command = new CreateAccountCommand(registerDto);
+
+            return await _mediator.Send(command, cancellationToken);
         }
 
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAccountAsync(LoginDto loginDto, CancellationToken cancellationToken)
         {
+            var command = new LoginAccountCommand(loginDto);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteAccountAsync(string id, CancellationToken cancellationToken)
         {
-        }
+            var command = new DeleteAccountCommand(id);
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
     }
 }
