@@ -6,7 +6,7 @@ namespace Bang.DAL.Domain.Joins.GameBoardCards
     {
         public int Id { get; set; }
 
-        public int GameBoardId { get; set; }
+        public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }
 
         public int CardId { get; set; }

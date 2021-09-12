@@ -3,6 +3,7 @@
 using Bang.DAL.Domain;
 
 using AutoMapper;
+using Bang.BLL.Application.Commands.DataTransferObjects;
 
 namespace Bang.BLL.Application.MappingProfiles
 {
@@ -11,6 +12,7 @@ namespace Bang.BLL.Application.MappingProfiles
         public PlayerProfile()
         {
             CreateMap<Player, PlayerViewModel>().ReverseMap();
+            CreateMap<Player, PlayerCreateViewModel>().ReverseMap();
         }
     }
 }

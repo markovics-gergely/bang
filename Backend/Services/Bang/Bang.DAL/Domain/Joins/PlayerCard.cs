@@ -6,7 +6,7 @@ namespace Bang.DAL.Domain.Joins
     {
         public int Id { get; set; }
 
-        public int PlayerId { get; set; }
+        public long PlayerId { get; set; }
         public Player Player { get; set; }
 
         public int CardId { get; set; }

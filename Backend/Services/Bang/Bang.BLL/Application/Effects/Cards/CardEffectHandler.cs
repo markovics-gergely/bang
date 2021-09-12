@@ -2,19 +2,18 @@
 
 using System.Collections.Generic;
 
-namespace Bang.BLL.Application.Effects.CardEffects
+namespace Bang.BLL.Application.Effects.Cards
 {
     public class CardEffectHandler
     {
         private static CardEffectHandler instance = null;
 
-        public Dictionary<ActiveCardType, ActiveCardEffect> ActiveEffectMap { get; private set; }
-        public Dictionary<ActiveCardType, ActiveCardEffect> PassiveEffectMap { get; private set; }
+        public Dictionary<CardType, CardEffect> CardEffectMap { get; private set; }
 
         private CardEffectHandler()
         {
-            ActiveEffectMap = new Dictionary<ActiveCardType, ActiveCardEffect>();
-            ActiveEffectMap.Add(ActiveCardType.Bang, new BangActiveCardEffect());
+            CardEffectMap = new Dictionary<CardType, CardEffect>();
+            CardEffectMap.Add(CardType.Bang, new BangCardEffect());
         }
 
         public static CardEffectHandler Instance

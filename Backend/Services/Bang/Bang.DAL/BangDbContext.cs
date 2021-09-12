@@ -44,20 +44,20 @@ namespace Bang.DAL
 
             modelBuilder.Entity<DiscardedGameBoardCard>()
                 .HasOne(g => g.Card)
-                .WithOne()
-                .HasForeignKey<DiscardedGameBoardCard>(c => c.CardId)
+                .WithMany()
+                .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<DrawableGameBoardCard>()
                 .HasOne(g => g.Card)
-                .WithOne()
-                .HasForeignKey<DrawableGameBoardCard>(c => c.CardId)
+                .WithMany()
+                .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<PlayerCard>()
                 .HasOne(p => p.Card)
-                .WithOne()
-                .HasForeignKey<PlayerCard>(c => c.CardId)
+                .WithMany()
+                .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<PlayerCard>()
@@ -78,12 +78,7 @@ namespace Bang.DAL
                 .HasValue<PassiveCard>(CardConstants.PassiveCard);
 
             modelBuilder
-                .Entity<ActiveCard>()
-                .Property(c => c.CardType)
-                .HasConversion<string>();
-
-            modelBuilder
-                .Entity<PassiveCard>()
+                .Entity<Card>()
                 .Property(c => c.CardType)
                 .HasConversion<string>();
 
@@ -109,27 +104,27 @@ namespace Bang.DAL
 
             modelBuilder.Entity<ActiveCard>()
                 .HasData(
-                    new ActiveCard { Id = 1, Name = CardNameConstants.Bang, Description = CardDescriptionConstants.Bang, CardType = ActiveCardType.Bang, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 3, Name = CardNameConstants.Beer, Description = CardDescriptionConstants.Beer, CardType = ActiveCardType.Beer, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 4, Name = CardNameConstants.CatBalou, Description = CardDescriptionConstants.CatBalou, CardType = ActiveCardType.CatBalou, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 5, Name = CardNameConstants.Duel, Description = CardDescriptionConstants.Duel, CardType = ActiveCardType.Duel, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 7, Name = CardNameConstants.Gatling, Description = CardDescriptionConstants.Gatling, CardType = ActiveCardType.Gatling, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 8, Name = CardNameConstants.GeneralStore, Description = CardDescriptionConstants.GeneralStore, CardType = ActiveCardType.GeneralStore, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 11, Name = CardNameConstants.Indians, Description = CardDescriptionConstants.Indians, CardType = ActiveCardType.Indians, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 13, Name = CardNameConstants.Missed, Description = CardDescriptionConstants.Missed, CardType = ActiveCardType.Missed, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 14, Name = CardNameConstants.Panic, Description = CardDescriptionConstants.Panic, CardType = ActiveCardType.Panic, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 15, Name = CardNameConstants.Saloon, Description = CardDescriptionConstants.Saloon, CardType = ActiveCardType.Saloon, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 16, Name = CardNameConstants.Stagecoach, Description = CardDescriptionConstants.Stagecoach, CardType = ActiveCardType.Stagecoach, CardEffectType = CardConstants.ActiveCard },
-                    new ActiveCard { Id = 17, Name = CardNameConstants.WellsFargo, Description = CardDescriptionConstants.WellsFarg, CardType = ActiveCardType.WellsFargo, CardEffectType = CardConstants.ActiveCard }
+                    new ActiveCard { Id = 1, Name = CardNameConstants.Bang, Description = CardDescriptionConstants.Bang, CardType = CardType.Bang, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 3, Name = CardNameConstants.Beer, Description = CardDescriptionConstants.Beer, CardType = CardType.Beer, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 4, Name = CardNameConstants.CatBalou, Description = CardDescriptionConstants.CatBalou, CardType = CardType.CatBalou, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 5, Name = CardNameConstants.Duel, Description = CardDescriptionConstants.Duel, CardType = CardType.Duel, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 7, Name = CardNameConstants.Gatling, Description = CardDescriptionConstants.Gatling, CardType = CardType.Gatling, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 8, Name = CardNameConstants.GeneralStore, Description = CardDescriptionConstants.GeneralStore, CardType = CardType.GeneralStore, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 11, Name = CardNameConstants.Indians, Description = CardDescriptionConstants.Indians, CardType = CardType.Indians, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 13, Name = CardNameConstants.Missed, Description = CardDescriptionConstants.Missed, CardType = CardType.Missed, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 14, Name = CardNameConstants.Panic, Description = CardDescriptionConstants.Panic, CardType = CardType.Panic, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 15, Name = CardNameConstants.Saloon, Description = CardDescriptionConstants.Saloon, CardType = CardType.Saloon, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 16, Name = CardNameConstants.Stagecoach, Description = CardDescriptionConstants.Stagecoach, CardType = CardType.Stagecoach, CardEffectType = CardConstants.ActiveCard },
+                    new ActiveCard { Id = 17, Name = CardNameConstants.WellsFargo, Description = CardDescriptionConstants.WellsFarg, CardType = CardType.WellsFargo, CardEffectType = CardConstants.ActiveCard }
                 );
 
             modelBuilder.Entity<PassiveCard>()
                 .HasData(
-                    new PassiveCard { Id = 2, Name = CardNameConstants.Barrel, Description = CardDescriptionConstants.Barrel, CardType = PassiveCardType.Barrel, CardEffectType = CardConstants.PassiveCard },
-                    new PassiveCard { Id = 6, Name = CardNameConstants.Dynamite, Description = CardDescriptionConstants.Dynamite, CardType = PassiveCardType.Dynamite, CardEffectType = CardConstants.PassiveCard },
-                    new PassiveCard { Id = 9, Name = CardNameConstants.Guns, Description = CardDescriptionConstants.Guns, CardType = PassiveCardType.Guns, CardEffectType = CardConstants.PassiveCard },
-                    new PassiveCard { Id = 10, Name = CardNameConstants.Horses, Description = CardDescriptionConstants.Horses, CardType = PassiveCardType.Horses, CardEffectType = CardConstants.PassiveCard },
-                    new PassiveCard { Id = 12, Name = CardNameConstants.Jail, Description = CardDescriptionConstants.Jail, CardType = PassiveCardType.Jail, CardEffectType = CardConstants.PassiveCard }
+                    new PassiveCard { Id = 2, Name = CardNameConstants.Barrel, Description = CardDescriptionConstants.Barrel, CardType = CardType.Barrel, CardEffectType = CardConstants.PassiveCard },
+                    new PassiveCard { Id = 6, Name = CardNameConstants.Dynamite, Description = CardDescriptionConstants.Dynamite, CardType = CardType.Dynamite, CardEffectType = CardConstants.PassiveCard },
+                    new PassiveCard { Id = 9, Name = CardNameConstants.Guns, Description = CardDescriptionConstants.Guns, CardType = CardType.Guns, CardEffectType = CardConstants.PassiveCard },
+                    new PassiveCard { Id = 10, Name = CardNameConstants.Horses, Description = CardDescriptionConstants.Horses, CardType = CardType.Horses, CardEffectType = CardConstants.PassiveCard },
+                    new PassiveCard { Id = 12, Name = CardNameConstants.Jail, Description = CardDescriptionConstants.Jail, CardType = CardType.Jail, CardEffectType = CardConstants.PassiveCard }
                 );
 
             modelBuilder.Entity<Role>()

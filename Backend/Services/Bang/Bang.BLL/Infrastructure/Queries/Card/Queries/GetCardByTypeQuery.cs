@@ -5,11 +5,11 @@ using MediatR;
 
 namespace Bang.BLL.Infrastructure.Queries.Queries
 {
-    public class GetActiveCardByTypeQuery : IRequest<CardViewModel>
+    public class GetCardByTypeQuery : IRequest<CardViewModel>
     {
-        public ActiveCardType Type { get; set; }
+        public CardType Type { get; set; }
 
-        public GetActiveCardByTypeQuery(ActiveCardType type)
+        public GetCardByTypeQuery(CardType type)
         {
             Type = type;
         }

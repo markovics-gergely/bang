@@ -15,8 +15,7 @@ namespace Bang.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CardEffectType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CardType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PassiveCard_CardType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CardType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,118 +54,96 @@ namespace Bang.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameBoardCard",
+                name: "GameBoardCards",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GameBoardId = table.Column<int>(type: "int", nullable: false),
+                    GameBoardId = table.Column<long>(type: "bigint", nullable: false),
                     CardId = table.Column<int>(type: "int", nullable: false),
                     StatusType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameBoardCard", x => x.Id);
+                    table.PrimaryKey("PK_GameBoardCards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameBoardCard_Cards_CardId",
+                        name: "FK_GameBoardCards_Cards_CardId",
                         column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerCard",
+                name: "PlayerCards",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
+                    PlayerId = table.Column<long>(type: "bigint", nullable: false),
                     CardId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlayerCard", x => x.Id);
+                    table.PrimaryKey("PK_PlayerCards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PlayerCard_Cards_CardId",
+                        name: "FK_PlayerCards_Cards_CardId",
                         column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Player",
+                name: "Players",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GameBoardId = table.Column<int>(type: "int", nullable: false),
-                    CharacterType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoleType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GameBoardId = table.Column<long>(type: "bigint", nullable: false),
+                    CharacterType = table.Column<int>(type: "int", nullable: false),
+                    RoleType = table.Column<int>(type: "int", nullable: false),
                     ActualHP = table.Column<int>(type: "int", nullable: false),
                     MaxHP = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Player", x => x.Id);
+                    table.PrimaryKey("PK_Players", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameBoard",
+                name: "GameBoards",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ActualPlayerId = table.Column<int>(type: "int", nullable: false),
+                    ActualPlayerId = table.Column<long>(type: "bigint", nullable: true),
                     MaxTurnTime = table.Column<int>(type: "int", nullable: false),
                     IsOver = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameBoard", x => x.Id);
+                    table.PrimaryKey("PK_GameBoards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameBoard_Player_ActualPlayerId",
+                        name: "FK_GameBoards_Players_ActualPlayerId",
                         column: x => x.ActualPlayerId,
-                        principalTable: "Player",
+                        principalTable: "Players",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
                 table: "Cards",
                 columns: new[] { "Id", "CardEffectType", "CardType", "Description", "Name" },
-                values: new object[] { 1, "card_active", "Bang", "", "Bang!" });
-
-            migrationBuilder.InsertData(
-                table: "Cards",
-                columns: new[] { "Id", "CardEffectType", "PassiveCard_CardType", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 12, "card_passive", "Jail", "", "" },
-                    { 10, "card_passive", "Horses", "", "" },
+                    { 1, "card_active", "Bang", "", "Bang!" },
+                    { 12, "card_passive", "Jail", "", "Börtön" },
+                    { 10, "card_passive", "Horses", "", "Musztáng" },
                     { 9, "card_passive", "Guns", "", "" },
-                    { 6, "card_passive", "Dynamite", "", "" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Cards",
-                columns: new[] { "Id", "CardEffectType", "CardType", "Description", "Name" },
-                values: new object[,]
-                {
-                    { 17, "card_active", "WellsFargo", "", "" },
+                    { 6, "card_passive", "Dynamite", "", "Dinamit" },
+                    { 17, "card_active", "WellsFargo", "", "W" },
                     { 16, "card_active", "Stagecoach", "", "" },
-                    { 15, "card_active", "Saloon", "", "" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Cards",
-                columns: new[] { "Id", "CardEffectType", "PassiveCard_CardType", "Description", "Name" },
-                values: new object[] { 2, "card_passive", "Barrel", "", "" });
-
-            migrationBuilder.InsertData(
-                table: "Cards",
-                columns: new[] { "Id", "CardEffectType", "CardType", "Description", "Name" },
-                values: new object[,]
-                {
+                    { 15, "card_active", "Saloon", "", "" },
+                    { 2, "card_passive", "Barrel", "", "" },
                     { 13, "card_active", "Missed", "", "Elvétve!" },
                     { 11, "card_active", "Indians", "", "Indiánok!" },
                     { 8, "card_active", "GeneralStore", "", "Zsibvásár" },
@@ -205,81 +182,80 @@ namespace Bang.DAL.Migrations
                 columns: new[] { "Id", "Description", "Name", "RoleType" },
                 values: new object[,]
                 {
-                    { 3, "", "", "Sheriff" },
-                    { 1, "", "", "Outlaw" },
-                    { 2, "", "", "Renegade" },
-                    { 4, "", "", "Vice" }
+                    { 3, "", "Sheriff", "Sheriff" },
+                    { 1, "", "Bandita", "Outlaw" },
+                    { 2, "", "Renegát", "Renegade" },
+                    { 4, "", "Sheriffhelyettes", "Vice" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameBoard_ActualPlayerId",
-                table: "GameBoard",
+                name: "IX_GameBoardCards_CardId",
+                table: "GameBoardCards",
+                column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameBoardCards_GameBoardId",
+                table: "GameBoardCards",
+                column: "GameBoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameBoards_ActualPlayerId",
+                table: "GameBoards",
                 column: "ActualPlayerId",
-                unique: true);
+                unique: true,
+                filter: "[ActualPlayerId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameBoardCard_CardId",
-                table: "GameBoardCard",
-                column: "CardId",
-                unique: true);
+                name: "IX_PlayerCards_CardId",
+                table: "PlayerCards",
+                column: "CardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameBoardCard_GameBoardId",
-                table: "GameBoardCard",
-                column: "GameBoardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Player_GameBoardId",
-                table: "Player",
-                column: "GameBoardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerCard_CardId",
-                table: "PlayerCard",
-                column: "CardId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerCard_PlayerId",
-                table: "PlayerCard",
+                name: "IX_PlayerCards_PlayerId",
+                table: "PlayerCards",
                 column: "PlayerId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_GameBoardId",
+                table: "Players",
+                column: "GameBoardId");
+
             migrationBuilder.AddForeignKey(
-                name: "FK_GameBoardCard_GameBoard_GameBoardId",
-                table: "GameBoardCard",
+                name: "FK_GameBoardCards_GameBoards_GameBoardId",
+                table: "GameBoardCards",
                 column: "GameBoardId",
-                principalTable: "GameBoard",
+                principalTable: "GameBoards",
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_PlayerCard_Player_PlayerId",
-                table: "PlayerCard",
+                name: "FK_PlayerCards_Players_PlayerId",
+                table: "PlayerCards",
                 column: "PlayerId",
-                principalTable: "Player",
+                principalTable: "Players",
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Player_GameBoard_GameBoardId",
-                table: "Player",
+                name: "FK_Players_GameBoards_GameBoardId",
+                table: "Players",
                 column: "GameBoardId",
-                principalTable: "GameBoard",
+                principalTable: "GameBoards",
                 principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_GameBoard_Player_ActualPlayerId",
-                table: "GameBoard");
+                name: "FK_Players_GameBoards_GameBoardId",
+                table: "Players");
 
             migrationBuilder.DropTable(
                 name: "Characters");
 
             migrationBuilder.DropTable(
-                name: "GameBoardCard");
+                name: "GameBoardCards");
 
             migrationBuilder.DropTable(
-                name: "PlayerCard");
+                name: "PlayerCards");
 
             migrationBuilder.DropTable(
                 name: "Roles");
@@ -288,10 +264,10 @@ namespace Bang.DAL.Migrations
                 name: "Cards");
 
             migrationBuilder.DropTable(
-                name: "Player");
+                name: "GameBoards");
 
             migrationBuilder.DropTable(
-                name: "GameBoard");
+                name: "Players");
         }
     }
 }

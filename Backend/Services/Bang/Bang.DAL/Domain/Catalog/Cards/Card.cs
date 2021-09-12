@@ -13,5 +13,6 @@ namespace Bang.DAL.Domain.Catalog.Cards
         public string Name { get; set; }
         public string Description { get; set; }
         public string CardEffectType { get; set; }
+        public CardType CardType { get; set; }
     }
 }
