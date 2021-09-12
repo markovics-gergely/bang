@@ -4,11 +4,11 @@ namespace UserIdentity.BLL.Application.Commands.Commands
 {
     public class DeleteAccountCommand : IRequest
     {
-        public string Id { get; set; }
+        public string UserName { get; set; }
 
-        public DeleteAccountCommand(string id)
+        public DeleteAccountCommand(string userName)
         {
-            Id = id;
+            UserName = userName;
         }
     }
 }

@@ -8,9 +8,9 @@ namespace UserIdentity.DAL.Domain
     {
         public long Id { get; set; }
         public string SenderId { get; set; }
-        public IdentityUser Sender { get; set; }
+        public Account Sender { get; set; }
         public string ReceiverId { get; set; }
-        public IdentityUser Receiver { get; set; }
+        public Account Receiver { get; set; }
 
         public bool Equals(Friend friend)
         {

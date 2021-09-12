@@ -1,0 +1,83 @@
+//fonts
+
+@font-face {
+    font-family: 'Baloo';
+    src: url('../fonts/Baloo-Regular.ttf')  format('truetype');
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src: url('../fonts/OpenSans-Regular.ttf')  format('truetype');
+}
+
+//images
+
+$background: url('../img/background_hd.png'); 
+$login: url('../img/login_hd.png'); 
+
+//colors
+
+$white: #FFFFFF;
+$light-grey: #DFE3EE;
+$teal: #9FFFF0;
+$blue: #428DFF;
+$navy: #1C3E76;
+$dark-navy: #001234;
+
+//effects
+
+$blur: blur(8px);
+$foggy: 0.39;
+$gradient: linear-gradient(258deg, #9FFFF0 0%, #9FFFF0 36%, #0FCFDE 100%);
+
+//component styles
+
+.text-input{
+    font-size: 1.1rem;;
+    background: $white;
+    opacity: $foggy;
+    border-radius: 20px;
+    border: none;
+    color: navy;
+    font-family: 'OpenSans';
+    width: 80%;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+}
+
+.container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blurry-panel{   
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: $blur;
+}
+
+.stack{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gradient-button{
+    background: $gradient;
+    color: $dark-navy;
+    border-radius: 90px;
+    border: none;
+    font-size:1.1rem;
+    padding: 0.5rem 3rem;
+    font-family: 'Baloo';
+}
+
+.link{
+    color: $teal;
+    font-family: 'Baloo';
+    font-size: 1rem;
+    text-decoration: none;
+}

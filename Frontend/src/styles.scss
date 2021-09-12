@@ -1,0 +1,15 @@
+@import'./assets/scss/common.scss';
+
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    font-family: 'Baloo';
+    margin: 0;
+    background-image: $background;
+    background-position: center top;
+    background-size: cover;
+    overflow-y: hidden;
+}
