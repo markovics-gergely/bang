@@ -22,12 +22,6 @@ namespace Bang.BLL.Infrastructure.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<Role> GetRoleAsync(long id, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Roles.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
-                ?? throw new EntityNotFoundException("Role not found!");
-        }
-
         public async Task<Role> GetRoleByTypeAsync(RoleType type, CancellationToken cancellationToken)
         {
             return await _dbContext.Roles.Where(c => c.RoleType == type).FirstOrDefaultAsync(cancellationToken)

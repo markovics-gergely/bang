@@ -12,7 +12,6 @@ using MediatR;
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
     public class RoleQueryHandler :
-        IRequestHandler<GetRoleQuery, RoleViewModel>,
         IRequestHandler<GetRoleByTypeQuery, RoleViewModel>,
         IRequestHandler<GetRolesQuery, IEnumerable<RoleViewModel>>
     {
@@ -23,13 +22,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         {
             _mapper = mapper;
             _roleStore = roleStore;
-        }
-
-        public async Task<RoleViewModel> Handle(GetRoleQuery request, CancellationToken cancellationToken)
-        {
-            var domain = await _roleStore.GetRoleAsync(request.Id, cancellationToken);
-
-            return _mapper.Map<RoleViewModel>(domain);
         }
 
         public async Task<IEnumerable<RoleViewModel>> Handle(GetRolesQuery request, CancellationToken cancellationToken)

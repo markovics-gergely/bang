@@ -2,21 +2,21 @@
 {
     public static class CharacterNameConstants
     {
-        public const string BartCassidy = "";
-        public const string BlackJack = "";
-        public const string CalamityJanet = "";
-        public const string ElGringo = "";
-        public const string JesseJones = "";
-        public const string Jourdonnais = "";
-        public const string KitCarlson = "";
-        public const string LuckyDuke = "";
-        public const string PaulRegret = "";
-        public const string PedroRamirez = "";
-        public const string RoseDoolan = "";
-        public const string SidKetchum = "";
-        public const string SlabTheKiller = "";
-        public const string SuzyLafayette = "";
-        public const string VultureSam = "";
-        public const string WillyTheKid = "";
+        public const string BartCassidy = "Bart Cassidy";
+        public const string BlackJack = "Black Jack";
+        public const string CalamityJanet = "Calamity Janet";
+        public const string ElGringo = "El Gringo";
+        public const string JesseJones = "Jesse Jones";
+        public const string Jourdonnais = "Jourdonnais";
+        public const string KitCarlson = "Kit Carlson";
+        public const string LuckyDuke = "Lucky Duke";
+        public const string PaulRegret = "Paul Regret";
+        public const string PedroRamirez = "Pedro Ramirez";
+        public const string RoseDoolan = "Rose Doolan";
+        public const string SidKetchum = "Sid Ketchum";
+        public const string SlabTheKiller = "Slab the Killer";
+        public const string SuzyLafayette = "Suzy Lafayette";
+        public const string VultureSam = "Vulture Sam";
+        public const string WillyTheKid = "Willy the Kid";
     }
 }

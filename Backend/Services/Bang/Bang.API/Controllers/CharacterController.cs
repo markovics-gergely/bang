@@ -25,14 +25,6 @@ namespace Bang.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CharacterViewModel>> GetCharacterAsync(int id, CancellationToken cancellationToken)
-        {
-            var query = new GetCharacterQuery(id);
-
-            return await _mediator.Send(query, cancellationToken);
-        }
-
         [HttpGet("{type}")]
         public async Task<ActionResult<CharacterViewModel>> GetRoleByTypeAsync(CharacterType type, CancellationToken cancellationToken)
         {
@@ -47,34 +39,6 @@ namespace Bang.API.Controllers
             var query = new GetCharactersQuery();
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<long>> CreateCharacterAsync([FromBody] CharacterDto dto, CancellationToken cancellationToken)
-        {
-            var command = new CreateCharacterCommand(dto);
-
-            return await _mediator.Send(command, cancellationToken);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCharacterAsync(int id, [FromBody] CharacterDto dto, CancellationToken cancellationToken)
-        {
-            var command = new UpdateCharacterCommand(id, dto);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCharacterAsync(int id, CancellationToken cancellationToken)
-        {
-            var command = new DeleteCharacterCommand(id);
-
-            await _mediator.Send(command, cancellationToken);
-
-            return NoContent();
         }
     }
 }

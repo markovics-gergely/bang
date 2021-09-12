@@ -11,7 +11,6 @@ namespace Bang.BLL.Application.MappingProfiles
         public CharacterProfile()
         {
             CreateMap<Character, CharacterViewModel>().ReverseMap();
-            CreateMap<Character, CharacterDto>().ReverseMap();
         }
     }
 }

@@ -24,14 +24,6 @@ namespace Bang.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<RoleViewModel>> GetRoleAsync(int id, CancellationToken cancellationToken)
-        {
-            var query = new GetRoleQuery(id);
-
-            return await _mediator.Send(query, cancellationToken);
-        }
-
         [HttpGet("{type}")]
         public async Task<ActionResult<RoleViewModel>> GetRoleByTypeAsync(RoleType type, CancellationToken cancellationToken)
         {

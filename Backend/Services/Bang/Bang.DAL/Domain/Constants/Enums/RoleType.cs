@@ -1,10 +1,10 @@
 ﻿namespace Bang.DAL.Domain.Constants.Enums
 {
     public enum RoleType
-    {
-        Sheriff,
-        Vice,
+    { 
+        Outlaw,
         Renegade,
-        Outlaw
+        Sheriff,
+        Vice      
     }
 }

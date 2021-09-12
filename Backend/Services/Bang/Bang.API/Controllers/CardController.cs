@@ -22,14 +22,6 @@ namespace Bang.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CardViewModel>> GetCardAsync(int id, CancellationToken cancellationToken)
-        {
-            var query = new GetCardQuery(id);
-
-            return await _mediator.Send(query, cancellationToken);
-        }
-
         [HttpGet("{type}")]
         public async Task<ActionResult<CardViewModel>> GetPassiveCardByTypeAsync(CardType type, CancellationToken cancellationToken)
         {

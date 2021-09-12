@@ -30,18 +30,18 @@ namespace Bang.API.Controllers
             return await _mediator.Send(query, cancellationToken);
         }
 
-        [HttpGet("gameboard/{gid}")]
-        public async Task<ActionResult<IEnumerable<PlayerViewModel>>> GetPlayersByGameBoardAsync(long gid, CancellationToken cancellationToken)
-        {
-            var query = new GetPlayersByGameBoardQuery(gid);
-
-            return (await _mediator.Send(query, cancellationToken)).ToList();
-        }
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PlayerViewModel>>> GetPlayersAsync(CancellationToken cancellationToken)
         {
             var query = new GetPlayersQuery();
+
+            return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpGet("gameboard/{id}")]
+        public async Task<ActionResult<IEnumerable<PlayerViewModel>>> GetPlayersByGameBoardAsync(long id, CancellationToken cancellationToken)
+        {
+            var query = new GetPlayersByGameBoardQuery(id);
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }

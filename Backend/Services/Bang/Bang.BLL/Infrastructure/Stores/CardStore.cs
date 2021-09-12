@@ -31,12 +31,6 @@ namespace Bang.BLL.Infrastructure.Stores
                 ?? throw new EntityNotFoundException("Card not found!");
         }
 
-        public async Task<Card> GetCardAsync(long id, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Cards.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
-                ?? throw new EntityNotFoundException("Card not found!");
-        }
-
         public async Task<IEnumerable<Card>> GetCardsAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.Cards.ToListAsync(cancellationToken);
@@ -44,7 +38,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task PlayCardAsync(CardType type, long playerId, CancellationToken cancellationToken)
         {
-            
+            throw new System.NotImplementedException();
         }
 
         public async Task<long> CreatePlayerCardAsync(PlayerCard playerCard, CancellationToken cancellationToken)
@@ -58,11 +52,13 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<long>> CreatePlayerCardsAsync(IEnumerable<PlayerCard> playerCards, CancellationToken cancellationToken)
         {
             List<long> playerCardIds = new List<long>();
+
             foreach (PlayerCard playerCard in playerCards)
             { 
                 await _dbContext.PlayerCards.AddAsync(playerCard, cancellationToken);
                 playerCardIds.Add(playerCard.Id);
             }
+
             await _dbContext.SaveChangesAsync(cancellationToken);
             return playerCardIds;
         }
@@ -78,11 +74,13 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<long>> CreateGameBoardCardsAsync(IEnumerable<GameBoardCard> gameBoardCards, CancellationToken cancellationToken)
         {
             List<long> gameBoardCardIds = new List<long>();
+
             foreach (GameBoardCard gameBoardCard in gameBoardCards)
             {
                 await _dbContext.GameBoardCards.AddAsync(gameBoardCard, cancellationToken);
                 gameBoardCardIds.Add(gameBoardCard.Id);
             }
+
             await _dbContext.SaveChangesAsync(cancellationToken);
             return gameBoardCardIds;
         }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    [Migration("20210912161350_init")]
-    partial class init
+    [Migration("20210912231321_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -80,7 +80,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "BartCassidy",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Bart Cassidy"
                         },
                         new
                         {
@@ -88,7 +88,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "BlackJack",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Black Jack"
                         },
                         new
                         {
@@ -96,7 +96,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "CalamityJanet",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Calamity Janet"
                         },
                         new
                         {
@@ -104,7 +104,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "ElGringo",
                             Description = "",
                             MaxHP = 3,
-                            Name = ""
+                            Name = "El Gringo"
                         },
                         new
                         {
@@ -112,7 +112,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "JesseJones",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Jesse Jones"
                         },
                         new
                         {
@@ -120,7 +120,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "Jourdonnais",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Jourdonnais"
                         },
                         new
                         {
@@ -128,7 +128,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "KitCarlson",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Kit Carlson"
                         },
                         new
                         {
@@ -136,7 +136,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "LuckyDuke",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Lucky Duke"
                         },
                         new
                         {
@@ -144,7 +144,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "PaulRegret",
                             Description = "",
                             MaxHP = 3,
-                            Name = ""
+                            Name = "Paul Regret"
                         },
                         new
                         {
@@ -152,7 +152,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "PedroRamirez",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Pedro Ramirez"
                         },
                         new
                         {
@@ -160,7 +160,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "RoseDoolan",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Rose Doolan"
                         },
                         new
                         {
@@ -168,7 +168,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "SidKetchum",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Sid Ketchum"
                         },
                         new
                         {
@@ -176,7 +176,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "SlabTheKiller",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Slab the Killer"
                         },
                         new
                         {
@@ -184,7 +184,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "SuzyLafayette",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Suzy Lafayette"
                         },
                         new
                         {
@@ -192,7 +192,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "VultureSam",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Vulture Sam"
                         },
                         new
                         {
@@ -200,7 +200,7 @@ namespace Bang.DAL.Migrations
                             CharacterType = "WillyTheKid",
                             Description = "",
                             MaxHP = 4,
-                            Name = ""
+                            Name = "Willy the Kid"
                         });
                 });
 
@@ -244,14 +244,14 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 3,
                             Description = "",
-                            Name = "Sheriff",
+                            Name = "Seriff",
                             RoleType = "Sheriff"
                         },
                         new
                         {
                             Id = 4,
                             Description = "",
-                            Name = "Sheriffhelyettes",
+                            Name = "Seriffhelyettes",
                             RoleType = "Vice"
                         });
                 });
@@ -309,9 +309,9 @@ namespace Bang.DAL.Migrations
 
             modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCard", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CardId")
@@ -352,13 +352,67 @@ namespace Bang.DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GameBoardId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("UserIdentity.DAL.Domain.Account", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Catalog.Cards.ActiveCard", b =>
@@ -373,15 +427,23 @@ namespace Bang.DAL.Migrations
                             Id = 1,
                             CardEffectType = "card_active",
                             CardType = "Bang",
-                            Description = "",
+                            Description = "Bang!",
                             Name = "Bang!"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CardEffectType = "card_active",
+                            CardType = "Missed",
+                            Description = "Nem talált!",
+                            Name = "Nem talált!"
                         },
                         new
                         {
                             Id = 3,
                             CardEffectType = "card_active",
                             CardType = "Beer",
-                            Description = "",
+                            Description = "Sör",
                             Name = "Sör"
                         },
                         new
@@ -389,80 +451,72 @@ namespace Bang.DAL.Migrations
                             Id = 4,
                             CardEffectType = "card_active",
                             CardType = "CatBalou",
-                            Description = "",
+                            Description = "Cat Balou",
                             Name = "Cat Balou"
                         },
                         new
                         {
                             Id = 5,
                             CardEffectType = "card_active",
+                            CardType = "Panic",
+                            Description = "Pánik!",
+                            Name = "Pánik!"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CardEffectType = "card_active",
                             CardType = "Duel",
-                            Description = "",
+                            Description = "Párbaj",
                             Name = "Párbaj"
                         },
                         new
                         {
                             Id = 7,
                             CardEffectType = "card_active",
-                            CardType = "Gatling",
-                            Description = "",
-                            Name = "Gatling"
+                            CardType = "GeneralStore",
+                            Description = "Szatócsbolt",
+                            Name = "Szatócsbolt"
                         },
                         new
                         {
                             Id = 8,
                             CardEffectType = "card_active",
-                            CardType = "GeneralStore",
-                            Description = "",
-                            Name = "Zsibvásár"
+                            CardType = "Indians",
+                            Description = "Indiánok!",
+                            Name = "Indiánok!"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CardEffectType = "card_active",
+                            CardType = "Stagecoach",
+                            Description = "Postakocsi",
+                            Name = "Postakocsi"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CardEffectType = "card_active",
+                            CardType = "Gatling",
+                            Description = "Gatling",
+                            Name = "Gatling"
                         },
                         new
                         {
                             Id = 11,
                             CardEffectType = "card_active",
-                            CardType = "Indians",
-                            Description = "",
-                            Name = "Indiánok!"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CardEffectType = "card_active",
-                            CardType = "Missed",
-                            Description = "",
-                            Name = "Elvétve!"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CardEffectType = "card_active",
-                            CardType = "Panic",
-                            Description = "",
-                            Name = "Pánik!"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CardEffectType = "card_active",
                             CardType = "Saloon",
-                            Description = "",
-                            Name = ""
+                            Description = "Kocsma",
+                            Name = "Kocsma"
                         },
                         new
                         {
-                            Id = 16,
-                            CardEffectType = "card_active",
-                            CardType = "Stagecoach",
-                            Description = "",
-                            Name = ""
-                        },
-                        new
-                        {
-                            Id = 17,
+                            Id = 12,
                             CardEffectType = "card_active",
                             CardType = "WellsFargo",
-                            Description = "",
-                            Name = "W"
+                            Description = "Wells Fargo",
+                            Name = "Wells Fargo"
                         });
                 });
 
@@ -475,43 +529,83 @@ namespace Bang.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2,
+                            Id = 13,
                             CardEffectType = "card_passive",
-                            CardType = "Barrel",
-                            Description = "",
-                            Name = ""
+                            CardType = "Jail",
+                            Description = "Börtön",
+                            Name = "Börtön"
                         },
                         new
                         {
-                            Id = 6,
-                            CardEffectType = "card_passive",
-                            CardType = "Dynamite",
-                            Description = "",
-                            Name = "Dinamit"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CardEffectType = "card_passive",
-                            CardType = "Guns",
-                            Description = "",
-                            Name = ""
-                        },
-                        new
-                        {
-                            Id = 10,
+                            Id = 14,
                             CardEffectType = "card_passive",
                             CardType = "Horses",
-                            Description = "",
+                            Description = "Musztáng",
                             Name = "Musztáng"
                         },
                         new
                         {
-                            Id = 12,
+                            Id = 15,
                             CardEffectType = "card_passive",
-                            CardType = "Jail",
-                            Description = "",
-                            Name = "Börtön"
+                            CardType = "Barrel",
+                            Description = "Hordó",
+                            Name = "Hordó"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CardEffectType = "card_passive",
+                            CardType = "Scope",
+                            Description = "Távcső",
+                            Name = "Távcső"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CardEffectType = "card_passive",
+                            CardType = "Dynamite",
+                            Description = "Dinamit",
+                            Name = "Dinamit"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CardEffectType = "card_passive",
+                            CardType = "Volcanic",
+                            Description = "Gyorstüzelő",
+                            Name = "Gyorstüzelő"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CardEffectType = "card_passive",
+                            CardType = "Schofield",
+                            Description = "Schofield",
+                            Name = "Schofield"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CardEffectType = "card_passive",
+                            CardType = "Remingtion",
+                            Description = "Remingtion",
+                            Name = "Remingtion"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CardEffectType = "card_passive",
+                            CardType = "Karabine",
+                            Description = "Karabély",
+                            Name = "Karabély"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CardEffectType = "card_passive",
+                            CardType = "Winchester",
+                            Description = "Winchester",
+                            Name = "Winchester"
                         });
                 });
 
@@ -581,7 +675,13 @@ namespace Bang.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("UserIdentity.DAL.Domain.Account", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("GameBoard");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Joins.GameBoardCards.DiscardedGameBoardCard", b =>
