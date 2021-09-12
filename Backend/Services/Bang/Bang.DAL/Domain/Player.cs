@@ -1,4 +1,5 @@
-﻿using Bang.DAL.Domain.Joins;
+﻿using Bang.DAL.Domain.Constants.Enums;
+using Bang.DAL.Domain.Joins;
 
 using System;
 using System.Collections.Generic;
@@ -11,22 +12,11 @@ namespace Bang.DAL.Domain
         public string UserId { get; set; }
         public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }
-        public string CharacterType { get; set; }
-        public string RoleType { get; set; }
-        private int actualHP;
-        public int ActualHP {
-            get => actualHP;
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Nem lehet negatív életet megadni");
-                }
-                actualHP = value;
-            }
-        }
-        public int MaxHP { get; init; }
+        public CharacterType CharacterType { get; set; }
+        public RoleType RoleType { get; set; }
+        public int ActualHP { get; set; }
+        public int MaxHP { get; set; }
 
-        public ICollection<PlayerCard> PlayerCards { get; set; }
+        public ICollection<PlayerCard> PlayerCards { get; set; } = new List<PlayerCard>();
     }
 }

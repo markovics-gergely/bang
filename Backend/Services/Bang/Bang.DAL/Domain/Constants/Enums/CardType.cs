@@ -1,6 +1,6 @@
 ﻿namespace Bang.DAL.Domain.Constants.Enums
 {
-    public enum ActiveCardType
+    public enum CardType
     {
         Bang,
         Beer,
@@ -13,6 +13,11 @@
         Panic,
         Saloon,
         Stagecoach,
-        WellsFargo
+        WellsFargo,
+        Guns,
+        Horses,
+        Barrel,
+        Dynamite,
+        Jail
     }
 }

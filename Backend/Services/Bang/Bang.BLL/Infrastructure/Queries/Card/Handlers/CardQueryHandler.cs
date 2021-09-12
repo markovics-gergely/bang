@@ -13,8 +13,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
     public class CardQueryHandler :
         IRequestHandler<GetCardQuery, CardViewModel>,
-        IRequestHandler<GetActiveCardByTypeQuery, CardViewModel>,
-        IRequestHandler<GetPassiveCardByTypeQuery, CardViewModel>,
+        IRequestHandler<GetCardByTypeQuery, CardViewModel>,
         IRequestHandler<GetCardsQuery, IEnumerable<CardViewModel>>
     {
         private readonly IMapper _mapper;
@@ -33,16 +32,9 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             return _mapper.Map<CardViewModel>(domain);
         }
 
-        public async Task<CardViewModel> Handle(GetActiveCardByTypeQuery request, CancellationToken cancellationToken)
+        public async Task<CardViewModel> Handle(GetCardByTypeQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _cardStore.GetActiveCardAsync(request.Type, cancellationToken);
-
-            return _mapper.Map<CardViewModel>(domain);
-        }
-
-        public async Task<CardViewModel> Handle(GetPassiveCardByTypeQuery request, CancellationToken cancellationToken)
-        {
-            var domain = await _cardStore.GetPassiveCardAsync(request.Type, cancellationToken);
+            var domain = await _cardStore.GetCardByTypeAsync(request.Type, cancellationToken);
 
             return _mapper.Map<CardViewModel>(domain);
         }

@@ -1,5 +1,7 @@
 ﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Application.Commands.DataTransferObjects;
+using Bang.BLL.Application.Commands.Commands;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+
 
 namespace Bang.API.Controllers
 {
@@ -36,6 +39,14 @@ namespace Bang.API.Controllers
             var query = new GetGameBoardsQuery();
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<long>> CreateGameBoardAsync([FromBody] GameBoardDto dto, CancellationToken cancellationToken)
+        {
+            var command = new CreateGameBoardCommand(dto);
+
+            return await _mediator.Send(command, cancellationToken);
         }
     }
 }

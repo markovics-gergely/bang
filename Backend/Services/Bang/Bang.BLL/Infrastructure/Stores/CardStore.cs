@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using Bang.DAL.Domain.Joins;
+using Bang.DAL.Domain.Joins.GameBoardCards;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -23,12 +25,10 @@ namespace Bang.BLL.Infrastructure.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<ActiveCard> GetActiveCardAsync(ActiveCardType type, CancellationToken cancellationToken)
+        public async Task<Card> GetCardByTypeAsync(CardType type, CancellationToken cancellationToken)
         {
-            return (ActiveCard)(await _dbContext.Cards
-                .Where(c => c.CardEffectType == CardConstants.PassiveCard &&
-                            ((ActiveCard)c).CardType == type).FirstOrDefaultAsync(cancellationToken)
-                ?? throw new EntityNotFoundException("Card not found!"));
+            return await _dbContext.Cards.Where(c => c.CardType == type).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Card not found!");
         }
 
         public async Task<Card> GetCardAsync(long id, CancellationToken cancellationToken)
@@ -42,12 +42,49 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Cards.ToListAsync(cancellationToken);
         }
 
-        public async Task<PassiveCard> GetPassiveCardAsync(PassiveCardType type, CancellationToken cancellationToken)
+        public async Task PlayCardAsync(CardType type, long playerId, CancellationToken cancellationToken)
         {
-            return (PassiveCard)(await _dbContext.Cards
-                .Where(c => c.CardEffectType == CardConstants.PassiveCard && 
-                            ((PassiveCard)c).CardType == type).FirstOrDefaultAsync(cancellationToken)
-                ?? throw new EntityNotFoundException("Card not found!"));
+            
+        }
+
+        public async Task<long> CreatePlayerCardAsync(PlayerCard playerCard, CancellationToken cancellationToken)
+        {
+            await _dbContext.PlayerCards.AddAsync(playerCard, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return playerCard.Id;
+        }
+
+        public async Task<IEnumerable<long>> CreatePlayerCardsAsync(IEnumerable<PlayerCard> playerCards, CancellationToken cancellationToken)
+        {
+            List<long> playerCardIds = new List<long>();
+            foreach (PlayerCard playerCard in playerCards)
+            { 
+                await _dbContext.PlayerCards.AddAsync(playerCard, cancellationToken);
+                playerCardIds.Add(playerCard.Id);
+            }
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return playerCardIds;
+        }
+
+        public async Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken)
+        {
+            await _dbContext.GameBoardCards.AddAsync(gameBoardCard, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return gameBoardCard.Id;
+        }
+
+        public async Task<IEnumerable<long>> CreateGameBoardCardsAsync(IEnumerable<GameBoardCard> gameBoardCards, CancellationToken cancellationToken)
+        {
+            List<long> gameBoardCardIds = new List<long>();
+            foreach (GameBoardCard gameBoardCard in gameBoardCards)
+            {
+                await _dbContext.GameBoardCards.AddAsync(gameBoardCard, cancellationToken);
+                gameBoardCardIds.Add(gameBoardCard.Id);
+            }
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return gameBoardCardIds;
         }
     }
 }
