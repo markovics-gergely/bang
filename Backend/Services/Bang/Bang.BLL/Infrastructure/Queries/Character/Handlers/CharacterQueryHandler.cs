@@ -12,7 +12,6 @@ using MediatR;
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
     public class CharacterQueryHandler :
-        IRequestHandler<GetCharacterQuery, CharacterViewModel>,
         IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>,
         IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>
     {
@@ -23,13 +22,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         {
             _mapper = mapper;
             _characterStore = characterStore;
-        }
-
-        public async Task<CharacterViewModel> Handle(GetCharacterQuery request, CancellationToken cancellationToken)
-        {
-            var domain = await _characterStore.GetCharacterAsync(request.Id, cancellationToken);
-
-            return _mapper.Map<CharacterViewModel>(domain);
         }
 
         public async Task<IEnumerable<CharacterViewModel>> Handle(GetCharactersQuery request, CancellationToken cancellationToken)

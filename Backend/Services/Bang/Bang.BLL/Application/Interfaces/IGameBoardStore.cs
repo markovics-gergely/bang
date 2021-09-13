@@ -13,6 +13,7 @@ namespace Bang.BLL.Application.Interfaces
     {
         Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken);
         Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken);
+
         Task<IEnumerable<Card>> GetCardsOnTopAsync(long id, int count, CancellationToken cancellationToken);
         Task<Card> GetLastDiscardedCardAsync(long id, CancellationToken cancellationToken);
         Task<GameBoardCard> GetGameBoardCardByTypeAsync(long id, CardType type, string statusType, CancellationToken cancellationToken);

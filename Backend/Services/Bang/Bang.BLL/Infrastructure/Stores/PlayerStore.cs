@@ -21,14 +21,6 @@ namespace Bang.BLL.Infrastructure.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<long> CreatePlayerAsync(Player player, CancellationToken cancellationToken)
-        {
-            await _dbContext.Players.AddAsync(player, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return player.Id;
-        }
-
         public async Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken)
         {
             return await _dbContext.Players.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
@@ -43,7 +35,14 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken)
         {
             return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId).ToListAsync(cancellationToken);
+        }
 
+        public async Task<long> CreatePlayerAsync(Player player, CancellationToken cancellationToken)
+        {
+            await _dbContext.Players.AddAsync(player, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return player.Id;
         }
     }
 }

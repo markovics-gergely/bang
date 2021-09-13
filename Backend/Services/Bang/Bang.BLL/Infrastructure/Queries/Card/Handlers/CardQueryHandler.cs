@@ -12,7 +12,6 @@ using MediatR;
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
     public class CardQueryHandler :
-        IRequestHandler<GetCardQuery, CardViewModel>,
         IRequestHandler<GetCardByTypeQuery, CardViewModel>,
         IRequestHandler<GetCardsQuery, IEnumerable<CardViewModel>>
     {
@@ -23,13 +22,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         {
             _mapper = mapper;
             _cardStore = cardStore;
-        }
-
-        public async Task<CardViewModel> Handle(GetCardQuery request, CancellationToken cancellationToken)
-        {
-            var domain = await _cardStore.GetCardAsync(request.Id, cancellationToken);
-
-            return _mapper.Map<CardViewModel>(domain);
         }
 
         public async Task<CardViewModel> Handle(GetCardByTypeQuery request, CancellationToken cancellationToken)

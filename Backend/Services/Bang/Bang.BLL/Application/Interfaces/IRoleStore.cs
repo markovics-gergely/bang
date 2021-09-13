@@ -9,7 +9,6 @@ namespace Bang.BLL.Application.Interfaces
 {
     public interface IRoleStore
     {
-        Task<Role> GetRoleAsync(long id, CancellationToken cancellationToken);
         Task<Role> GetRoleByTypeAsync(RoleType type, CancellationToken cancellationToken);
         Task<IEnumerable<Role>> GetRolesAsync(CancellationToken cancellationToken);
     }

@@ -47,18 +47,10 @@ namespace Bang.API
             services.AddScoped<IPlayerStore, PlayerStore>();
             services.AddScoped<IGameBoardStore, GameBoardStore>();
 
-            services.AddScoped<IRequestHandler<GetCharacterQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddScoped<IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddScoped<IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>, CharacterQueryHandler>();
-            services.AddScoped<IRequestHandler<CreateCharacterCommand, long>, CharacterCommandHandler>();
-            services.AddScoped<IRequestHandler<UpdateCharacterCommand, Unit>, CharacterCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteCharacterCommand, Unit>, CharacterCommandHandler>();
-
-            services.AddScoped<IRequestHandler<GetRoleQuery, RoleViewModel>, RoleQueryHandler>();
             services.AddScoped<IRequestHandler<GetRoleByTypeQuery, RoleViewModel>, RoleQueryHandler>();
             services.AddScoped<IRequestHandler<GetRolesQuery, IEnumerable<RoleViewModel>>, RoleQueryHandler>();
-
-            services.AddScoped<IRequestHandler<GetCardQuery, CardViewModel>, CardQueryHandler>();
             services.AddScoped<IRequestHandler<GetCardByTypeQuery, CardViewModel>, CardQueryHandler>();
             services.AddScoped<IRequestHandler<GetCardsQuery, IEnumerable<CardViewModel>>, CardQueryHandler>();
 

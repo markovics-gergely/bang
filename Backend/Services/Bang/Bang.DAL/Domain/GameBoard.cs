@@ -7,8 +7,10 @@ namespace Bang.DAL.Domain
     public class GameBoard
     {
         public long Id { get; set; }
+
         public long? ActualPlayerId { get; set; }
         public Player ActualPlayer { get; set; }
+
         public int MaxTurnTime { get; set; }
         public bool IsOver { get; set; } = false;
 

@@ -3,21 +3,26 @@
     public enum CardType
     {
         Bang,
+        Missed,
         Beer,
         CatBalou,
+        Panic,
         Duel,
-        Gatling,
         GeneralStore,
         Indians,
-        Missed,
-        Panic,
-        Saloon,
         Stagecoach,
+        Gatling,
+        Saloon,
         WellsFargo,
-        Guns,
+        Jail,
         Horses,
         Barrel,
+        Scope,
         Dynamite,
-        Jail
+        Volcanic,
+        Schofield,
+        Remingtion,
+        Karabine,
+        Winchester
     }
 }
