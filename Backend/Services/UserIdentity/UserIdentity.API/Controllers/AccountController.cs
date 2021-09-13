@@ -16,6 +16,7 @@ using UserIdentity.BLL.Application.Commands.User.DataTransferObject;
 
 namespace UserIdentity.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -28,7 +29,7 @@ namespace UserIdentity.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("registration")]
         public async Task<ActionResult<bool>> CreateAccountAsync(RegistrationDto registerDto, CancellationToken cancellationToken)
         {
             var command = new CreateAccountCommand(registerDto);

@@ -3,15 +3,15 @@ using Bang.DAL.Domain.Joins;
 using UserIdentity.DAL.Domain;
 
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bang.DAL.Domain
 {
     public class Player
     {
         public long Id { get; set; }
-
         public string UserId { get; set; }
-        //public Account User { get; set; }
 
         public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }

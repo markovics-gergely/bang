@@ -79,7 +79,7 @@ namespace UserIdentity.API
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
                 .AddAspNetIdentity<Account>();
 
-            /*JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,7 +90,7 @@ namespace UserIdentity.API
                     options.Audience = "useridentity-api";
                     options.RequireHttpsMetadata = false;
                 }
-                );*/
+                );
 
             services.AddCors(options =>
             {

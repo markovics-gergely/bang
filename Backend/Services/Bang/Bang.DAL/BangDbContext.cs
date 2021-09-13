@@ -9,6 +9,7 @@ using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 
 using Microsoft.EntityFrameworkCore;
+using UserIdentity.DAL.Domain;
 
 namespace Bang.DAL
 {
