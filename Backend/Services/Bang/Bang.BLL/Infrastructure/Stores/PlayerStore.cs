@@ -23,18 +23,27 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken)
         {
-            return await _dbContext.Players.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
+            return await _dbContext.Players.Where(c => c.Id == id)
+                .Include(p => p.PlayerCards).ThenInclude(c => c.Card)
+                //.Include(p => p.User)
+                .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Card not found!");
         }
 
         public async Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken)
         {
-            return await _dbContext.Players.ToListAsync(cancellationToken);
+            return await _dbContext.Players
+                .Include(p => p.PlayerCards).ThenInclude(c => c.Card)
+                //.Include(p => p.User)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId).ToListAsync(cancellationToken);
+            return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId)
+                .Include(p => p.PlayerCards).ThenInclude(c => c.Card)
+                //.Include(p => p.User)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<long> CreatePlayerAsync(Player player, CancellationToken cancellationToken)

@@ -121,7 +121,7 @@ namespace Bang.DAL
             modelBuilder.Entity<PassiveCard>()
                 .HasData(
                     new PassiveCard { Id = 13, Name = CardNameConstants.Jail, Description = CardDescriptionConstants.Jail, CardType = CardType.Jail, CardEffectType = CardConstants.PassiveCard },
-                    new PassiveCard { Id = 14, Name = CardNameConstants.Horses, Description = CardDescriptionConstants.Horses, CardType = CardType.Horses, CardEffectType = CardConstants.PassiveCard },
+                    new PassiveCard { Id = 14, Name = CardNameConstants.Horses, Description = CardDescriptionConstants.Horses, CardType = CardType.Mustang, CardEffectType = CardConstants.PassiveCard },
                     new PassiveCard { Id = 15, Name = CardNameConstants.Barrel, Description = CardDescriptionConstants.Barrel, CardType = CardType.Barrel, CardEffectType = CardConstants.PassiveCard },
                     new PassiveCard { Id = 16, Name = CardNameConstants.Scope, Description = CardDescriptionConstants.Scope, CardType = CardType.Scope, CardEffectType = CardConstants.PassiveCard },
                     new PassiveCard { Id = 17, Name = CardNameConstants.Dynamite, Description = CardDescriptionConstants.Dynamite, CardType = CardType.Dynamite, CardEffectType = CardConstants.PassiveCard },

@@ -12,7 +12,5 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public bool IsOver { get; set; }
 
         public ICollection<PlayerViewModel> Players { get; set; }
-        public ICollection<CardGameBoardCardViewModel> DrawableGameBoardCards { get; set; }
-        public ICollection<CardGameBoardCardViewModel> DiscardedGameBoardCards { get; set; }
     }
 }

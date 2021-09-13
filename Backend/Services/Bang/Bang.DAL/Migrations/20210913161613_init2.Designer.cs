@@ -4,14 +4,16 @@ using Bang.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    partial class BangDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210913161613_init2")]
+    partial class init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,13 +288,7 @@ namespace Bang.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CardColorType")
-                        .HasColumnType("int");
-
                     b.Property<int>("CardId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FrenchNumber")
                         .HasColumnType("int");
 
                     b.Property<long>("GameBoardId")
@@ -318,13 +314,7 @@ namespace Bang.DAL.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CardColorType")
-                        .HasColumnType("int");
-
                     b.Property<int>("CardId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FrenchNumber")
                         .HasColumnType("int");
 
                     b.Property<long>("PlayerId")
@@ -495,7 +485,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 14,
                             CardEffectType = "card_passive",
-                            CardType = "Mustang",
+                            CardType = "Horses",
                             Description = "Musztáng",
                             Name = "Musztáng"
                         },

@@ -11,7 +11,9 @@ namespace Bang.BLL.Application.MappingProfiles
     {
         public PlayerProfile()
         {
-            CreateMap<Player, PlayerViewModel>().ReverseMap();
+            CreateMap<Player, PlayerViewModel>()
+                //.ForMember(p => p.UserName, opts => opts.MapFrom(p => p.User.UserName))
+                .ForMember(p => p.PlayerCards, opts => opts.MapFrom(p => p.PlayerCards));
             CreateMap<Player, PlayerCreateViewModel>().ReverseMap();
         }
     }

@@ -11,7 +11,7 @@ namespace Bang.DAL.Domain
         public long Id { get; set; }
 
         public string UserId { get; set; }
-        public Account User { get; set; }
+        //public Account User { get; set; }
 
         public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }

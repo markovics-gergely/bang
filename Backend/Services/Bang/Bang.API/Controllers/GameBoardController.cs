@@ -33,6 +33,22 @@ namespace Bang.API.Controllers
             return await _mediator.Send(query, cancellationToken);
         }
 
+        [HttpGet("{id}/last-discarded")]
+        public async Task<ActionResult<FrenchCardViewModel>> GetLastDiscardedGameBoardCardAsync(int id, CancellationToken cancellationToken)
+        {
+            var query = new GetLastDiscardedGameBoardCardQuery(id);
+
+            return await _mediator.Send(query, cancellationToken);
+        }
+
+        [HttpGet("{id}/drawable-cards")]
+        public async Task<ActionResult<IEnumerable<FrenchCardViewModel>>> GetLastDiscardedGameBoardCardAsync(int id, [FromQuery] int number, CancellationToken cancellationToken)
+        {
+            var query = new GetGameBoardCardsOnTopQuery(id, number);
+
+            return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameBoardViewModel>>> GetGameBoardsAsync(CancellationToken cancellationToken)
         {
@@ -47,6 +63,14 @@ namespace Bang.API.Controllers
             var command = new CreateGameBoardCommand(dto);
 
             return await _mediator.Send(command, cancellationToken);
+        }
+
+        [HttpPost("{id}/shuffle-cards")]
+        public async Task ShuffleGameBoardCardsAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new ShuffleGameBoardCardsCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
         }
     }
 }

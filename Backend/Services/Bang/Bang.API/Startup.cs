@@ -25,6 +25,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using UserIdentity.DAL;
 
 namespace Bang.API
 {
@@ -60,6 +61,8 @@ namespace Bang.API
 
             services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<CreateGameBoardCommand, long>, GameBoardCommandHandler>();
 
             services.AddAutoMapper(typeof(CharacterProfile));

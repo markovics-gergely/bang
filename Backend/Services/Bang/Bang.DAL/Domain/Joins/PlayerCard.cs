@@ -1,4 +1,7 @@
 ﻿using Bang.DAL.Domain.Catalog.Cards;
+using Bang.DAL.Domain.Constants.Enums;
+
+using System;
 
 namespace Bang.DAL.Domain.Joins
 {
@@ -11,5 +14,20 @@ namespace Bang.DAL.Domain.Joins
 
         public int CardId { get; set; }
         public Card Card { get; set; }
+
+        public CardColorType CardColorType { get; set; }
+        private int frenchNumber;
+        public int FrenchNumber
+        {
+            get => frenchNumber;
+            set
+            {
+                if (value < 1 || value > 13)
+                {
+                    throw new ArgumentOutOfRangeException("Nem értelmes kártyaszám!");
+                }
+                frenchNumber = value;
+            }
+        }
     }
 }

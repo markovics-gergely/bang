@@ -1,13 +1,17 @@
 ﻿using Bang.DAL.Domain.Constants.Enums;
 
-namespace Bang.BLL.Application.Commands.ViewModels
+using System;
+
+namespace Bang.BLL.Infrastructure.Queries.ViewModels
 {
-    public class CardPlayerCardViewModel
+    public class FrenchCardViewModel
     {
-        public long CardId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string CardEffectType { get; set; }
         public CardType CardType { get; set; }
+        public CardColorType CardColorType { get; set; }
+        public int FrenchNumber { get; set; }
     }
 }
