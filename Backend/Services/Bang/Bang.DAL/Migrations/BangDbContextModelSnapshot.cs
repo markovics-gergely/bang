@@ -330,13 +330,17 @@ namespace Bang.DAL.Migrations
                     b.Property<long>("PlayerId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("StatusType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("PlayerId");
-
                     b.ToTable("PlayerCards");
+
+                    b.HasDiscriminator<string>("StatusType").HasValue("player_card_base");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
@@ -360,6 +364,11 @@ namespace Bang.DAL.Migrations
 
                     b.Property<int>("RoleType")
                         .HasColumnType("int");
+
+                    b.Property<int>("ShootingRange")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
@@ -583,6 +592,24 @@ namespace Bang.DAL.Migrations
                     b.HasDiscriminator().HasValue("gameboardcard_drawable");
                 });
 
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.HandPlayerCard", b =>
+                {
+                    b.HasBaseType("Bang.DAL.Domain.Joins.PlayerCard");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasDiscriminator().HasValue("player_card_hand");
+                });
+
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.TablePlayerCard", b =>
+                {
+                    b.HasBaseType("Bang.DAL.Domain.Joins.PlayerCard");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasDiscriminator().HasValue("player_card_table");
+                });
+
             modelBuilder.Entity("Bang.DAL.Domain.GameBoard", b =>
                 {
                     b.HasOne("Bang.DAL.Domain.Player", "ActualPlayer")
@@ -612,15 +639,7 @@ namespace Bang.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Bang.DAL.Domain.Player", "Player")
-                        .WithMany("PlayerCards")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Card");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
@@ -656,6 +675,28 @@ namespace Bang.DAL.Migrations
                     b.Navigation("GameBoard");
                 });
 
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.HandPlayerCard", b =>
+                {
+                    b.HasOne("Bang.DAL.Domain.Player", "Player")
+                        .WithMany("HandPlayerCards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.TablePlayerCard", b =>
+                {
+                    b.HasOne("Bang.DAL.Domain.Player", "Player")
+                        .WithMany("TablePlayerCards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("Bang.DAL.Domain.GameBoard", b =>
                 {
                     b.Navigation("DiscardedGameBoardCards");
@@ -667,7 +708,9 @@ namespace Bang.DAL.Migrations
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
                 {
-                    b.Navigation("PlayerCards");
+                    b.Navigation("HandPlayerCards");
+
+                    b.Navigation("TablePlayerCards");
                 });
 #pragma warning restore 612, 618
         }

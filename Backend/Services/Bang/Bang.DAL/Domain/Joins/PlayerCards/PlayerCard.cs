@@ -15,6 +15,8 @@ namespace Bang.DAL.Domain.Joins
         public int CardId { get; set; }
         public Card Card { get; set; }
 
+        public string StatusType { get; set; }
+
         public CardColorType CardColorType { get; set; }
         private int frenchNumber;
         public int FrenchNumber

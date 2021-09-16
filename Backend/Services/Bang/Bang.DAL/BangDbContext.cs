@@ -7,7 +7,7 @@ using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Constants.NameConstants;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
-
+using Bang.DAL.Domain.Joins.PlayerCards;
 using Microsoft.EntityFrameworkCore;
 using UserIdentity.DAL.Domain;
 
@@ -55,15 +55,28 @@ namespace Bang.DAL
                 .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<PlayerCard>()
+            modelBuilder.Entity<HandPlayerCard>()
                 .HasOne(p => p.Card)
                 .WithMany()
                 .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<PlayerCard>()
+            modelBuilder.Entity<HandPlayerCard>()
                 .HasOne(p => p.Player)
-                .WithMany(p => p.PlayerCards)
+                .WithMany(p => p.HandPlayerCards)
+                .HasForeignKey(c => c.PlayerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TablePlayerCard>()
+                .HasOne(p => p.Card)
+                .WithMany()
+                .HasForeignKey(c => c.CardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TablePlayerCard>()
+                .HasOne(p => p.Player)
+                .WithMany(p => p.TablePlayerCards)
+                .HasForeignKey(c => c.PlayerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<GameBoardCard>()
@@ -71,6 +84,12 @@ namespace Bang.DAL
                 .HasValue<GameBoardCard>(GameBoardCardConstants.Base)
                 .HasValue<DrawableGameBoardCard>(GameBoardCardConstants.DrawableCard)
                 .HasValue<DiscardedGameBoardCard>(GameBoardCardConstants.DiscardedCard);
+
+            modelBuilder.Entity<PlayerCard>()
+                .HasDiscriminator(p => p.StatusType)
+                .HasValue<PlayerCard>(PlayerCardConstants.Base)
+                .HasValue<HandPlayerCard>(PlayerCardConstants.HandPlayerCard)
+                .HasValue<TablePlayerCard>(PlayerCardConstants.TablePlayerCard);
 
             modelBuilder.Entity<Card>()
                 .HasDiscriminator(c => c.CardEffectType)
@@ -102,6 +121,16 @@ namespace Bang.DAL
                 .Entity<PassiveCard>()
                 .Property(r => r.CardType)
                 .HasConversion<string>();
+
+            modelBuilder
+                .Entity<Player>()
+                .Property(p => p.ShootingRange)
+                .HasDefaultValue(1);
+
+            modelBuilder
+                .Entity<Player>()
+                .Property(p => p.Placement)
+                .HasDefaultValue(0);
 
             modelBuilder.Entity<ActiveCard>()
                 .HasData(

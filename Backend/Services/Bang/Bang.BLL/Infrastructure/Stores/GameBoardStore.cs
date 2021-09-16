@@ -60,7 +60,7 @@ namespace Bang.BLL.Infrastructure.Stores
             }
         }
 
-        public async Task<long> DiscardFromDrawableGameBoardCardAsync(long id, CancellationToken cancellationToken)
+        public async Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(long id, CancellationToken cancellationToken)
         {
             var domain = (await GetDrawableGameBoardCardsOnTopAsync(id, 1, cancellationToken)).FirstOrDefault();
             var discarded = new DiscardedGameBoardCard()
@@ -71,7 +71,8 @@ namespace Bang.BLL.Infrastructure.Stores
                 FrenchNumber = domain.FrenchNumber
             };
             await DeleteGameBoardCardAsync(domain.Id, cancellationToken);
-            return await CreateGameBoardCardAsync(discarded, cancellationToken);
+            long newId = await CreateGameBoardCardAsync(discarded, cancellationToken);
+            return (DiscardedGameBoardCard)await GetGameBoardCardAsync(newId, cancellationToken);
         }
 
         public async Task<IEnumerable<Card>> GetCardsOnTopAsync(long id, int count, CancellationToken cancellationToken)
@@ -98,9 +99,11 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
             return await _dbContext.GameBoards.Where(c => c.Id == id)
-                .Include(g => g.Players).ThenInclude(p => p.PlayerCards)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
@@ -114,7 +117,7 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.GameBoards
-                .Include(g => g.Players).ThenInclude(p => p.PlayerCards)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards)
                 .ToListAsync(cancellationToken);
         }
 

@@ -13,7 +13,8 @@ namespace Bang.BLL.Application.MappingProfiles
         {
             CreateMap<Player, PlayerViewModel>()
                 //.ForMember(p => p.UserName, opts => opts.MapFrom(p => p.User.UserName))
-                .ForMember(p => p.PlayerCards, opts => opts.MapFrom(p => p.PlayerCards));
+                .ForMember(p => p.HandPlayerCards, opts => opts.MapFrom(p => p.HandPlayerCards))
+                .ForMember(p => p.TablePlayerCards, opts => opts.MapFrom(p => p.TablePlayerCards)); ;
             CreateMap<Player, PlayerCreateViewModel>().ReverseMap();
         }
     }

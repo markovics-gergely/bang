@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -83,6 +84,42 @@ namespace Bang.BLL.Infrastructure.Stores
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             return gameBoardCardIds;
+        }
+
+        public async Task<long> PlaceHandPlayerCardToTableAsync(HandPlayerCard playerCard, CancellationToken cancellationToken)
+        {
+            TablePlayerCard tablePlayerCard = new TablePlayerCard()
+            {
+                CardId = playerCard.CardId,
+                PlayerId = playerCard.PlayerId,
+                CardColorType = playerCard.CardColorType,
+                FrenchNumber = playerCard.FrenchNumber
+            };
+            await DeletePlayerCardAsync(playerCard.Id, cancellationToken);
+            return await CreatePlayerCardAsync(tablePlayerCard, cancellationToken);
+        }
+
+        public async Task DeletePlayerCardAsync(long playerCardId, CancellationToken cancellationToken)
+        {
+            PlayerCard deletable = await GetPlayerCardAsync(playerCardId, cancellationToken);
+            _dbContext.PlayerCards.Remove(deletable);
+
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoardCards.FirstOrDefaultAsync(p => p.Id == playerCardId, cancellationToken) == null)
+                    throw new EntityNotFoundException("GameBoardCard not found!");
+                else throw;
+            }
+        }
+
+        public async Task<PlayerCard> GetPlayerCardAsync(long id, CancellationToken cancellationToken)
+        {
+            return await _dbContext.PlayerCards.Where(c => c.Id == id).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("PlayerCard not found!");
         }
     }
 }

@@ -72,5 +72,13 @@ namespace Bang.API.Controllers
 
             await _mediator.Send(command, cancellationToken);
         }
+
+        [HttpPost("{id}/discard-card-from-drawable")]
+        public async Task<ActionResult<FrenchCardViewModel>> DiscardGameBoardCardFromDrawableAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new DiscardFromDrawableGameBoardCardCommand(id);
+
+            return await _mediator.Send(command, cancellationToken);
+        }
     }
 }

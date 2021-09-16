@@ -19,12 +19,14 @@ using System;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class GameBoardCommandHandler :
         IRequestHandler<CreateGameBoardCommand, long>,
-        IRequestHandler<ShuffleGameBoardCardsCommand>
+        IRequestHandler<ShuffleGameBoardCardsCommand>,
+        IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -119,7 +121,7 @@ namespace Bang.BLL.Application.Commands.Handlers
                 var playerDomain = _mapper.Map<Player>(player);
                 await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
 
-                List<PlayerCard> playerCards = new List<PlayerCard>();
+                List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
                 var cardDataList = frenchCards.Zip(cardTypes, (f, c) => new { french = f, type = c });
                 
                 foreach (var cardTuple in frenchCardDataList.GetRange(0, playerDomain.MaxHP))
@@ -132,7 +134,7 @@ namespace Bang.BLL.Application.Commands.Handlers
                         CardColorType = cardTuple.frenchCard.Color,
                         FrenchNumber = cardTuple.frenchCard.Number
                     };
-                    playerCards.Add(_mapper.Map<PlayerCard>(cardData));
+                    playerCards.Add(_mapper.Map<HandPlayerCard>(cardData));
                 }
                 await _cardStore.CreatePlayerCardsAsync(playerCards, cancellationToken);
                 frenchCardDataList.RemoveRange(0, playerDomain.MaxHP);
@@ -165,6 +167,13 @@ namespace Bang.BLL.Application.Commands.Handlers
             await _gameBoardStore.ShuffleCardsAsync(domain, cancellationToken);
 
             return Unit.Value;
+        }
+
+        public async Task<FrenchCardViewModel> Handle(DiscardFromDrawableGameBoardCardCommand request, CancellationToken cancellationToken)
+        {
+            var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(request.gameBoardId, cancellationToken);
+
+            return _mapper.Map<FrenchCardViewModel>(domain);
         }
     }
 }

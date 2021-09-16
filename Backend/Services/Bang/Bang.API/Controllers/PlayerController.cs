@@ -1,5 +1,6 @@
 ﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Application.Commands.Commands;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,24 @@ namespace Bang.API.Controllers
             var query = new GetPlayersByGameBoardQuery(id);
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpGet("{id}/targetable")]
+        public async Task<ActionResult<IEnumerable<PlayerViewModel>>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken)
+        {
+            var query = new GetTargetablePlayersQuery(id);
+
+            return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpPut("{id}/decrement-health")]
+        public async Task<ActionResult> DecrementPlayerHealthAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new DecrementPlayerHealthCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return new NoContentResult();
         }
     }
 }

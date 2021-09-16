@@ -26,7 +26,7 @@ namespace Bang.API.Controllers
         }
 
         [HttpGet("{type}")]
-        public async Task<ActionResult<CharacterViewModel>> GetRoleByTypeAsync(CharacterType type, CancellationToken cancellationToken)
+        public async Task<ActionResult<CharacterViewModel>> GetCharacterByTypeAsync(CharacterType type, CancellationToken cancellationToken)
         {
             var query = new GetCharacterByTypeQuery(type);
 

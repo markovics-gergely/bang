@@ -16,6 +16,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public int ActualHP { get; set; }
         public int MaxHP { get; init; }
 
-        public ICollection<FrenchCardViewModel> PlayerCards { get; set; }
+        public ICollection<FrenchCardViewModel> HandPlayerCards { get; set; }
+        public ICollection<FrenchCardViewModel> TablePlayerCards { get; set; }
     }
 }
