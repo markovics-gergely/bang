@@ -15,6 +15,7 @@ using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Constants;
 using MediatR;
 using System;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -60,6 +61,28 @@ namespace Bang.BLL.Infrastructure.Stores
             }
         }
 
+        public async Task DeleteAllGameBoardCardAsync(long gameBoardId, CancellationToken cancellationToken)
+        {
+            List<GameBoardCard> deletables = await _dbContext.GameBoardCards.Where(c => c.GameBoardId == gameBoardId)
+                .ToListAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoardCard not found!");
+            foreach (GameBoardCard gameBoardCard in deletables)
+            {
+                _dbContext.GameBoardCards.Remove(gameBoardCard);
+            }
+            
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoardCards.Where(p => p.GameBoardId == gameBoardId).ToListAsync(cancellationToken) == null)
+                    throw new EntityNotFoundException("GameBoardCard not found!");
+                else throw;
+            }
+        }
+
         public async Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(long id, CancellationToken cancellationToken)
         {
             var domain = (await GetDrawableGameBoardCardsOnTopAsync(id, 1, cancellationToken)).FirstOrDefault();
@@ -99,8 +122,8 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
             return await _dbContext.GameBoards.Where(c => c.Id == id)
-                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => c.Card)
-                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => c.Card)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
                 .AsNoTracking()
@@ -162,6 +185,39 @@ namespace Bang.BLL.Infrastructure.Stores
             if (gameBoard.DiscardedGameBoardCards.Count == 0)
                 throw new EntityNotFoundException("Card not found!");
             return gameBoard.DiscardedGameBoardCards.Last();
+        }
+
+        public async Task SetGameBoardEndAsync(long gameBoardId, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
+            gameBoard.IsOver = true;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await DeleteAllGameBoardCardAsync(gameBoardId, cancellationToken);
+        }
+
+        public async Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            Player player = await _dbContext.Players.Where(c => c.UserId == userId)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+            return await _dbContext.GameBoards.Where(g => g.Players.Contains(player))
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoard not found!");
+        }
+
+        public async Task SetGameBoardActualPlayerAsync(long gameBoardId, long playerId, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
+            gameBoard.TargetedPlayerId = playerId;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SetGameBoardTargetedPlayerAsync(long gameBoardId, long? playerId, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
+            gameBoard.ActualPlayerId = playerId;
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

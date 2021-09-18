@@ -8,6 +8,7 @@ using MediatR;
 using Bang.DAL.Domain.Constants.Enums;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
+using Bang.BLL.Application.Commands.Commands;
 
 namespace Bang.API.Controllers
 {
@@ -36,6 +37,16 @@ namespace Bang.API.Controllers
             var query = new GetCardsQuery();
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpPut("play-card/{playerCardId}")]
+        public async Task<ActionResult> DecrementPlayerHealthAsync(long playerCardId, CancellationToken cancellationToken)
+        {
+            var command = new PlayCardCommand(playerCardId);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return new NoContentResult();
         }
     }
 }

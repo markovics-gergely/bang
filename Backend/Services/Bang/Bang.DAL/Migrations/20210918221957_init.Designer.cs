@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    [Migration("20210916165447_init")]
+    [Migration("20210918221957_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,11 +272,19 @@ namespace Bang.DAL.Migrations
                     b.Property<int>("MaxTurnTime")
                         .HasColumnType("int");
 
+                    b.Property<long?>("TargetedPlayerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TargetedPlayerId1")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ActualPlayerId")
                         .IsUnique()
                         .HasFilter("[ActualPlayerId] IS NOT NULL");
+
+                    b.HasIndex("TargetedPlayerId1");
 
                     b.ToTable("GameBoards");
                 });
@@ -363,6 +371,11 @@ namespace Bang.DAL.Migrations
 
                     b.Property<int>("MaxHP")
                         .HasColumnType("int");
+
+                    b.Property<int>("Placement")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("RoleType")
                         .HasColumnType("int");
@@ -619,7 +632,13 @@ namespace Bang.DAL.Migrations
                         .HasForeignKey("Bang.DAL.Domain.GameBoard", "ActualPlayerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Bang.DAL.Domain.Player", "TargetedPlayer")
+                        .WithMany()
+                        .HasForeignKey("TargetedPlayerId1");
+
                     b.Navigation("ActualPlayer");
+
+                    b.Navigation("TargetedPlayer");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Joins.GameBoardCards.GameBoardCard", b =>

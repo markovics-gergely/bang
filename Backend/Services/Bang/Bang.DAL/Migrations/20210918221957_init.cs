@@ -109,7 +109,8 @@ namespace Bang.DAL.Migrations
                     RoleType = table.Column<int>(type: "int", nullable: false),
                     ActualHP = table.Column<int>(type: "int", nullable: false),
                     MaxHP = table.Column<int>(type: "int", nullable: false),
-                    ShootingRange = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                    ShootingRange = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    Placement = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -123,6 +124,8 @@ namespace Bang.DAL.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ActualPlayerId = table.Column<long>(type: "bigint", nullable: true),
+                    TargetedPlayerId = table.Column<long>(type: "bigint", nullable: true),
+                    TargetedPlayerId1 = table.Column<long>(type: "bigint", nullable: true),
                     MaxTurnTime = table.Column<int>(type: "int", nullable: false),
                     IsOver = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -134,6 +137,12 @@ namespace Bang.DAL.Migrations
                         column: x => x.ActualPlayerId,
                         principalTable: "Players",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_GameBoards_Players_TargetedPlayerId1",
+                        column: x => x.TargetedPlayerId1,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -215,6 +224,11 @@ namespace Bang.DAL.Migrations
                 column: "ActualPlayerId",
                 unique: true,
                 filter: "[ActualPlayerId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameBoards_TargetedPlayerId1",
+                table: "GameBoards",
+                column: "TargetedPlayerId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlayerCards_CardId",

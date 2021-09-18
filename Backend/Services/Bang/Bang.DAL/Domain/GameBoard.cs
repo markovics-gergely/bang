@@ -11,6 +11,9 @@ namespace Bang.DAL.Domain
         public long? ActualPlayerId { get; set; }
         public Player ActualPlayer { get; set; }
 
+        public long? TargetedPlayerId { get; set; }
+        public Player TargetedPlayer { get; set; }
+
         public int MaxTurnTime { get; set; }
         public bool IsOver { get; set; } = false;
 

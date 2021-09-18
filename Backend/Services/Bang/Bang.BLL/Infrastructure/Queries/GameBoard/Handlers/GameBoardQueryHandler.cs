@@ -15,7 +15,8 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         IRequestHandler<GetGameBoardQuery, GameBoardViewModel>,
         IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>,
         IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>,
-        IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>
+        IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>,
+        IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -52,6 +53,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             var domain = await _gameBoardStore.GetLastDiscardedGameBoardCardAsync(request.Id, cancellationToken);
 
             return _mapper.Map<FrenchCardViewModel>(domain);
+        }
+
+        public async Task<GameBoardViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
+        {
+            var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
+
+            return _mapper.Map<GameBoardViewModel>(domain);
         }
     }
 }

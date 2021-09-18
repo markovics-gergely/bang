@@ -24,7 +24,7 @@ using Bang.DAL.Domain.Joins.PlayerCards;
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class PlayerCommandHandler :
-        IRequestHandler<DecrementPlayerHealthCommand>
+        IRequestHandler<DecrementPlayerHealthCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -46,8 +46,24 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DecrementPlayerHealthCommand request, CancellationToken cancellationToken)
         {
+            Player selectedPlayer = await _playerStore.GetPlayerAsync(request.PlayerId, cancellationToken);
             long newHP = await _playerStore.DecrementPlayerHealthAsync(request.PlayerId, cancellationToken);
-            //TODO game end
+            if(newHP == 0)
+            {
+                await _playerStore.SetPlayerPlacementAsync(request.PlayerId, selectedPlayer.GameBoardId, cancellationToken);
+            }
+
+            int remainingPlayers = await _playerStore.GetRemainingPlayerCountAsync(selectedPlayer.GameBoardId, cancellationToken);
+            if(remainingPlayers == 0)
+            {
+                await _gameBoardStore.DeleteAllGameBoardCardAsync(selectedPlayer.GameBoardId, cancellationToken);
+                List<Player> players = (List<Player>)await _playerStore.GetPlayersByGameBoardAsync(selectedPlayer.GameBoardId, cancellationToken);
+                foreach (Player player in players)
+                {
+                    await _cardStore.DeleteAllPlayerCardAsync(player.Id, cancellationToken);
+                }
+            }
+
             return Unit.Value;
         }
     }
