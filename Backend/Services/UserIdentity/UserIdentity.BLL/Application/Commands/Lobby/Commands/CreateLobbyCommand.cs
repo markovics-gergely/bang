@@ -2,7 +2,7 @@
 
 namespace UserIdentity.BLL.Application.Commands.Commands
 {
-    public class DeleteAccountCommand : IRequest
+    public class CreateLobbyCommand : IRequest<string>
     {
     }
 }

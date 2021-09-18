@@ -1,6 +1,5 @@
 ﻿using UserIdentity.DAL.Domain;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,5 +15,8 @@ namespace UserIdentity.DAL
         }
 
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<History> Histories { get; set; }
+        public DbSet<Lobby> Lobbies { get; set; }
+        public DbSet<LobbyAccount> LobbyAccounts { get; set; }
     }
 }

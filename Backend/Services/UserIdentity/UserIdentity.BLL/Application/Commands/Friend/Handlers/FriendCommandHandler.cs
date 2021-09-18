@@ -10,28 +10,30 @@ using MediatR;
 namespace UserIdentity.BLL.Application.Commands.Handlers
 {
     public class FriendCommandHandler : 
-        IRequestHandler<AddFriendCommand, Unit>,
+        IRequestHandler<CreateFriendCommand, Unit>,
         IRequestHandler<DeleteFriendCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IFriendStore _friendStore;
+        private readonly IAccountStore _accountStore;
 
-        public FriendCommandHandler(IMapper mapper, IFriendStore friendStore)
+        public FriendCommandHandler(IMapper mapper, IFriendStore friendStore, IAccountStore accountStore)
         {
             _mapper = mapper;
             _friendStore = friendStore;
+            _accountStore = accountStore;
         }
 
-        public async Task<Unit> Handle(AddFriendCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendStore.AddFriendAsync("Bejelentkezett felhasználó", request.Id, cancellationToken);
+            await _friendStore.CreateFriendAsync(_accountStore.GetActualAccountId(), request.Id, cancellationToken);
 
             return Unit.Value;
         }
 
         public async Task<Unit> Handle(DeleteFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendStore.DeleteFriendAsync("Bejelentkezett felhasználó", request.Id, cancellationToken);
+            await _friendStore.DeleteFriendAsync(_accountStore.GetActualAccountId(), request.Id, cancellationToken);
 
             return Unit.Value;
         }

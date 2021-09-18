@@ -16,7 +16,6 @@ using UserIdentity.BLL.Application.Commands.User.DataTransferObject;
 
 namespace UserIdentity.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -48,11 +47,10 @@ namespace UserIdentity.API.Controllers
             return Ok();
         }
 
-        [ValidateAntiForgeryToken]
-        [HttpPost("delete")]
-        public async Task<IActionResult> DeleteAccountAsync(string userName, CancellationToken cancellationToken)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccountAsync(CancellationToken cancellationToken)
         {
-            var command = new DeleteAccountCommand(userName);
+            var command = new DeleteAccountCommand();
 
             await _mediator.Send(command, cancellationToken);
 

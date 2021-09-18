@@ -27,7 +27,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 ).ToListAsync(cancellationToken);
         }
 
-        public async Task AddFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
+        public async Task CreateFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
             Friend friend = new Friend()
             {

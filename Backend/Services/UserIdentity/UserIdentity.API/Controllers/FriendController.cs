@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
@@ -44,7 +43,7 @@ namespace UserIdentity.API.Controllers
         [HttpPost("{id}")]
         public async Task<IActionResult> AddFriendAsync(string id, CancellationToken cancellationToken)
         {
-            var command = new AddFriendCommand(id);
+            var command = new CreateFriendCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 
@@ -54,7 +53,7 @@ namespace UserIdentity.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFriendAsync(string id, CancellationToken cancellationToken)
         {
-            var command = new AddFriendCommand(id);
+            var command = new CreateFriendCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 

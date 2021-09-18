@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UserIdentity.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -178,6 +178,74 @@ namespace UserIdentity.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Histories",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Placement = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Histories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Histories_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Lobbies",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lobbies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Lobbies_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LobbyAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LobbyId = table.Column<long>(type: "bigint", nullable: false),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsConnected = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LobbyAccounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LobbyAccounts_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LobbyAccounts_Lobbies_LobbyId",
+                        column: x => x.LobbyId,
+                        principalTable: "Lobbies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -226,6 +294,26 @@ namespace UserIdentity.DAL.Migrations
                 name: "IX_Friends_SenderId",
                 table: "Friends",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Histories_AccountId",
+                table: "Histories",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Lobbies_OwnerId",
+                table: "Lobbies",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LobbyAccounts_AccountId",
+                table: "LobbyAccounts",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LobbyAccounts_LobbyId",
+                table: "LobbyAccounts",
+                column: "LobbyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -249,7 +337,16 @@ namespace UserIdentity.DAL.Migrations
                 name: "Friends");
 
             migrationBuilder.DropTable(
+                name: "Histories");
+
+            migrationBuilder.DropTable(
+                name: "LobbyAccounts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Lobbies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

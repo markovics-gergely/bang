@@ -48,7 +48,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
         {
-            var account = new Account() { UserName = request.UserName };
+            var account = new Account() { Id = _accountStore.GetActualAccountId() };
 
             await _accountStore.DeleteAccountAsync(account, cancellationToken);
 

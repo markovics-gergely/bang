@@ -19,16 +19,18 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
     {
         private readonly IMapper _mapper;
         private readonly IFriendStore _friendStore;
+        private readonly IAccountStore _accountStore;
 
-        public FriendQueryHandler(IMapper mapper, IFriendStore friendStore)
+        public FriendQueryHandler(IMapper mapper, IFriendStore friendStore, IAccountStore accountStore)
         {
             _mapper = mapper;
             _friendStore = friendStore;
+            _accountStore = accountStore;
         }
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync("Bejelentkezett felhasználó", cancellationToken);
+            var domain = await _friendStore.GetFriendsAsync(_accountStore.GetActualAccountId(), cancellationToken);
 
             List<Friend> unacceptedFriends = new List<Friend>();
             foreach (var unacceptedFriend in domain)
@@ -42,7 +44,7 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetUnacceptedFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync("Bejelentkezett felhasználó", cancellationToken);
+            var domain = await _friendStore.GetFriendsAsync(_accountStore.GetActualAccountId(), cancellationToken);
 
             List<Friend> unacceptedFriends = new List<Friend>();
             foreach (var unacceptedFriend in domain)

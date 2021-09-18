@@ -4,12 +4,14 @@ using UserIdentity.DAL;
 using UserIdentity.DAL.Domain;
 
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +22,14 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         private readonly UserIdentityDbContext _dbContext;
         private readonly UserManager<Account> _userManager;
         private readonly SignInManager<Account> _signInManager;
+        private readonly HttpContext _httpContext;
 
-        public AccountStore(UserIdentityDbContext dbContext, UserManager<Account> userManager, SignInManager<Account> signInManager)
+        public AccountStore(UserIdentityDbContext dbContext, UserManager<Account> userManager, SignInManager<Account> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         public async Task<bool> CreateAccountAsync(Account account, string password, CancellationToken cancellationToken)
@@ -81,7 +85,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task DeleteAccountAsync(Account account, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(account.UserName);
+            var user = await _userManager.FindByIdAsync(account.Id);
 
             if (user == null)
             {
@@ -89,6 +93,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             }
 
             await _userManager.DeleteAsync(user);
+        }
+
+        public string GetActualAccountId()
+        {
+            return _httpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
         }
     }
 }
