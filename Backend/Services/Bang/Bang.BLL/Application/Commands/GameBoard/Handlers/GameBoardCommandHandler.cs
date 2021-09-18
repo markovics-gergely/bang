@@ -19,11 +19,14 @@ using System;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class GameBoardCommandHandler :
-        IRequestHandler<CreateGameBoardCommand, long>
+        IRequestHandler<CreateGameBoardCommand, long>,
+        IRequestHandler<ShuffleGameBoardCardsCommand>,
+        IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -45,7 +48,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<long> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
         {
-            if(request.Dto.UserIds.Count < 4)
+            if (request.Dto.UserIds.Count < 4)
                 throw new NotEnoughPlayerException("Nem csatlakozott be elég játékos!");
 
             var domain = _mapper.Map<GameBoard>(request.Dto);
@@ -68,15 +71,26 @@ namespace Bang.BLL.Application.Commands.Handlers
             cardTypes.AddRange(Enumerable.Repeat(CardType.Gatling, 1).ToList());
             cardTypes.AddRange(Enumerable.Repeat(CardType.Saloon, 1).ToList());
             //Passive Cards
-            //TODO fegyver ?
-            //TODO ló ?
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Schofield, 3).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Remingtion, 1).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Winchester, 1).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Karabine, 1).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Volcanic, 2).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Mustang, 2).ToList());
             cardTypes.AddRange(Enumerable.Repeat(CardType.Jail, 3).ToList());
             cardTypes.AddRange(Enumerable.Repeat(CardType.Barrel, 2).ToList());
             cardTypes.AddRange(Enumerable.Repeat(CardType.Dynamite, 1).ToList());
+            cardTypes.AddRange(Enumerable.Repeat(CardType.Scope, 1).ToList());
             cardTypes = cardTypes.OrderBy(c => rnd.Next()).ToList();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+
             List<Card> cards = (List<Card>)await _cardStore.GetCardsAsync(cancellationToken);
 
+            List<int> frenchNumbers = Enumerable.Range(1, 13).ToList();
+            frenchNumbers.AddRange(Enumerable.Range(1, 7).ToList());
+            var frenchCards = Enum.GetValues<CardColorType>().SelectMany(c => frenchNumbers, (c, n) => (Color: c, Number: n));
+            frenchCards = frenchCards.OrderBy(f => rnd.Next());
+            var frenchCardDataList = cardTypes.Zip(frenchCards, (c, f) => new { frenchCard = f, type = c }).ToList();
+            
             //Players
             int playerCount = request.Dto.UserIds.Count;
             int outlawCount = playerCount > 5 ? 3 : 2;
@@ -91,7 +105,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
             var characters = await _characterStore.GetCharactersAsync(cancellationToken);
             characters = characters.OrderBy(c => rnd.Next()).ToList().GetRange(0, playerCount);
-
+            
             foreach (var userTuple in request.Dto.UserIds.Zip(characters, (u, c) => new { uId = u, Character = c })
                 .Zip(roles, (uc, r) => new { UserId = uc.uId, Character = uc.Character, RoleType = r }))
             {
@@ -107,31 +121,37 @@ namespace Bang.BLL.Application.Commands.Handlers
                 var playerDomain = _mapper.Map<Player>(player);
                 await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
 
-                List<PlayerCard> playerCards = new List<PlayerCard>();
-                foreach (CardType type in cardTypes.GetRange(0, playerDomain.MaxHP))
+                List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
+                var cardDataList = frenchCards.Zip(cardTypes, (f, c) => new { french = f, type = c });
+                
+                foreach (var cardTuple in frenchCardDataList.GetRange(0, playerDomain.MaxHP))
                 {
-                    Card card = cards.Where(c => c.CardType == type).FirstOrDefault();
+                    Card card = cards.Where(c => c.CardType == cardTuple.type).FirstOrDefault();
                     var cardData = new PlayerCardViewModel()
                     {
                         CardId = card.Id,
-                        PlayerId = playerDomain.Id
+                        PlayerId = playerDomain.Id, 
+                        CardColorType = cardTuple.frenchCard.Color,
+                        FrenchNumber = cardTuple.frenchCard.Number
                     };
-                    playerCards.Add(_mapper.Map<PlayerCard>(cardData));
+                    playerCards.Add(_mapper.Map<HandPlayerCard>(cardData));
                 }
                 await _cardStore.CreatePlayerCardsAsync(playerCards, cancellationToken);
-                cardTypes.RemoveRange(0, playerDomain.MaxHP);
+                frenchCardDataList.RemoveRange(0, playerDomain.MaxHP);
             }
 
             //Drawables
             List<GameBoardCard> cardDomainList = new List<GameBoardCard>();
-            foreach (CardType type in cardTypes)
+            foreach (var cardTuple in frenchCardDataList)
             {
-                Card card = cards.Where(c => c.CardType == type).FirstOrDefault();
+                Card card = cards.Where(c => c.CardType == cardTuple.type).FirstOrDefault();
                 var cardData = new GameBoardCardViewModel()
                 {
                     CardId = card.Id,
                     GameBoardId = gameBoardId,
-                    StatusType = GameBoardCardConstants.DrawableCard
+                    StatusType = GameBoardCardConstants.DrawableCard,
+                    CardColorType = cardTuple.frenchCard.Color,
+                    FrenchNumber = cardTuple.frenchCard.Number
                 };
                 cardDomainList.Add(_mapper.Map<DrawableGameBoardCard>(cardData));
             }
@@ -139,6 +159,21 @@ namespace Bang.BLL.Application.Commands.Handlers
 
             
             return gameBoardId;
+        }
+
+        public async Task<Unit> Handle(ShuffleGameBoardCardsCommand request, CancellationToken cancellationToken)
+        {
+            var domain = await _gameBoardStore.GetGameBoardAsync(request.gameBoardId, cancellationToken);
+            await _gameBoardStore.ShuffleCardsAsync(domain, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<FrenchCardViewModel> Handle(DiscardFromDrawableGameBoardCardCommand request, CancellationToken cancellationToken)
+        {
+            var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(request.gameBoardId, cancellationToken);
+
+            return _mapper.Map<FrenchCardViewModel>(domain);
         }
     }
 }

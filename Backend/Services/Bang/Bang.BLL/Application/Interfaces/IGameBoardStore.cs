@@ -1,6 +1,6 @@
-﻿using Bang.DAL.Domain;
+﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
+using Bang.DAL.Domain;
 using Bang.DAL.Domain.Catalog.Cards;
-using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 
 using System.Collections.Generic;
@@ -15,11 +15,14 @@ namespace Bang.BLL.Application.Interfaces
         Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken);
 
         Task<IEnumerable<Card>> GetCardsOnTopAsync(long id, int count, CancellationToken cancellationToken);
+        Task<IEnumerable<DrawableGameBoardCard>> GetDrawableGameBoardCardsOnTopAsync(long id, int count, CancellationToken cancellationToken);
         Task<Card> GetLastDiscardedCardAsync(long id, CancellationToken cancellationToken);
-        Task<GameBoardCard> GetGameBoardCardByTypeAsync(long id, CardType type, string statusType, CancellationToken cancellationToken);
+        Task<DiscardedGameBoardCard> GetLastDiscardedGameBoardCardAsync(long id, CancellationToken cancellationToken);
+        Task<GameBoardCard> GetGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken);
         Task ShuffleCardsAsync(GameBoard gameBoard, CancellationToken cancellationToken);
-        Task DeleteGameBoardCardByStatusAsync(long id, CardType type, string statusType, CancellationToken cancellationToken);
-        Task<long> CreateGameBoardCardByStatusAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken);
+        Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(long id, CancellationToken cancellationToken);
+        Task DeleteGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
+        Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken);
     }
 }

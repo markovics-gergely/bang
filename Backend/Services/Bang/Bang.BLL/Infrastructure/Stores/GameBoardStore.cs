@@ -35,7 +35,7 @@ namespace Bang.BLL.Infrastructure.Stores
             return gameBoard.Id;
         }
 
-        public async Task<long> CreateGameBoardCardByStatusAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken)
+        public async Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken)
         {
             await _dbContext.GameBoardCards.AddAsync(gameBoardCard, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -43,9 +43,9 @@ namespace Bang.BLL.Infrastructure.Stores
             return gameBoardCard.Id;
         }
 
-        public async Task DeleteGameBoardCardByStatusAsync(long id, CardType type, string statusType, CancellationToken cancellationToken)
+        public async Task DeleteGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken)
         {
-            GameBoardCard deletable = await GetGameBoardCardByTypeAsync(id, type, statusType, cancellationToken);
+            GameBoardCard deletable = await GetGameBoardCardAsync(gameBoardCardId, cancellationToken);
             _dbContext.GameBoardCards.Remove(deletable);
 
             try
@@ -54,10 +54,25 @@ namespace Bang.BLL.Infrastructure.Stores
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (await _dbContext.GameBoardCards.FirstOrDefaultAsync(p => p.Id == id, cancellationToken) == null)
-                    throw new EntityNotFoundException("Character not found!");
+                if (await _dbContext.GameBoardCards.FirstOrDefaultAsync(p => p.Id == gameBoardCardId, cancellationToken) == null)
+                    throw new EntityNotFoundException("GameBoardCard not found!");
                 else throw;
             }
+        }
+
+        public async Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(long id, CancellationToken cancellationToken)
+        {
+            var domain = (await GetDrawableGameBoardCardsOnTopAsync(id, 1, cancellationToken)).FirstOrDefault();
+            var discarded = new DiscardedGameBoardCard()
+            {
+                CardId = domain.Card.Id,
+                GameBoardId = id, 
+                CardColorType = domain.CardColorType,
+                FrenchNumber = domain.FrenchNumber
+            };
+            await DeleteGameBoardCardAsync(domain.Id, cancellationToken);
+            long newId = await CreateGameBoardCardAsync(discarded, cancellationToken);
+            return (DiscardedGameBoardCard)await GetGameBoardCardAsync(newId, cancellationToken);
         }
 
         public async Task<IEnumerable<Card>> GetCardsOnTopAsync(long id, int count, CancellationToken cancellationToken)
@@ -68,28 +83,41 @@ namespace Bang.BLL.Infrastructure.Stores
             return drawables.GetRange(drawables.Count - 1 - count, drawables.Count - 1);
         }
 
+        public async Task<IEnumerable<DrawableGameBoardCard>> GetDrawableGameBoardCardsOnTopAsync(long id, int count, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(id, cancellationToken);
+
+            List<DrawableGameBoardCard> drawables = (List<DrawableGameBoardCard>)gameBoard.DrawableGameBoardCards;
+            if(drawables.Count < count)
+            {
+                count = drawables.Count;
+                if (count == 0) return new List<DrawableGameBoardCard>();
+            }
+            return drawables.GetRange(drawables.Count - count, count);
+        }
+
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
             return await _dbContext.GameBoards.Where(c => c.Id == id)
-                .Include(g => g.Players).ThenInclude(p => p.PlayerCards)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
 
-        public async Task<GameBoardCard> GetGameBoardCardByTypeAsync(long id, CardType type, string statusType, CancellationToken cancellationToken)
+        public async Task<GameBoardCard> GetGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken)
         {
-            return await _dbContext.GameBoardCards.Where(c => c.GameBoardId == id && c.Card.CardType == type && c.StatusType == statusType)
+            return await _dbContext.GameBoardCards.Where(c => c.Id == gameBoardCardId)
                 .Include(g => g.Card).FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException("GameBoardCard not found!");
         }
 
         public async Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.GameBoards
-                .Include(g => g.Players).ThenInclude(p => p.PlayerCards)
-                .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
-                .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards)
                 .ToListAsync(cancellationToken);
         }
 
@@ -104,26 +132,36 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task ShuffleCardsAsync(GameBoard gameBoard, CancellationToken cancellationToken)
         {
-            List<Card> deletables = (List<Card>)gameBoard.DiscardedGameBoardCards.Select(d => d.Card);
+            List<DiscardedGameBoardCard> deletables = (List<DiscardedGameBoardCard>)gameBoard.DiscardedGameBoardCards;
             List<DrawableGameBoardCard> drawables = new List<DrawableGameBoardCard>();
-            foreach (Card card in deletables)
+            foreach (DiscardedGameBoardCard gameBoardCard in deletables)
             {
                 DrawableGameBoardCard drawable = new DrawableGameBoardCard()
                 {
-                    CardId = card.Id,
+                    CardId = gameBoardCard.Card.Id,
                     GameBoardId = gameBoard.Id,
-                    StatusType = GameBoardCardConstants.DrawableCard
+                    StatusType = GameBoardCardConstants.DrawableCard,
+                    CardColorType = gameBoardCard.CardColorType, 
+                    FrenchNumber = gameBoardCard.FrenchNumber
                 };
                 drawables.Add(drawable);
-                await DeleteGameBoardCardByStatusAsync(gameBoard.Id, card.CardType, 
-                        GameBoardCardConstants.DiscardedCard, cancellationToken);
+                await DeleteGameBoardCardAsync(gameBoard.Id, cancellationToken);
             }
             var rnd = new Random();
             drawables = drawables.OrderBy(d => rnd.Next()).ToList();
             foreach (DrawableGameBoardCard drawable in drawables)
             {
-                await CreateGameBoardCardByStatusAsync(drawable, cancellationToken);
+                await CreateGameBoardCardAsync(drawable, cancellationToken);
             }
+        }
+
+        public async Task<DiscardedGameBoardCard> GetLastDiscardedGameBoardCardAsync(long id, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(id, cancellationToken);
+
+            if (gameBoard.DiscardedGameBoardCards.Count == 0)
+                throw new EntityNotFoundException("Card not found!");
+            return gameBoard.DiscardedGameBoardCards.Last();
         }
     }
 }

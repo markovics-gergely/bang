@@ -1,10 +1,9 @@
 ﻿using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Joins;
-using UserIdentity.DAL.Domain;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Bang.DAL.Domain
 {
@@ -21,7 +20,10 @@ namespace Bang.DAL.Domain
 
         public int ActualHP { get; set; }
         public int MaxHP { get; set; }
+        public int ShootingRange { get; set; } = 1;
+        public int Placement { get; set; } = 0;
 
-        public ICollection<PlayerCard> PlayerCards { get; set; } = new List<PlayerCard>();
+        public ICollection<HandPlayerCard> HandPlayerCards { get; set; } = new List<HandPlayerCard>();
+        public ICollection<TablePlayerCard> TablePlayerCards { get; set; } = new List<TablePlayerCard>();
     }
 }

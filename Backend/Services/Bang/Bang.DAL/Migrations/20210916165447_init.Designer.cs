@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    [Migration("20210913200929_init")]
+    [Migration("20210916165447_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,7 +288,13 @@ namespace Bang.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("CardColorType")
+                        .HasColumnType("int");
+
                     b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FrenchNumber")
                         .HasColumnType("int");
 
                     b.Property<long>("GameBoardId")
@@ -314,19 +320,29 @@ namespace Bang.DAL.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("CardColorType")
+                        .HasColumnType("int");
+
                     b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FrenchNumber")
                         .HasColumnType("int");
 
                     b.Property<long>("PlayerId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("StatusType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("PlayerId");
-
                     b.ToTable("PlayerCards");
+
+                    b.HasDiscriminator<string>("StatusType").HasValue("player_card_base");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
@@ -351,68 +367,19 @@ namespace Bang.DAL.Migrations
                     b.Property<int>("RoleType")
                         .HasColumnType("int");
 
+                    b.Property<int>("ShootingRange")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GameBoardId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("UserIdentity.DAL.Domain.Account", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Catalog.Cards.ActiveCard", b =>
@@ -539,7 +506,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 14,
                             CardEffectType = "card_passive",
-                            CardType = "Horses",
+                            CardType = "Mustang",
                             Description = "Musztáng",
                             Name = "Musztáng"
                         },
@@ -627,6 +594,24 @@ namespace Bang.DAL.Migrations
                     b.HasDiscriminator().HasValue("gameboardcard_drawable");
                 });
 
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.HandPlayerCard", b =>
+                {
+                    b.HasBaseType("Bang.DAL.Domain.Joins.PlayerCard");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasDiscriminator().HasValue("player_card_hand");
+                });
+
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.TablePlayerCard", b =>
+                {
+                    b.HasBaseType("Bang.DAL.Domain.Joins.PlayerCard");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasDiscriminator().HasValue("player_card_table");
+                });
+
             modelBuilder.Entity("Bang.DAL.Domain.GameBoard", b =>
                 {
                     b.HasOne("Bang.DAL.Domain.Player", "ActualPlayer")
@@ -656,15 +641,7 @@ namespace Bang.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Bang.DAL.Domain.Player", "Player")
-                        .WithMany("PlayerCards")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Card");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
@@ -675,14 +652,7 @@ namespace Bang.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("UserIdentity.DAL.Domain.Account", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("GameBoard");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bang.DAL.Domain.Joins.GameBoardCards.DiscardedGameBoardCard", b =>
@@ -707,6 +677,28 @@ namespace Bang.DAL.Migrations
                     b.Navigation("GameBoard");
                 });
 
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.HandPlayerCard", b =>
+                {
+                    b.HasOne("Bang.DAL.Domain.Player", "Player")
+                        .WithMany("HandPlayerCards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("Bang.DAL.Domain.Joins.PlayerCards.TablePlayerCard", b =>
+                {
+                    b.HasOne("Bang.DAL.Domain.Player", "Player")
+                        .WithMany("TablePlayerCards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("Bang.DAL.Domain.GameBoard", b =>
                 {
                     b.Navigation("DiscardedGameBoardCards");
@@ -718,7 +710,9 @@ namespace Bang.DAL.Migrations
 
             modelBuilder.Entity("Bang.DAL.Domain.Player", b =>
                 {
-                    b.Navigation("PlayerCards");
+                    b.Navigation("HandPlayerCards");
+
+                    b.Navigation("TablePlayerCards");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,14 +3,14 @@ using Bang.DAL.Domain.Constants.Enums;
 
 using System;
 
-namespace Bang.DAL.Domain.Joins.GameBoardCards
+namespace Bang.DAL.Domain.Joins
 {
-    public class GameBoardCard
+    public class PlayerCard
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
-        public long GameBoardId { get; set; }
-        public GameBoard GameBoard { get; set; }
+        public long PlayerId { get; set; }
+        public Player Player { get; set; }
 
         public int CardId { get; set; }
         public Card Card { get; set; }

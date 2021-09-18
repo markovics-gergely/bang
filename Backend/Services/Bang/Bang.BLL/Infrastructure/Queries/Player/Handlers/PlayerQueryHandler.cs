@@ -14,7 +14,8 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
     public class PlayerQueryHandler :
         IRequestHandler<GetPlayerQuery, PlayerViewModel>,
         IRequestHandler<GetPlayersQuery, IEnumerable<PlayerViewModel>>,
-        IRequestHandler<GetPlayersByGameBoardQuery, IEnumerable<PlayerViewModel>>
+        IRequestHandler<GetPlayersByGameBoardQuery, IEnumerable<PlayerViewModel>>,
+        IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>
     {
         private readonly IMapper _mapper;
         private readonly IPlayerStore _playerStore;
@@ -42,6 +43,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         public async Task<IEnumerable<PlayerViewModel>> Handle(GetPlayersByGameBoardQuery request, CancellationToken cancellationToken)
         {
             var domain = await _playerStore.GetPlayersByGameBoardAsync(request.gameBoardId, cancellationToken);
+
+            return _mapper.Map<IEnumerable<PlayerViewModel>>(domain);
+        }
+
+        public async Task<IEnumerable<PlayerViewModel>> Handle(GetTargetablePlayersQuery request, CancellationToken cancellationToken)
+        {
+            var domain = await _playerStore.GetTargetablePlayersAsync(request.Id, cancellationToken);
 
             return _mapper.Map<IEnumerable<PlayerViewModel>>(domain);
         }

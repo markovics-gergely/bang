@@ -15,7 +15,7 @@
         Saloon,
         WellsFargo,
         Jail,
-        Horses,
+        Mustang,
         Barrel,
         Scope,
         Dynamite,

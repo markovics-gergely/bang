@@ -23,7 +23,7 @@ namespace Bang.API.Controllers
         }
 
         [HttpGet("{type}")]
-        public async Task<ActionResult<CardViewModel>> GetPassiveCardByTypeAsync(CardType type, CancellationToken cancellationToken)
+        public async Task<ActionResult<CardViewModel>> GetCardByTypeAsync(CardType type, CancellationToken cancellationToken)
         {
             var query = new GetCardByTypeQuery(type);
 

@@ -15,9 +15,7 @@ namespace Bang.BLL.Application.MappingProfiles
         public GameBoardProfile()
         {
             CreateMap<GameBoard, GameBoardViewModel>()
-                .ForMember(g => g.Players, opt => opt.MapFrom(g => g.Players))
-                .ForMember(g => g.DiscardedGameBoardCards, opt => opt.MapFrom(g => g.DiscardedGameBoardCards))
-                .ForMember(g => g.DrawableGameBoardCards, opt => opt.MapFrom(g => g.DrawableGameBoardCards));
+                .ForMember(g => g.Players, opt => opt.MapFrom(g => g.Players));
             CreateMap<GameBoard, GameBoardDto>().ReverseMap();
         }
     }

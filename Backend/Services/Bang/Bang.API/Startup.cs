@@ -25,6 +25,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using UserIdentity.DAL;
 
 namespace Bang.API
 {
@@ -57,10 +58,15 @@ namespace Bang.API
             services.AddScoped<IRequestHandler<GetPlayerQuery, PlayerViewModel>, PlayerQueryHandler>();
             services.AddScoped<IRequestHandler<GetPlayersByGameBoardQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddScoped<IRequestHandler<GetPlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
+            services.AddScoped<IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
+            services.AddScoped<IRequestHandler<DecrementPlayerHealthCommand, Unit>, PlayerCommandHandler>();
 
             services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<CreateGameBoardCommand, long>, GameBoardCommandHandler>();
+            services.AddScoped<IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>, GameBoardCommandHandler>();
 
             services.AddAutoMapper(typeof(CharacterProfile));
             services.AddAutoMapper(typeof(RoleProfile));

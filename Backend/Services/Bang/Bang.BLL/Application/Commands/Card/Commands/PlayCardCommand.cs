@@ -6,11 +6,11 @@ namespace Bang.BLL.Application.Commands.Commands
 {
     public class PlayCardCommand : IRequest
     {
-        public PlayCardDto Dto { get; set; }
+        public long HandPlayerCardId { get; set; }
 
-        public PlayCardCommand(PlayCardDto playCardDto)
+        public PlayCardCommand(long handPlayerCardId)
         {
-            Dto = playCardDto;
+            HandPlayerCardId = handPlayerCardId;
         }
     }
 }
