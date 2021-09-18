@@ -2,11 +2,11 @@
 
 namespace UserIdentity.BLL.Application.Commands.Commands
 {
-    public class AddFriendCommand : IRequest
+    public class CreateFriendCommand : IRequest
     {
         public string Id { get; set; }
 
-        public AddFriendCommand(string id)
+        public CreateFriendCommand(string id)
         {
             Id = id;
         }
