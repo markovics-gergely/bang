@@ -23,7 +23,6 @@ namespace UserIdentity.API.Extentions
             services.AddScoped<ILobbyStore, LobbyStore>();
 
             services.AddScoped<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
-            services.AddScoped<IRequestHandler<LoginAccountCommand, Unit>, AccountCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();
 
             services.AddScoped<IRequestHandler<GetFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();

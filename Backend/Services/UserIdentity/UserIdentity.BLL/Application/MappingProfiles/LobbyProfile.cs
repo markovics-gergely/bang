@@ -9,7 +9,9 @@ namespace UserIdentity.BLL.Application.MappingProfiles
     {
         public LobbyProfile()
         {
-            CreateMap<LobbyAccount, LobbyAccountViewModel>().ReverseMap();
+            CreateMap<LobbyAccount, LobbyAccountViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AccountId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Account.UserName));
         }
     }
 }

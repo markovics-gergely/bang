@@ -14,21 +14,27 @@ namespace UserIdentity.BLL.Infrastructure.Stores
     public class FriendStore : IFriendStore
     {
         private readonly UserIdentityDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
 
-        public FriendStore(UserIdentityDbContext dbContext)
+        public FriendStore(UserIdentityDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
         }
 
         public async Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Friends.Where(user => 
-                    user.SenderId == ownId || user.ReceiverId == ownId
-                ).ToListAsync(cancellationToken);
+            return await _dbContext.Friends
+                .Include(r => r.Sender)
+                .Include(s => s.Receiver)
+                .Where(user => user.SenderId == ownId || user.ReceiverId == ownId)
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task CreateFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
+        public async Task CreateFriendAsync(string ownId, string friendName, CancellationToken cancellationToken)
         {
+            var friendId = await _accountStore.GetAccountIdByName(friendName, cancellationToken);
+
             Friend friend = new Friend()
             {
                 SenderId = ownId,
@@ -39,8 +45,10 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
+        public async Task DeleteFriendAsync(string ownId, string friendName, CancellationToken cancellationToken)
         {
+            var friendId = await _accountStore.GetAccountIdByName(friendName, cancellationToken);
+
             var friends = _dbContext.Friends.Where(user => 
                     (user.SenderId == ownId && user.ReceiverId == friendId) ||
                     (user.SenderId == friendId && user.ReceiverId == ownId)

@@ -360,11 +360,13 @@ namespace UserIdentity.DAL.Migrations
                 {
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Receiver");
 

@@ -26,14 +26,14 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(CreateFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendStore.CreateFriendAsync(_accountStore.GetActualAccountId(), request.Id, cancellationToken);
+            await _friendStore.CreateFriendAsync(_accountStore.GetActualAccountId(), request.Name, cancellationToken);
 
             return Unit.Value;
         }
 
         public async Task<Unit> Handle(DeleteFriendCommand request, CancellationToken cancellationToken)
         {
-            await _friendStore.DeleteFriendAsync(_accountStore.GetActualAccountId(), request.Id, cancellationToken);
+            await _friendStore.DeleteFriendAsync(_accountStore.GetActualAccountId(), request.Name, cancellationToken);
 
             return Unit.Value;
         }

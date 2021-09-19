@@ -12,6 +12,18 @@ namespace UserIdentity.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(g => g.Sender)
+                .WithMany()
+                .HasForeignKey(c => c.SenderId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(g => g.Receiver)
+                .WithMany()
+                .HasForeignKey(c => c.ReceiverId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public DbSet<Friend> Friends { get; set; }

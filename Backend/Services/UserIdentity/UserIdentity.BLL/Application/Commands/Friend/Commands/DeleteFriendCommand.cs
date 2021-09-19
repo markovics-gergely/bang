@@ -4,11 +4,11 @@ namespace UserIdentity.BLL.Application.Commands.Commands
 {
     public class DeleteFriendCommand : IRequest
     {
-        public string Id { get; set; }
+        public string Name { get; set; }
 
-        public DeleteFriendCommand(string id)
+        public DeleteFriendCommand(string name)
         {
-            Id = id;
+            Name = name;
         }
     }
 }

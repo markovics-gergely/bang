@@ -10,7 +10,7 @@ using UserIdentity.DAL;
 namespace UserIdentity.DAL.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    [Migration("20210918144301_Init")]
+    [Migration("20210919195137_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -362,11 +362,13 @@ namespace UserIdentity.DAL.Migrations
                 {
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Receiver");
 

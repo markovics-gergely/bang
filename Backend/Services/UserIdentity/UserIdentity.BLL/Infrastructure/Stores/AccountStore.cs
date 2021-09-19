@@ -56,43 +56,28 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return result.Succeeded;
         }
 
-        public async Task LoginAccountAsync(Account account, string password, CancellationToken cancellationToken)
-        {
-            var user = await _userManager.FindByNameAsync(account.UserName);
-
-            if(user == null)
-            {
-                throw new InvalidParameterException("Hibás felhasználónév!");
-            }
-
-            if (await _userManager.CheckPasswordAsync(user, password))
-            {
-                var tokenLifetime = 120;
-
-                var props = new AuthenticationProperties
-                {
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(tokenLifetime),
-                    AllowRefresh = true,
-                };
-
-                await _signInManager.SignInAsync(user, props);
-            }
-            else
-            {
-                throw new InvalidParameterException("Hibás jelszó!");
-            }
-        }
-
         public async Task DeleteAccountAsync(Account account, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(account.Id);
 
             if (user == null)
             {
-                throw new InvalidParameterException("Nincs ilyen felhasználó!");
+                throw new InvalidParameterException("User not found!");
             }
 
             await _userManager.DeleteAsync(user);
+        }
+
+        public async Task<string> GetAccountIdByName(string name, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+
+            if (user == null)
+            {
+                throw new InvalidParameterException("User not found!");
+            }
+
+            return user.Id;
         }
 
         public string GetActualAccountId()

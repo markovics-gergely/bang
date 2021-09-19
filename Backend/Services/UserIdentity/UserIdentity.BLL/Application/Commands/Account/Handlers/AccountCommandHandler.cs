@@ -13,7 +13,6 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 {
     public class AccountCommandHandler :
             IRequestHandler<CreateAccountCommand, bool>,
-            IRequestHandler<LoginAccountCommand, Unit>,
             IRequestHandler<DeleteAccountCommand>
     {
         private readonly IMapper _mapper;
@@ -35,15 +34,6 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             var account = new Account() { UserName = request.Dto.UserName.Trim() };
 
             return await _accountStore.CreateAccountAsync(account, request.Dto.Password, cancellationToken);
-        }
-
-        public async Task<Unit> Handle(LoginAccountCommand request, CancellationToken cancellationToken)
-        {
-            var account = new Account() { UserName = request.Dto.UserName };
-
-            await _accountStore.LoginAccountAsync(account, request.Dto.Password, cancellationToken);
-
-            return Unit.Value;
         }
 
         public async Task<Unit> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)

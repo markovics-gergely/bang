@@ -28,7 +28,10 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
         {
-            return await _dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).ToListAsync(cancellationToken);
+            return await _dbContext.LobbyAccounts
+                .Include(a => a.Account)
+                .Where(la => la.LobbyId == lobbyId)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken)
@@ -46,7 +49,9 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task DeleteLobbyAccountAsync(string accountId, CancellationToken cancellationToken)
         {
-            _dbContext.LobbyAccounts.Remove(new LobbyAccount { AccountId = accountId });
+            var lobbyAccountId = await GetLobbyAccountIdByAccountIdAsync(accountId, cancellationToken);
+
+            _dbContext.LobbyAccounts.Remove(new LobbyAccount { Id = lobbyAccountId });
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
@@ -62,6 +67,8 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             await _dbContext.Lobbies.AddAsync(lobby, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await CreateLobbyAccountAsync(accountId, password, cancellationToken);
 
             return password;
         }
@@ -89,13 +96,25 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return lobby.Id;
         }
 
+        private async Task<long> GetLobbyAccountIdByAccountIdAsync(string accountId, CancellationToken cancellationToken)
+        {
+            var lobby = await _dbContext.LobbyAccounts
+                .Where(l => l.AccountId == accountId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (lobby == null)
+                throw new EntityNotFoundException("Lobby not found!");
+
+            return lobby.Id;
+        }
+
         private async Task<string> GeneratePasswordAsync()
         {
             string password;
             do
             {
                 password = new Password(includeLowercase: true, includeUppercase: false, includeNumeric: true, includeSpecial: false, passwordLength: 6).Next();
-            } while (!await _dbContext.Lobbies.AnyAsync(l => l.Password == password));
+            } while (await _dbContext.Lobbies.AnyAsync(l => l.Password == password));
 
             return password;
         }
