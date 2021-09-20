@@ -10,7 +10,7 @@ using UserIdentity.DAL;
 namespace UserIdentity.DAL.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    [Migration("20210919195137_Init")]
+    [Migration("20210920211215_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,6 +224,9 @@ namespace UserIdentity.DAL.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("IsInvitedToGame")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ReceiverId")
                         .HasColumnType("nvarchar(450)");
 
@@ -277,7 +280,9 @@ namespace UserIdentity.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OwnerId")
+                        .IsUnique()
+                        .HasFilter("[OwnerId] IS NOT NULL");
 
                     b.ToTable("Lobbies");
                 });
@@ -300,7 +305,9 @@ namespace UserIdentity.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.HasIndex("LobbyId");
 
@@ -379,7 +386,8 @@ namespace UserIdentity.DAL.Migrations
                 {
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Account");
                 });
@@ -387,8 +395,9 @@ namespace UserIdentity.DAL.Migrations
             modelBuilder.Entity("UserIdentity.DAL.Domain.Lobby", b =>
                 {
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .WithOne()
+                        .HasForeignKey("UserIdentity.DAL.Domain.Lobby", "OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Owner");
                 });
@@ -396,18 +405,24 @@ namespace UserIdentity.DAL.Migrations
             modelBuilder.Entity("UserIdentity.DAL.Domain.LobbyAccount", b =>
                 {
                     b.HasOne("UserIdentity.DAL.Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId");
+                        .WithOne()
+                        .HasForeignKey("UserIdentity.DAL.Domain.LobbyAccount", "AccountId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("UserIdentity.DAL.Domain.Lobby", "Lobby")
-                        .WithMany()
+                        .WithMany("LobbyAccounts")
                         .HasForeignKey("LobbyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");
 
                     b.Navigation("Lobby");
+                });
+
+            modelBuilder.Entity("UserIdentity.DAL.Domain.Lobby", b =>
+                {
+                    b.Navigation("LobbyAccounts");
                 });
 #pragma warning restore 612, 618
         }

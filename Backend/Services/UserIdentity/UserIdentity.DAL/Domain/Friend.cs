@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Microsoft.AspNetCore.Identity;
-
 namespace UserIdentity.DAL.Domain
 {
     public class Friend : IEquatable<Friend>
@@ -11,7 +9,7 @@ namespace UserIdentity.DAL.Domain
         public Account Sender { get; set; }
         public string ReceiverId { get; set; }
         public Account Receiver { get; set; }
-        public bool isInvitedToGame { get; set; }
+        public bool IsInvitedToGame { get; set; }
 
         public bool Equals(Friend friend)
         {
@@ -29,7 +27,8 @@ namespace UserIdentity.DAL.Domain
                 SenderId = this.ReceiverId,
                 Sender = this.Receiver,
                 ReceiverId = tempReceiverId,
-                Receiver = tempReceiver
+                Receiver = tempReceiver,
+                IsInvitedToGame = this.IsInvitedToGame
             };
         }
     }

@@ -35,7 +35,7 @@ namespace UserIdentity.API.Extentions
             services.AddScoped<IRequestHandler<CreateLobbyAccountCommand, Unit>, LobbyCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteLobbyAccountCommand, Unit>, LobbyCommandHandler>();
             services.AddScoped<IRequestHandler<CreateLobbyCommand, string>, LobbyCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteLobbyCommand, Unit>, LobbyCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>, LobbyCommandHandler>();
         }
     }
 }

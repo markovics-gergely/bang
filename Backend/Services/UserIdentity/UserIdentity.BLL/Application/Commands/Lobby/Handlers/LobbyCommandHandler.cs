@@ -6,6 +6,7 @@ using System.Threading;
 
 using AutoMapper;
 using MediatR;
+using UserIdentity.BLL.Application.Exceptions;
 
 namespace UserIdentity.BLL.Application.Commands.Handlers
 {
@@ -13,7 +14,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         IRequestHandler<CreateLobbyAccountCommand, Unit>,
         IRequestHandler<DeleteLobbyAccountCommand, Unit>,
         IRequestHandler<CreateLobbyCommand, string>,
-        IRequestHandler<DeleteLobbyCommand, Unit>
+        IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ILobbyStore _lobbyStore;
@@ -34,7 +35,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         }
         public async Task<Unit> Handle(DeleteLobbyAccountCommand request, CancellationToken cancellationToken)
         {
-            await _lobbyStore.DeleteLobbyAccountAsync(_accountStore.GetActualAccountId(), cancellationToken);
+            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, _accountStore.GetActualAccountId(), cancellationToken);
 
             return Unit.Value;
         }
@@ -44,9 +45,11 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             return await _lobbyStore.CreateLobbyAsync(_accountStore.GetActualAccountId(), cancellationToken);
         }
 
-        public async Task<Unit> Handle(DeleteLobbyCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteLobbyAccountByOwnerCommand request, CancellationToken cancellationToken)
         {
-            await _lobbyStore.DeleteLobbyAsync(request.Id, cancellationToken);
+            var accountId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
+
+            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, accountId, cancellationToken);
 
             return Unit.Value;
         }

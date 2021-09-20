@@ -3,14 +3,10 @@ using UserIdentity.BLL.Application.Interfaces;
 using UserIdentity.DAL;
 using UserIdentity.DAL.Domain;
 
-using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using PasswordGenerator;
@@ -20,10 +16,12 @@ namespace UserIdentity.BLL.Infrastructure.Stores
     public class LobbyStore : ILobbyStore
     {
         private readonly UserIdentityDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
 
-        public LobbyStore(UserIdentityDbContext dbContext)
+        public LobbyStore(UserIdentityDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
         }
 
         public async Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
@@ -47,12 +45,33 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteLobbyAccountAsync(string accountId, CancellationToken cancellationToken)
+        public async Task DeleteLobbyAccountAsync(long lobbyId, string accountId, CancellationToken cancellationToken)
         {
-            var lobbyAccountId = await GetLobbyAccountIdByAccountIdAsync(accountId, cancellationToken);
+            var actualLobby = await _dbContext.Lobbies.Where(l => l.Id == lobbyId).FirstOrDefaultAsync(cancellationToken);
+            var kickableAcc = await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken);
+            var actualAccId = _accountStore.GetActualAccountId();
 
-            _dbContext.LobbyAccounts.Remove(new LobbyAccount { Id = lobbyAccountId });
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            if (actualLobby == null || kickableAcc == null)
+                throw new EntityNotFoundException("Lobby or player not found!");
+
+            var playersOfLobby = (await GetLobbyAccountsAsync(lobbyId, cancellationToken)).ToList();
+
+            if (playersOfLobby.Count() == 1)
+            {
+                await DeleteLobbyAsync(kickableAcc.LobbyId, cancellationToken);
+                return;
+            }
+            else
+            {
+                _dbContext.LobbyAccounts.Remove(kickableAcc);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                if (actualAccId == actualLobby.OwnerId)
+                {
+                    actualLobby.OwnerId = playersOfLobby.FirstOrDefault().AccountId;
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                }
+            }
         }
 
         public async Task<string> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
@@ -73,12 +92,9 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return password;
         }
 
-        public async Task DeleteLobbyAsync(long id, CancellationToken cancellationToken)
+        private async Task DeleteLobbyAsync(long id, CancellationToken cancellationToken)
         {
-            var lobby = new Lobby
-            {
-                Id = id
-            };
+            var lobby = await _dbContext.Lobbies.Where(l => l.Id == id).FirstOrDefaultAsync(cancellationToken);
 
             _dbContext.Lobbies.Remove(lobby);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -90,20 +106,10 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 .Where(l => l.Password == password)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if(lobby == null) 
+            if(lobby == null)
+            {
                 throw new EntityNotFoundException("Lobby not found!");
-
-            return lobby.Id;
-        }
-
-        private async Task<long> GetLobbyAccountIdByAccountIdAsync(string accountId, CancellationToken cancellationToken)
-        {
-            var lobby = await _dbContext.LobbyAccounts
-                .Where(l => l.AccountId == accountId)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (lobby == null)
-                throw new EntityNotFoundException("Lobby not found!");
+            }
 
             return lobby.Id;
         }

@@ -1,4 +1,5 @@
-﻿using UserIdentity.BLL.Application.Interfaces;
+﻿using UserIdentity.BLL.Application.Exceptions;
+using UserIdentity.BLL.Application.Interfaces;
 using UserIdentity.DAL;
 using UserIdentity.DAL.Domain;
 
@@ -31,9 +32,17 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task CreateFriendAsync(string ownId, string friendName, CancellationToken cancellationToken)
+        public async Task CreateFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
-            var friendId = await _accountStore.GetAccountIdByName(friendName, cancellationToken);
+            if (ownId == friendId)
+            {
+                throw new InvalidParameterException("You can't add yourself!");
+            }
+
+            if (await _dbContext.Friends.AnyAsync(u => u.SenderId == ownId && u.ReceiverId == friendId))
+            {
+                throw new InvalidParameterException("You are already friends!");
+            }
 
             Friend friend = new Friend()
             {
@@ -45,18 +54,20 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteFriendAsync(string ownId, string friendName, CancellationToken cancellationToken)
+        public async Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
-            var friendId = await _accountStore.GetAccountIdByName(friendName, cancellationToken);
-
-            var friends = _dbContext.Friends.Where(user => 
+            var friends = await _dbContext.Friends
+                .Where(user => 
                     (user.SenderId == ownId && user.ReceiverId == friendId) ||
-                    (user.SenderId == friendId && user.ReceiverId == ownId)
-                );
+                    (user.SenderId == friendId && user.ReceiverId == ownId))
+                .ToListAsync(cancellationToken);
 
-            if(friends != null || friends.Count() != 0)
-                _dbContext.Friends.RemoveRange(friends);
+            if(friends.Count() == 0)
+            {
+                throw new EntityNotFoundException("Friend is not found!");
+            }
 
+            _dbContext.Friends.RemoveRange(friends);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

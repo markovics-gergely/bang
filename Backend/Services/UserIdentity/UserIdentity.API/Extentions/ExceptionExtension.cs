@@ -28,6 +28,13 @@ namespace UserIdentity.API.Extentions
                     pd.Title = ex.Message;
                     return pd;
                 });
+                options.Map<InvalidActionException>(
+                (ctx, ex) =>
+                {
+                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status401Unauthorized);
+                    pd.Title = ex.Message;
+                    return pd;
+                });
             });
         }
     }

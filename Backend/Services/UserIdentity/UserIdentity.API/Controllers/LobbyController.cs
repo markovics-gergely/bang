@@ -34,6 +34,14 @@ namespace UserIdentity.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<string>> CreateLobbyAsync(CancellationToken cancellationToken)
+        {
+            var command = new CreateLobbyCommand();
+
+            return await _mediator.Send(command, cancellationToken);
+        }
+
         [HttpPost("connect/{password}")]
         public async Task<IActionResult> CreateLobbyAccountAsync(string password, CancellationToken cancellationToken)
         {
@@ -64,28 +72,20 @@ namespace UserIdentity.API.Controllers
             return Ok();
         }
 
-        [HttpDelete("disconnect")]
-        public async Task<IActionResult> DeleteLobbyAccountAsync(CancellationToken cancellationToken)
+        [HttpDelete("{id}/kick/{name}")]
+        public async Task<IActionResult> DeleteLobbyAccountByOwnerAsync(long id, string name, CancellationToken cancellationToken)
         {
-            var command = new DeleteLobbyAccountCommand();
+            var command = new DeleteLobbyAccountByOwnerCommand(id, name);
 
             await _mediator.Send(command, cancellationToken);
 
             return Ok();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> CreateLobbyAsync(CancellationToken cancellationToken)
+        [HttpDelete("{id}/disconnect")]
+        public async Task<IActionResult> DeleteLobbyAccountAsync(long id, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyCommand();
-
-            return await _mediator.Send(command, cancellationToken);
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteLobbyAsync(CancellationToken cancellationToken)
-        {
-            var command = new CreateLobbyCommand();
+            var command = new DeleteLobbyAccountCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 
