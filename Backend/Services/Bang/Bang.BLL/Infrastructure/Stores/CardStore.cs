@@ -15,6 +15,7 @@ using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Joins.PlayerCards;
 using Bang.BLL.Application.Effects.Cards;
+using Bang.DAL.Domain;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -40,16 +41,16 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task PlayCardAsync(long playerCardId, CancellationToken cancellationToken)
         {
-            PlayerCard playerCard = await GetPlayerCardAsync(playerCardId, cancellationToken);
+            HandPlayerCard playerCard = (HandPlayerCard)await GetPlayerCardAsync(playerCardId, cancellationToken);
             Dictionary<CardType, CardEffect> cardEffectMap = CardEffectHandler.Instance.CardEffectMap;
-            await cardEffectMap[playerCard.Card.CardType].Execute(new CardEffectQuery(playerCard.Player));
-            if(playerCard.Card.CardEffectType == CardConstants.PassiveCard)
+
+            CardEffectQuery query = null;
+            if(playerCard.Card.CardType.NeedsTarget())
             {
-                await PlaceHandPlayerCardToTableAsync((HandPlayerCard)playerCard, cancellationToken);
-            } else if (playerCard.Card.CardEffectType == CardConstants.ActiveCard)
-            {
-                await PlaceHandPlayerCardToDiscardedAsync((HandPlayerCard)playerCard, cancellationToken);
+                
             }
+            await cardEffectMap[playerCard.Card.CardType].Execute(new CardEffectQuery(playerCard, this), cancellationToken);
+            
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
@@ -106,6 +107,27 @@ namespace Bang.BLL.Infrastructure.Stores
                 CardColorType = playerCard.CardColorType,
                 FrenchNumber = playerCard.FrenchNumber
             };
+            TablePlayerCard deletable = null;
+            if (playerCard.Card.CardType.IsWeapon())
+            {
+                deletable = playerCard.Player.TablePlayerCards.FirstOrDefault(c => c.Card.CardType.IsWeapon());
+            }
+            if (playerCard.Card.CardType.IsRangeModifier())
+            {
+                deletable = playerCard.Player.TablePlayerCards.FirstOrDefault(c => c.Card.CardType.IsRangeModifier());
+            }
+            if (deletable != null)
+            {
+                DiscardedGameBoardCard discarded = new DiscardedGameBoardCard()
+                {
+                    CardId = deletable.CardId,
+                    GameBoardId = deletable.Player.GameBoardId,
+                    CardColorType = deletable.CardColorType,
+                    FrenchNumber = deletable.FrenchNumber
+                };
+                await DeletePlayerCardAsync(deletable.Id, cancellationToken);
+                await CreateGameBoardCardAsync(discarded, cancellationToken);
+            }
             await DeletePlayerCardAsync(playerCard.Id, cancellationToken);
             return await CreatePlayerCardAsync(tablePlayerCard, cancellationToken);
         }
@@ -144,7 +166,7 @@ namespace Bang.BLL.Infrastructure.Stores
         {
             return await _dbContext.PlayerCards.Where(c => c.Id == id)
                 .Include(p => p.Card)
-                .Include(p => (p as HandPlayerCard).Player)
+                .Include(p => p is HandPlayerCard ? (p as HandPlayerCard).Player : (p as TablePlayerCard).Player)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("PlayerCard not found!");
         }
@@ -162,6 +184,40 @@ namespace Bang.BLL.Infrastructure.Stores
         {
             return await _dbContext.PlayerCards.Where(c => c.PlayerId == playerId).ToListAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("PlayerCard not found!");
+        }
+
+        public async Task<long> PlaceHandPlayerCardToAnotherTableAsync(HandPlayerCard playerCard, Player targetPlayer, CancellationToken cancellationToken)
+        {
+            TablePlayerCard tablePlayerCard = new TablePlayerCard()
+            {
+                CardId = playerCard.CardId,
+                PlayerId = targetPlayer.Id,
+                CardColorType = playerCard.CardColorType,
+                FrenchNumber = playerCard.FrenchNumber
+            };
+            TablePlayerCard deletable = null;
+            if (playerCard.Card.CardType.IsWeapon())
+            {
+                deletable = targetPlayer.TablePlayerCards.FirstOrDefault(c => c.Card.CardType.IsWeapon());
+            }
+            if (playerCard.Card.CardType.IsRangeModifier())
+            {
+                deletable = targetPlayer.TablePlayerCards.FirstOrDefault(c => c.Card.CardType.IsRangeModifier());
+            }
+            if (deletable != null)
+            {
+                DiscardedGameBoardCard discarded = new DiscardedGameBoardCard()
+                {
+                    CardId = deletable.CardId,
+                    GameBoardId = deletable.Player.GameBoardId,
+                    CardColorType = deletable.CardColorType,
+                    FrenchNumber = deletable.FrenchNumber
+                };
+                await DeletePlayerCardAsync(deletable.Id, cancellationToken);
+                await CreateGameBoardCardAsync(discarded, cancellationToken);
+            }
+            await DeletePlayerCardAsync(playerCard.Id, cancellationToken);
+            return await CreatePlayerCardAsync(tablePlayerCard, cancellationToken);
         }
     }
 }

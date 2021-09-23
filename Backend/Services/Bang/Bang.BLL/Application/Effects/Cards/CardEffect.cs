@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bang.BLL.Application.Effects.Cards
 {
     public abstract class CardEffect
     {
-        public abstract Task Execute(CardEffectQuery query);
+        public abstract Task Execute(CardEffectQuery query, CancellationToken cancellationToken);
     }
 }
