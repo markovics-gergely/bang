@@ -3,13 +3,11 @@ using UserIdentity.BLL.Infrastructure.Queries.Queries;
 using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
-using UserIdentity.DAL.Domain;
 
 namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 {

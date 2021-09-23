@@ -10,7 +10,8 @@ namespace UserIdentity.BLL.Application.MappingProfiles
         public FriendProfile()
         {
             CreateMap<Friend, FriendViewModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ReceiverId));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ReceiverId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Receiver.UserName));
         }
     }
 }

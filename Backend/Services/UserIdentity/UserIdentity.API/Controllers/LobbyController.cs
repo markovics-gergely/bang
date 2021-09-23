@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
@@ -15,6 +16,7 @@ namespace UserIdentity.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class LobbyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,11 +27,19 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpGet("{id}/users")]
-        public async Task<ActionResult<IEnumerable<LobbyAccountViewModel>>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<LobbyAccountViewModel>>> GetLobbyAccountsAsync(long id, CancellationToken cancellationToken)
         {
-            var query = new GetLobbyAccountsQuery(lobbyId);
+            var query = new GetLobbyAccountsQuery(id);
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<string>> CreateLobbyAsync(CancellationToken cancellationToken)
+        {
+            var command = new CreateLobbyCommand();
+
+            return await _mediator.Send(command, cancellationToken);
         }
 
         [HttpPost("connect/{password}")]
@@ -42,28 +52,40 @@ namespace UserIdentity.API.Controllers
             return Ok();
         }
 
-        [HttpDelete("disconnect")]
-        public async Task<IActionResult> DeleteLobbyAccountAsync(CancellationToken cancellationToken)
+        [HttpPut("invite/{name}")]
+        public async Task<IActionResult> CreateLobbyInviteAsync(string password, CancellationToken cancellationToken)
         {
-            var command = new DeleteLobbyAccountCommand();
+            var command = new CreateLobbyAccountCommand(password);
 
             await _mediator.Send(command, cancellationToken);
 
             return Ok();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> CreateLobbyAsync(CancellationToken cancellationToken)
+        [HttpPut("accept-invite")]
+        public async Task<IActionResult> DeleteLobbyInviteAsync(string password, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyCommand();
+            var command = new CreateLobbyAccountCommand(password);
 
-            return await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteLobbyAsync(CancellationToken cancellationToken)
+        [HttpDelete("{id}/kick/{name}")]
+        public async Task<IActionResult> DeleteLobbyAccountByOwnerAsync(long id, string name, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyCommand();
+            var command = new DeleteLobbyAccountByOwnerCommand(id, name);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}/disconnect")]
+        public async Task<IActionResult> DeleteLobbyAccountAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteLobbyAccountCommand(id);
 
             await _mediator.Send(command, cancellationToken);
 

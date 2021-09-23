@@ -159,7 +159,8 @@ namespace UserIdentity.DAL.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SenderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsInvitedToGame = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,14 +169,12 @@ namespace UserIdentity.DAL.Migrations
                         name: "FK_Friends_AspNetUsers_ReceiverId",
                         column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Friends_AspNetUsers_SenderId",
                         column: x => x.SenderId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -195,8 +194,7 @@ namespace UserIdentity.DAL.Migrations
                         name: "FK_Histories_AspNetUsers_AccountId",
                         column: x => x.AccountId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -215,8 +213,7 @@ namespace UserIdentity.DAL.Migrations
                         name: "FK_Lobbies_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -236,14 +233,12 @@ namespace UserIdentity.DAL.Migrations
                         name: "FK_LobbyAccounts_AspNetUsers_AccountId",
                         column: x => x.AccountId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_LobbyAccounts_Lobbies_LobbyId",
                         column: x => x.LobbyId,
                         principalTable: "Lobbies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -303,12 +298,16 @@ namespace UserIdentity.DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Lobbies_OwnerId",
                 table: "Lobbies",
-                column: "OwnerId");
+                column: "OwnerId",
+                unique: true,
+                filter: "[OwnerId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LobbyAccounts_AccountId",
                 table: "LobbyAccounts",
-                column: "AccountId");
+                column: "AccountId",
+                unique: true,
+                filter: "[AccountId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LobbyAccounts_LobbyId",

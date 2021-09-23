@@ -30,27 +30,50 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync(_accountStore.GetActualAccountId(), cancellationToken);
+            var ownId = _accountStore.GetActualAccountId();
 
-            List<Friend> unacceptedFriends = new List<Friend>();
-            foreach (var unacceptedFriend in domain)
+            var domain = await _friendStore.GetFriendsAsync(ownId, cancellationToken);
+
+            List<Friend> acceptedFriends = new List<Friend>();
+
+            foreach (var acceptedFriend in domain)
             {
-                if (domain.Contains(unacceptedFriend))
-                    unacceptedFriends.Add(unacceptedFriend);
+                if (domain.Contains(acceptedFriend))
+                {
+                    acceptedFriends.Add(acceptedFriend);
+                    if (acceptedFriends.Contains(acceptedFriend))
+                    {
+                        acceptedFriends.RemoveAll(f => 
+                            (f.SenderId == acceptedFriend.SenderId || f.SenderId == acceptedFriend.ReceiverId) && 
+                            f.ReceiverId == ownId);
+                    }
+                }
             }
 
-            return _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
+            return _mapper.Map<IEnumerable<FriendViewModel>>(acceptedFriends);
         }
 
         public async Task<IEnumerable<FriendViewModel>> Handle(GetUnacceptedFriendsQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _friendStore.GetFriendsAsync(_accountStore.GetActualAccountId(), cancellationToken);
+            var ownId = _accountStore.GetActualAccountId();
+
+            var domain = await _friendStore.GetFriendsAsync(ownId, cancellationToken);
 
             List<Friend> unacceptedFriends = new List<Friend>();
+
             foreach (var unacceptedFriend in domain)
             {
                 if (!domain.Contains(unacceptedFriend))
-                    unacceptedFriends.Add(unacceptedFriend);
+                {            
+                    if(unacceptedFriend.ReceiverId == ownId)
+                    {
+                        unacceptedFriends.Add(unacceptedFriend.Switch());
+                    }
+                    else
+                    {
+                        unacceptedFriends.Add(unacceptedFriend);
+                    }
+                }
             }
 
             return _mapper.Map<IEnumerable<FriendViewModel>>(unacceptedFriends);
