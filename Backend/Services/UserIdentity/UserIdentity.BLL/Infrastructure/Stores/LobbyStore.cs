@@ -34,6 +34,9 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken)
         {
+            if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
+                return;
+
             var lobbyAccount = new LobbyAccount
             {
                 AccountId = accountId,
@@ -100,6 +103,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<string> GetPasswordByAccountId(string accountId, CancellationToken cancellationToken)
+        {
+            var lobbyId = (await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken)).LobbyId;
+            return (await _dbContext.Lobbies.Where(la => la.Id == lobbyId).FirstOrDefaultAsync(cancellationToken)).Password;
+        }
         private async Task<long> GetLobbyIdByPasswordAsync(string password, CancellationToken cancellationToken)
         {
             var lobby = await _dbContext.Lobbies
@@ -113,7 +121,6 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             return lobby.Id;
         }
-
         private async Task<string> GeneratePasswordAsync()
         {
             string password;
@@ -123,6 +130,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             } while (await _dbContext.Lobbies.AnyAsync(l => l.Password == password));
 
             return password;
+        }
+
+        public async Task UpdateLobbyAccountIsInvite(string accountId, bool isInvite, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

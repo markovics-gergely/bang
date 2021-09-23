@@ -11,7 +11,8 @@ namespace UserIdentity.BLL.Application.MappingProfiles
         {
             CreateMap<Friend, FriendViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ReceiverId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Receiver.UserName));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Receiver.UserName))
+                .ForMember(dest => dest.InvitedFrom, opt => opt.MapFrom(src => src.IsInvitedToGame));
         }
     }
 }
