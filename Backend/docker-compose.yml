@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  #apigateway.api:
-  #  image: ${DOCKER_REGISTRY-}apigatewayapi
+  apigateway.api:
+    image: ${DOCKER_REGISTRY-}apigatewayapi
 
   useridentity.api:
     image: ${DOCKER_REGISTRY-}useridentityapi

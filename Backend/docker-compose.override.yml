@@ -1,15 +1,16 @@
 version: '3.4'
 
 services:
-  #apigateway.api:
-  #  environment:
-  #    - ASPNETCORE_ENVIRONMENT=Development
-  #    - ASPNETCORE_URLS=http://0.0.0.0:80
-  #  ports:
-  #    - "15100:80"
-  #  build:
-  #    context: .
-  #    dockerfile: ApiGateway/ApiGateway.API/Dockerfile
+  apigateway.api:
+    container_name: ApiGateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "15100:80"
+    build:
+      context: .
+      dockerfile: ApiGateway/ApiGateway.API/Dockerfile
 
   useridentity.api:
     container_name: UserIdentity
