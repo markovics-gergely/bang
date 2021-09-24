@@ -16,7 +16,7 @@ namespace UserIdentity.DAL.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -254,6 +254,9 @@ namespace UserIdentity.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Placement")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayedRole")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

@@ -42,15 +42,15 @@ namespace UserIdentity.API.Extentions
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(options =>
-            {
-                options.Authority = configuration.GetValue<string>("Authentication:Authority");
-                options.Audience = configuration.GetValue<string>("Authentication:Authority") + "/resources";
-                options.RequireHttpsMetadata = false;
-            });
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = configuration.GetValue<string>("Authentication:Authority");
+                    options.Audience = configuration.GetValue<string>("Authentication:Authority") + "/resources";
+                    options.RequireHttpsMetadata = false;
+                });
         }
 
-        public static IEnumerable<IdentityResource> GetIdentityResources(IConfiguration configuration)
+        private static IEnumerable<IdentityResource> GetIdentityResources(IConfiguration configuration)
         {
             return new List<IdentityResource>
             {
@@ -58,7 +58,7 @@ namespace UserIdentity.API.Extentions
                 new IdentityResources.Profile(),
             };
         }
-        public static IEnumerable<ApiScope> GetApiScopes(IConfiguration configuration)
+        private static IEnumerable<ApiScope> GetApiScopes(IConfiguration configuration)
         {
             return new List<ApiScope>
             {
@@ -71,7 +71,7 @@ namespace UserIdentity.API.Extentions
                 )
             };
         }
-        public static IEnumerable<Client> GetClients(IConfiguration configuration)
+        private static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
             return new List<Client>
             {

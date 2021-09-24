@@ -25,7 +25,6 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using UserIdentity.DAL;
 
 namespace Bang.API
 {
@@ -40,7 +39,9 @@ namespace Bang.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<BangDbContext>(options => options
+                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            );
 
             services.AddScoped<ICharacterStore, CharacterStore>();
             services.AddScoped<IRoleStore, RoleStore>();
@@ -89,7 +90,7 @@ namespace Bang.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "School.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bang", Version = "v1" });
             });
 
             services.AddCors(options =>
@@ -117,12 +118,14 @@ namespace Bang.API
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, BangDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
             app.UseProblemDetails();
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "School.API v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bang"));
 
             app.UseHttpsRedirection();
 

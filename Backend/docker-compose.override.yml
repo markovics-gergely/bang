@@ -1,17 +1,42 @@
 version: '3.4'
 
 services:
-  bang.api:
+  #apigateway.api:
+  #  environment:
+  #    - ASPNETCORE_ENVIRONMENT=Development
+  #    - ASPNETCORE_URLS=http://0.0.0.0:80
+  #  ports:
+  #    - "15100:80"
+  #  build:
+  #    context: .
+  #    dockerfile: ApiGateway/ApiGateway.API/Dockerfile
+
+  useridentity.api:
+    container_name: UserIdentity
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
-      - "15000:80"
+      - "15200:80"
+    build:
+      context: .
+      dockerfile: Services/UserIdentity/UserIdentity.API/Dockerfile
+
+  bang.api:
+    container_name: Bang
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "15300:80"
     build:
       context: .
       dockerfile: Services/Bang/Bang.API/Dockerfile
-
-  sqlserver:    
+  
+  sqlserver:   
+    container_name: SQLServer
     environment:
-      SA_PASSWORD: "BangAdmin123"
+      SA_PASSWORD: "BangAdmin99!"
       ACCEPT_EULA: "Y"
+    ports:
+      - "15000:1433"  

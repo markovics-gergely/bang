@@ -2,13 +2,11 @@
 
 using System;
 
-namespace UserIdentity.DAL.Domain
+namespace UserIdentity.BLL.Infrastructure.Queries.ViewModels
 {
-    public class History
+    public class HistoryViewModel
     {
-        public long Id { get; set; }
-        public string AccountId { get; set; }
-        public Account Account { get; set; }
+        public string Id { get; set; }
         public int Placement { get; set; }
         public DateTime CreatedAt { get; set; }
         public RoleType PlayedRole { get; set; }

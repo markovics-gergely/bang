@@ -8,8 +8,8 @@ using Bang.DAL.Domain.Constants.NameConstants;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Joins.PlayerCards;
+
 using Microsoft.EntityFrameworkCore;
-using UserIdentity.DAL.Domain;
 
 namespace Bang.DAL
 {

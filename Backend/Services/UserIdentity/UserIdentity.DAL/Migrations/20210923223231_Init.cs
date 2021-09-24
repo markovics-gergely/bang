@@ -185,7 +185,8 @@ namespace UserIdentity.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Placement = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PlayedRole = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

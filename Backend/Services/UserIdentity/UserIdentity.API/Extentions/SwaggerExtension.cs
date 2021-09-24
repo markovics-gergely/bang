@@ -17,7 +17,7 @@ namespace UserIdentity.API.Extentions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserIdentity", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Identity", Version = "v1" });
                 c.AddSecurityDefinition(configuration.GetValue<string>("Authentication:SecurityScheme"), new OpenApiSecurityScheme()
                 {
                     Type = SecuritySchemeType.OAuth2,

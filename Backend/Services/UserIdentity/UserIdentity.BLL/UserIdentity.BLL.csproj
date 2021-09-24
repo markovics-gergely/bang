@@ -12,7 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bang\Bang.DAL\Bang.DAL.csproj" />
     <ProjectReference Include="..\UserIdentity.DAL\UserIdentity.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Commands\History\Commands\" />
+    <Folder Include="Application\Commands\History\Handlers\" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
 namespace Bang.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -109,7 +109,8 @@ namespace Bang.DAL.Migrations
                     RoleType = table.Column<int>(type: "int", nullable: false),
                     ActualHP = table.Column<int>(type: "int", nullable: false),
                     MaxHP = table.Column<int>(type: "int", nullable: false),
-                    ShootingRange = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                    ShootingRange = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    Placement = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {

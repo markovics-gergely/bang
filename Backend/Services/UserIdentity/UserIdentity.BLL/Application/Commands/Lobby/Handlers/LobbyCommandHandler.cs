@@ -69,7 +69,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             return Unit.Value;
         }
 
-        public Task<Unit> Handle(UpdateLobbyInviteTrueCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateLobbyInviteTrueCommand request, CancellationToken cancellationToken)
         {
             var ownId = _accountStore.GetActualAccountId();
 

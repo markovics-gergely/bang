@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    [Migration("20210916165447_init")]
-    partial class init
+    [Migration("20210923223027_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Bang.DAL.Domain.Catalog.Cards.Card", b =>
@@ -363,6 +363,11 @@ namespace Bang.DAL.Migrations
 
                     b.Property<int>("MaxHP")
                         .HasColumnType("int");
+
+                    b.Property<int>("Placement")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("RoleType")
                         .HasColumnType("int");
