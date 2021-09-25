@@ -1,5 +1,4 @@
 ﻿using Bang.DAL.Domain.Constants.Enums;
-using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.PlayerCards;
 
 using System.Collections.Generic;

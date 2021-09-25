@@ -26,6 +26,7 @@ using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using UserIdentity.DAL;
+using Bang.API.SignalR;
 
 namespace Bang.API
 {
@@ -104,6 +105,7 @@ namespace Bang.API
                            .AllowCredentials();
                 });
             });
+            services.AddSignalR();
 
             services.AddProblemDetails(options =>
             {
@@ -129,13 +131,14 @@ namespace Bang.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors("Cors");
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/game");
             });
 
             app.UseHangfireDashboard();

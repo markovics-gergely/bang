@@ -34,4 +34,8 @@
     <ProjectReference Include="..\Bang.DAL\Bang.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>
