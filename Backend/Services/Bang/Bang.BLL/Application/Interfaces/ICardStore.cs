@@ -14,14 +14,17 @@ namespace Bang.BLL.Application.Interfaces
     {
         Task<Card> GetCardByTypeAsync(CardType type, CancellationToken cancellationToken);
         Task<PlayerCard> GetPlayerCardAsync(long id, CancellationToken cancellationToken);
+        Task<IEnumerable<PlayerCard>> GetPlayerCardsAsync(long playerId, CancellationToken cancellationToken);
         Task<IEnumerable<Card>> GetCardsAsync(CancellationToken cancellationToken);
 
-        Task PlayCardAsync(CardType type, long playerId, CancellationToken cancellationToken);
+        Task PlayCardAsync(long playerCardId, CancellationToken cancellationToken);
         Task<long> CreatePlayerCardAsync(PlayerCard playerCard, CancellationToken cancellationToken);
         Task<long> PlaceHandPlayerCardToTableAsync(HandPlayerCard playerCard, CancellationToken cancellationToken);
+        Task<long> PlaceHandPlayerCardToDiscardedAsync(HandPlayerCard playerCard, CancellationToken cancellationToken);
         Task<IEnumerable<long>> CreatePlayerCardsAsync(IEnumerable<PlayerCard> playerCards, CancellationToken cancellationToken);
         Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken);
         Task<IEnumerable<long>> CreateGameBoardCardsAsync(IEnumerable<GameBoardCard> gameBoardCards, CancellationToken cancellationToken);
         Task DeletePlayerCardAsync(long playerCardId, CancellationToken cancellationToken);
+        Task DeleteAllPlayerCardAsync(long playerId, CancellationToken cancellationToken);
     }
 }

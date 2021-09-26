@@ -15,6 +15,8 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public RoleType RoleType { get; set; }
         public int ActualHP { get; set; }
         public int MaxHP { get; init; }
+        public int ShootingRange { get; set; }
+        public int Placement { get; set; }
 
         public ICollection<FrenchCardViewModel> HandPlayerCards { get; set; }
         public ICollection<FrenchCardViewModel> TablePlayerCards { get; set; }

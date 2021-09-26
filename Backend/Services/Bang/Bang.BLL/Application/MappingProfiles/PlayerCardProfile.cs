@@ -13,13 +13,13 @@ namespace Bang.BLL.Application.MappingProfiles
         {
             CreateMap<HandPlayerCard, PlayerCardViewModel>().ReverseMap();
             CreateMap<HandPlayerCard, CardViewModel>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.CardId))
+                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(c => c.Card.Name))
                 .ForMember(d => d.Description, opt => opt.MapFrom(c => c.Card.Description))
                 .ForMember(d => d.CardEffectType, opt => opt.MapFrom(c => c.Card.CardEffectType))
                 .ForMember(d => d.CardType, opt => opt.MapFrom(c => c.Card.CardType));
             CreateMap<HandPlayerCard, FrenchCardViewModel>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.CardId))
+                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(c => c.Card.Name))
                 .ForMember(d => d.Description, opt => opt.MapFrom(c => c.Card.Description))
                 .ForMember(d => d.CardEffectType, opt => opt.MapFrom(c => c.Card.CardEffectType))
@@ -29,13 +29,13 @@ namespace Bang.BLL.Application.MappingProfiles
 
             CreateMap<TablePlayerCard, PlayerCardViewModel>().ReverseMap();
             CreateMap<TablePlayerCard, CardViewModel>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.CardId))
+                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(c => c.Card.Name))
                 .ForMember(d => d.Description, opt => opt.MapFrom(c => c.Card.Description))
                 .ForMember(d => d.CardEffectType, opt => opt.MapFrom(c => c.Card.CardEffectType))
                 .ForMember(d => d.CardType, opt => opt.MapFrom(c => c.Card.CardType));
             CreateMap<TablePlayerCard, FrenchCardViewModel>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.CardId))
+                .ForMember(d => d.Id, opt => opt.MapFrom(c => c.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(c => c.Card.Name))
                 .ForMember(d => d.Description, opt => opt.MapFrom(c => c.Card.Description))
                 .ForMember(d => d.CardEffectType, opt => opt.MapFrom(c => c.Card.CardEffectType))

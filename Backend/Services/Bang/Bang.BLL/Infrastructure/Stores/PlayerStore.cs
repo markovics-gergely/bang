@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using System;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -28,7 +30,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 //.Include(p => p.User)
                 .FirstOrDefaultAsync(cancellationToken)
-                ?? throw new EntityNotFoundException("Card not found!");
+                ?? throw new EntityNotFoundException("Player not found!");
         }
 
         public async Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken)
@@ -43,6 +45,15 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken)
         {
             return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId)
+                .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
+                //.Include(p => p.User)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId && p.ActualHP > 0)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 //.Include(p => p.User)
@@ -69,23 +80,39 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<Player>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken)
         {
             Player player = await GetPlayerAsync(id, cancellationToken);
-            List<Player> players = (List<Player>)await GetPlayersByGameBoardAsync(player.GameBoardId, cancellationToken);
+            List<Player> players = (List<Player>)await GetPlayersAliveByGameBoardAsync(player.GameBoardId, cancellationToken);
             List<long> ids = players.Select(p => p.Id).ToList();
 
-            int centerIndex = ids.IndexOf(id);
-            int count = ids.Count;
-            centerIndex += count;
-            int range = player.ShootingRange;
+            int playerCount = players.Count;
+            int playerIndex = players.IndexOf(player);
 
-            ids.AddRange(ids); ids.AddRange(ids);
-            List<long> filtered = ids.GetRange(centerIndex - range, 2 * range + 1);
-            filtered.Remove(id);
-            return players.Where(p => filtered.Contains(p.Id));
+            ids.Remove(player.Id);
+            int range = player.ShootingRange;
+            if (player.TablePlayerCards.Any(p => p.Card.CardType == CardType.Scope)) range++;
+            foreach (Player p in players)
+            {
+                int pIndex = players.IndexOf(p);
+                int distance = (new List<int>() { Math.Abs(pIndex - playerIndex), 
+                                                  Math.Abs(pIndex + playerCount - playerIndex),
+                                                  Math.Abs(pIndex - playerCount - playerIndex) }).Min();
+                if (p.CharacterType == CharacterType.PaulRegret) distance++;
+                if (p.TablePlayerCards.Any(p => p.Card.CardType == CardType.Mustang)) distance++;
+                if (distance > range) ids.Remove(p.Id);
+            }
+            return players.Where(p => ids.Contains(p.Id));
         }
 
-        public async Task<long> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken)
+        public async Task<int> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken)
         {
-            return (await GetPlayersByGameBoardAsync(gameBoardId, cancellationToken)).Count();
+            return (await GetPlayersAliveByGameBoardAsync(gameBoardId, cancellationToken)).Count();
+        }
+
+        public async Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken)
+        {
+            int placement = await GetRemainingPlayerCountAsync(gameBoardId, cancellationToken) + 1;
+            Player player = await GetPlayerAsync(playerId, cancellationToken);
+            player.Placement = placement;
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

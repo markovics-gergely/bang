@@ -33,6 +33,14 @@ namespace Bang.API.Controllers
             return await _mediator.Send(query, cancellationToken);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<GameBoardViewModel>> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            var query = new GetGameBoardByUserQuery(userId);
+
+            return await _mediator.Send(query, cancellationToken);
+        }
+
         [HttpGet("{id}/last-discarded")]
         public async Task<ActionResult<FrenchCardViewModel>> GetLastDiscardedGameBoardCardAsync(int id, CancellationToken cancellationToken)
         {

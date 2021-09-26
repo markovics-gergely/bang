@@ -1,4 +1,5 @@
-﻿using Bang.DAL.Domain.Constants.Enums;
+﻿using Bang.BLL.Application.Effects.Cards.CardEffects;
+using Bang.DAL.Domain.Constants.Enums;
 
 using System.Collections.Generic;
 
@@ -13,7 +14,12 @@ namespace Bang.BLL.Application.Effects.Cards
         private CardEffectHandler()
         {
             CardEffectMap = new Dictionary<CardType, CardEffect>();
-            CardEffectMap.Add(CardType.Bang, new BangCardEffect());
+
+            CardEffectMap.Add(CardType.Winchester, new WeaponCardEffect(5));
+            CardEffectMap.Add(CardType.Schofield, new WeaponCardEffect(2));
+            CardEffectMap.Add(CardType.Volcanic, new WeaponCardEffect(1));
+            CardEffectMap.Add(CardType.Remingtion, new WeaponCardEffect(3));
+            CardEffectMap.Add(CardType.Karabine, new WeaponCardEffect(4));
         }
 
         public static CardEffectHandler Instance
