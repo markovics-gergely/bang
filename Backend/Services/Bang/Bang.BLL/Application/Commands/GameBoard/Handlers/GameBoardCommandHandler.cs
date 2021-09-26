@@ -46,16 +46,9 @@ namespace Bang.BLL.Application.Commands.Handlers
             _characterStore = characterStore;
         }
 
-        public async Task<long> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
+        private List<CardType> GetCardTypes()
         {
-            if (request.Dto.UserIds.Count < 4)
-                throw new NotEnoughPlayerException("Nem csatlakozott be elég játékos!");
-
-            var domain = _mapper.Map<GameBoard>(request.Dto);
-            long gameBoardId = await _gameBoardStore.CreateGameBoardAsync(domain, cancellationToken);
-
             var rnd = new Random();
-
             List<CardType> cardTypes = new List<CardType>();
             //Active cards
             cardTypes.AddRange(Enumerable.Repeat(CardType.Bang, 25).ToList());
@@ -82,7 +75,20 @@ namespace Bang.BLL.Application.Commands.Handlers
             cardTypes.AddRange(Enumerable.Repeat(CardType.Dynamite, 1).ToList());
             cardTypes.AddRange(Enumerable.Repeat(CardType.Scope, 1).ToList());
             cardTypes = cardTypes.OrderBy(c => rnd.Next()).ToList();
+            return cardTypes;
+        }
 
+        public async Task<long> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
+        {
+            if (request.Dto.UserIds.Count < 4)
+                throw new NotEnoughPlayerException("Nem csatlakozott be elég játékos!");
+
+            var domain = _mapper.Map<GameBoard>(request.Dto);
+            long gameBoardId = await _gameBoardStore.CreateGameBoardAsync(domain, cancellationToken);
+
+            var rnd = new Random();
+
+            List<CardType> cardTypes = GetCardTypes();
             List<Card> cards = (List<Card>)await _cardStore.GetCardsAsync(cancellationToken);
 
             List<int> frenchNumbers = Enumerable.Range(1, 13).ToList();
@@ -115,11 +121,16 @@ namespace Bang.BLL.Application.Commands.Handlers
                     CharacterType = userTuple.Character.CharacterType,
                     RoleType = userTuple.RoleType,
                     GameBoardId = gameBoardId,
-                    MaxHP = userTuple.Character.MaxHP,
-                    ActualHP = userTuple.Character.MaxHP
+                    MaxHP = userTuple.Character.MaxHP + (userTuple.RoleType == RoleType.Sheriff ? 1 : 0),
+                    ActualHP = userTuple.Character.MaxHP + (userTuple.RoleType == RoleType.Sheriff ? 1 : 0)
                 };
                 var playerDomain = _mapper.Map<Player>(player);
                 await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
+
+                if(playerDomain.RoleType == RoleType.Sheriff)
+                {
+                    await _gameBoardStore.SetGameBoardActualPlayerAsync(gameBoardId, playerDomain.Id, cancellationToken);
+                }
 
                 List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
                 var cardDataList = frenchCards.Zip(cardTypes, (f, c) => new { french = f, type = c });
@@ -157,7 +168,6 @@ namespace Bang.BLL.Application.Commands.Handlers
             }
             await _cardStore.CreateGameBoardCardsAsync(cardDomainList, cancellationToken);
 
-            
             return gameBoardId;
         }
 

@@ -15,7 +15,7 @@ namespace Bang.BLL.Application.Commands.Handlers
     public class CardCommandHandler :
         IRequestHandler<CreateGameBoardCardCommand, long>,
         IRequestHandler<CreatePlayerCardCommand, long>,
-        IRequestHandler<PlayCardCommand>
+        IRequestHandler<PlayCardCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ICardStore _cardStore;
@@ -33,21 +33,15 @@ namespace Bang.BLL.Application.Commands.Handlers
             return await _cardStore.CreatePlayerCardAsync(domain, cancellationToken);
         }
 
-        public async Task<Unit> Handle(CardEffectQuery request, CancellationToken cancellationToken)
-        {
-            
-
-            return Unit.Value;
-        }
-
         public Task<long> Handle(CreateGameBoardCardCommand request, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Unit> Handle(PlayCardCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PlayCardCommand request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            await _cardStore.PlayCardAsync(request.HandPlayerCardId, cancellationToken);
+            return Unit.Value;
         }
     }
 }

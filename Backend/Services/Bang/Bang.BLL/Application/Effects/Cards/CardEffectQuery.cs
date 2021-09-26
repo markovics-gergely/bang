@@ -1,14 +1,15 @@
 ﻿using Bang.DAL;
+using Bang.DAL.Domain;
 
 namespace Bang.BLL.Application.Effects.Cards
 {
     public class CardEffectQuery
     {
-        private readonly BangDbContext _dbContext;
+        public Player Player { get; set; }
 
-        public CardEffectQuery(BangDbContext dbContext)
+        public CardEffectQuery(Player player)
         {
-            _dbContext = dbContext;
+            Player = player;
         }
         public CardEffectQuery()
         {

@@ -61,8 +61,10 @@ namespace Bang.API
             services.AddScoped<IRequestHandler<GetPlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddScoped<IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddScoped<IRequestHandler<DecrementPlayerHealthCommand, Unit>, PlayerCommandHandler>();
+            services.AddScoped<IRequestHandler<PlayCardCommand, Unit>, CardCommandHandler>();
 
             services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();
