@@ -9,6 +9,7 @@ import { GameboardComponent } from './pages/gameboard/gameboard.component';
 import { OwnboardComponent } from './pages/ownboard/ownboard.component';
 import { OtherboardComponent } from './pages/otherboard/otherboard.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -112,12 +112,13 @@ namespace Bang.BLL.Application.Commands.Handlers
             var characters = await _characterStore.GetCharactersAsync(cancellationToken);
             characters = characters.OrderBy(c => rnd.Next()).ToList().GetRange(0, playerCount);
             
-            foreach (var userTuple in request.Dto.UserIds.Zip(characters, (u, c) => new { uId = u, Character = c })
-                .Zip(roles, (uc, r) => new { UserId = uc.uId, Character = uc.Character, RoleType = r }))
+            foreach (var userTuple in request.Dto.UserIds.Zip(characters, (u, c) => new { UserDto = u, Character = c })
+                .Zip(roles, (uc, r) => new { UserDto = uc.UserDto, Character = uc.Character, RoleType = r }))
             {
                 var player = new PlayerCreateViewModel()
                 {
-                    UserId = userTuple.UserId,
+                    UserId = userTuple.UserDto.UserId,
+                    UserName = userTuple.UserDto.UserName,
                     CharacterType = userTuple.Character.CharacterType,
                     RoleType = userTuple.RoleType,
                     GameBoardId = gameBoardId,

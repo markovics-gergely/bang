@@ -12,8 +12,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\UserIdentity\UserIdentity.DAL\UserIdentity.DAL.csproj" />
-  </ItemGroup>
-
 </Project>

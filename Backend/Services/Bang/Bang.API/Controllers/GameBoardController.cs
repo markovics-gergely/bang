@@ -34,7 +34,7 @@ namespace Bang.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<GameBoardViewModel>> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<GameBoardByUserViewModel>> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
         {
             var query = new GetGameBoardByUserQuery(userId);
 

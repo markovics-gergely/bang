@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
+import { OtherPlayer } from 'src/app/models';
 
 @Component({
   selector: 'app-otherboard',
@@ -6,10 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./otherboard.component.css']
 })
 export class OtherboardComponent implements OnInit {
-
-  constructor() { }
+  @Input() player: OtherPlayer | undefined;
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+    console.log(this.player);
   }
 
 }

@@ -1,5 +1,43 @@
-<div class="container">
-    <div class="row">
-        
+<div class="container-fluid max-height" *ngIf="gameboard">
+    <div class="row quarter-height">
+        <div class="col-md-3 order-md-1 col-6 order-1">
+            <h2>Chat!</h2>
+        </div>
+        <div class="col-md-3 order-md-2 col-6 order-3">
+            <app-otherboard [player]="gameboard.otherPlayers[0]"></app-otherboard>
+        </div>
+        <div class="col-md-3 order-md-3 col-6 order-4">
+            <app-otherboard [player]="gameboard.otherPlayers[1]"></app-otherboard>
+        </div>
+        <div class="col-md-3 order-md-4 col-6 order-2">
+            <h2>Log!</h2>
+        </div>
+    </div>
+    <div class="row half-height">
+        <div class="col-md-3 order-md-1 col-6 order-1">
+            <div class="container-fluid max-height">
+                <div class="row half-height">
+                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
+                </div>
+                <div class="row half-height">
+                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 order-md-2 col-12 order-3">
+            <div class="board">
+                lol
+            </div>
+        </div>
+        <div class="col-md-3 order-md-3 col-6 order-2">
+            <div class="container-fluid max-height">
+                <div class="row half-height">
+                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
+                </div>
+                <div class="row half-height">
+                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

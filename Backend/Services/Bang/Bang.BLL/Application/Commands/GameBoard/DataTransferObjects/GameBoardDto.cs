@@ -9,6 +9,6 @@ namespace Bang.BLL.Application.Commands.DataTransferObjects
     public class GameBoardDto
     {
         public int MaxTurnTime { get; set; }
-        public List<string> UserIds { get; set; }
+        public List<UserDto> UserIds { get; set; }
     }
 }

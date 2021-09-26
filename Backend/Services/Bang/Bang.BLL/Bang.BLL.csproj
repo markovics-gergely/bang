@@ -17,11 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UserIdentity\UserIdentity.BLL\UserIdentity.BLL.csproj" />
     <ProjectReference Include="..\Bang.DAL\Bang.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Commands\Player\DataTransferObjects\" />
   </ItemGroup>
 
 </Project>

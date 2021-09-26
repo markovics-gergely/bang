@@ -9,9 +9,11 @@ using Bang.DAL.Domain.Constants.Enums;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Application.Commands.Commands;
+using Microsoft.AspNetCore.Cors;
 
 namespace Bang.API.Controllers
 {
+    [EnableCors(Startup.CorsPolicy)]
     [Route("[controller]")]
     [ApiController]
     public class CardController

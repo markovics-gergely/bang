@@ -1,9 +1,10 @@
 module.exports = [
     {
         "context": [
-            "/gameboard"
+            "/game",
+            "/card"
         ],
-        "target": "http://localhost:44352",
+        "target": "https://localhost:15300",
         "secure": false
     }
 ]

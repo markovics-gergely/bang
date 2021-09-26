@@ -25,7 +25,6 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using UserIdentity.DAL;
 using Bang.API.SignalR;
 
 namespace Bang.API
@@ -37,11 +36,15 @@ namespace Bang.API
             Configuration = configuration;
         }
 
+        public const string CorsPolicy = "CorsPolicy";
+
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BangDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<BangDbContext>(options => options
+                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            );
 
             services.AddScoped<ICharacterStore, CharacterStore>();
             services.AddScoped<IRoleStore, RoleStore>();
@@ -64,7 +67,7 @@ namespace Bang.API
             services.AddScoped<IRequestHandler<PlayCardCommand, Unit>, CardCommandHandler>();
 
             services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
-            services.AddScoped<IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();
@@ -92,12 +95,12 @@ namespace Bang.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "School.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bang", Version = "v1" });
             });
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
+                options.AddPolicy(CorsPolicy, builder =>
                 {
                     builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
                            .AllowAnyMethod()
@@ -121,24 +124,26 @@ namespace Bang.API
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, BangDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
             app.UseProblemDetails();
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "School.API v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bang"));
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors("CorsPolicy");
+            app.UseCors(CorsPolicy);
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-                endpoints.MapHub<GameHub>("/game");
+                endpoints.MapControllers().RequireCors(CorsPolicy);
+                endpoints.MapHub<GameHub>("/game").RequireCors(CorsPolicy);
             });
 
             app.UseHangfireDashboard();

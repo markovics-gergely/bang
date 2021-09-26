@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain;
+using UserIdentity.BLL.Application.Interfaces;
+using Bang.BLL.Application.Exceptions;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -16,7 +19,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>,
         IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>,
         IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>,
-        IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>
+        IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -55,11 +58,18 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             return _mapper.Map<FrenchCardViewModel>(domain);
         }
 
-        public async Task<GameBoardViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
+        public async Task<GameBoardByUserViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
         {
             var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
-
-            return _mapper.Map<GameBoardViewModel>(domain);
+            List<Player> players = new List<Player>(domain.Players);
+            var ownPlayer = _mapper.Map<PlayerViewModel>(players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found"));
+            var otherplayers = _mapper.Map<ICollection<PlayerByUserViewModel>>(players.FindAll(p => p.UserId != request.UserId));
+            return _mapper.Map<GameBoardByUserViewModel>(domain,
+                opt => opt.AfterMap((src, dest) => {
+                        dest.OtherPlayers = otherplayers;
+                        dest.OwnPlayer = ownPlayer;
+                        })
+                );
         }
     }
 }

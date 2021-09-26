@@ -8,10 +8,11 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Services/UserIdentity/UserIdentity.API/UserIdentity.API.csproj", "Services/UserIdentity/UserIdentity.API/"]
-RUN dotnet restore "Services/UserIdentity/UserIdentity.API/UserIdentity.API.csproj"
+COPY ["Services/UserIdentity/UserIdentity.API/NuGet.config", "Services/UserIdentity/UserIdentity.API/"]
+RUN dotnet restore --configfile "Services/UserIdentity/UserIdentity.API/NuGet.config" "Services/UserIdentity/UserIdentity.API/UserIdentity.API.csproj"
 COPY . .
 WORKDIR "/src/Services/UserIdentity/UserIdentity.API"
-RUN dotnet build "UserIdentity.API.csproj" -c Release -o /app/build
+RUN dotnet build "NuGet.config" "UserIdentity.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "UserIdentity.API.csproj" -c Release -o /app/publish

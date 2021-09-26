@@ -53,19 +53,19 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpPut("invite/{name}")]
-        public async Task<IActionResult> CreateLobbyInviteAsync(string password, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateLobbyInviteTrueAsync(string name, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyAccountCommand(password);
+            var command = new UpdateLobbyInviteTrueCommand(name);
 
             await _mediator.Send(command, cancellationToken);
 
             return Ok();
         }
 
-        [HttpPut("accept-invite")]
-        public async Task<IActionResult> DeleteLobbyInviteAsync(string password, CancellationToken cancellationToken)
+        [HttpPut("accept-invite/{name}")]
+        public async Task<IActionResult> UpdateLobbyInviteFalseAsync(string name, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyAccountCommand(password);
+            var command = new UpdateLobbyInviteFalseCommand(name);
 
             await _mediator.Send(command, cancellationToken);
 

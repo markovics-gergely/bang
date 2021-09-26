@@ -84,11 +84,27 @@ export interface Player {
     tablePlayerCards: Card[];
 }
 
+export interface OtherPlayer {
+    id: number;
+    userId: string;
+    userName: string;
+    gameBoardId: number;
+    characterType: CharacterType;
+    roleType: RoleType;
+    actualHP: number;
+    maxHP: number;
+    shootingRange: number;
+    placement: number;
+    handPlayerCardCount: number;
+    tablePlayerCards: Card[];
+}
+
 export interface GameBoard {
     id: number;
     actualPlayerId: number;
     maxTurnTime: number;
     isOver: boolean;
 
-    players: Player[];
+    player: Player;
+    otherPlayers: OtherPlayer[];
 }

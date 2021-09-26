@@ -1,8 +1,6 @@
 using UserIdentity.API.Extentions;
 using UserIdentity.DAL;
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 using Microsoft.AspNetCore.Builder;
@@ -10,12 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.Authorization;
 
 namespace UserIdentity.API
 {
@@ -57,14 +52,16 @@ namespace UserIdentity.API
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserIdentityDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
             app.UseProblemDetails();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserIdentity v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Identity");
                 c.OAuthConfigObject.ClientId = Configuration.GetValue<string>("IdentityServer:ClientId");
                 c.OAuthConfigObject.ClientSecret = Configuration.GetValue<string>("IdentityServer:ClientSecret");
             });

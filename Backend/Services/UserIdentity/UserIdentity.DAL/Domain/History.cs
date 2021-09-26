@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bang.DAL.Domain.Constants.Enums;
+
+using System;
 
 namespace UserIdentity.DAL.Domain
 {
@@ -9,5 +11,6 @@ namespace UserIdentity.DAL.Domain
         public Account Account { get; set; }
         public int Placement { get; set; }
         public DateTime CreatedAt { get; set; }
+        public RoleType PlayedRole { get; set; }
     }
 }
