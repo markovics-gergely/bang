@@ -28,7 +28,7 @@ namespace UserIdentity.API.Extentions
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
                 options.EmitStaticAudienceClaim = true;
-                options.IssuerUri = configuration.GetValue<string>("Authentication:Authority");
+                options.IssuerUri = configuration.GetValue<string>("Authentication:AuthorityDocker");
             })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryPersistedGrants()
@@ -44,8 +44,8 @@ namespace UserIdentity.API.Extentions
             })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = configuration.GetValue<string>("Authentication:Authority");
-                    options.Audience = configuration.GetValue<string>("Authentication:Authority") + "/resources";
+                    options.Authority = configuration.GetValue<string>("Authentication:AuthorityDocker");
+                    options.Audience = configuration.GetValue<string>("Authentication:AuthorityDocker") + "/resources";
                     options.RequireHttpsMetadata = false;
                 });
         }
