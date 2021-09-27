@@ -1,5 +1,7 @@
 <div class="container-fluid own-table" *ngIf="player">
     <div class="row">
-        <p>Own Player Table! {{player.userId}}</p>
+        <div class="col-2" *ngFor="let card of player.handPlayerCards">
+            <app-card [card]="card"></app-card>
+        </div>
     </div>
 </div>

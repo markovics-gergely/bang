@@ -12,7 +12,7 @@ import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
 export class CardComponent implements OnInit {
   @Input() card: Card | undefined;
 
-  private static assetPath: string = "../../../assets/cards/Cards/";
+  private static assetPath: string = "../../../assets/cards/";
 
   constructor() { }
 
@@ -21,23 +21,23 @@ export class CardComponent implements OnInit {
 
   public getCardBack() {
     if(this.card){
-      return CardComponent.assetPath + (this.card.cardType as CardType | CardTypePipe);
+      return CardComponent.assetPath + "Cards/" + (this.card.cardType as CardType | CardTypePipe) + ".png";
     }
     return null;
   }
 
   public getCardColorFilter() {
     if(this.card){
-      return CardComponent.assetPath + "colors/" + (this.card.cardColorType as CardColorType | CardColorTypePipe);
+      return CardComponent.assetPath + "French/colors/" + (this.card.cardColorType as CardColorType | CardColorTypePipe) + ".png";
     }
     return null;
   }
 
   public getCardNumberFilter() {
     if(this.card){
-      return CardComponent.assetPath + "numbers/" + 
+      return CardComponent.assetPath + "French/numbers/" + 
                             (this.isRed(this.card.cardColorType) ? "red/" : "black/") + 
-                            (this.card.frenchNumber as number | CardNumberPipe);
+                            (this.card.frenchNumber as number | CardNumberPipe) + ".png";
     }
     return null;
   }
