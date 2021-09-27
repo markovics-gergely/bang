@@ -71,9 +71,9 @@ export interface Card {
 
 export interface Player {
     id: number;
-    userid: string;
-    username: string;
-    gameboardId: number;
+    userId: string;
+    userName: string;
+    gameBoardId: number;
     characterType: CharacterType;
     roleType: RoleType;
     actualHP: number;
@@ -105,6 +105,6 @@ export interface GameBoard {
     maxTurnTime: number;
     isOver: boolean;
 
-    player: Player;
+    ownPlayer: Player;
     otherPlayers: OtherPlayer[];
 }

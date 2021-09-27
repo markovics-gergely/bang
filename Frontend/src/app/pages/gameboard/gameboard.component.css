@@ -10,6 +10,10 @@
     height: 25%;
 }
 
+.max-width {
+    width: 100%;
+}
+
 .board {
     border-radius: 20pt;
     background-color: darkgreen;

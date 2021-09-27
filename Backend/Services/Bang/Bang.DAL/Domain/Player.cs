@@ -10,6 +10,7 @@ namespace Bang.DAL.Domain
     {
         public long Id { get; set; }
         public string UserId { get; set; }
+        public string UserName { get; set; }
 
         public long GameBoardId { get; set; }
         public GameBoard GameBoard { get; set; }

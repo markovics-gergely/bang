@@ -6,3 +6,47 @@
     background-size: cover;
     height: 100%;
 }
+
+.max-height {
+    height: 100%;
+}
+
+.half-height {
+    height: 50%;
+}
+
+.quarter-height {
+    height: 25%;
+}
+
+.three-quarter-height {
+    height: 75%;
+}
+
+.health {
+    background-color: brown;
+}
+
+.own-cards {
+    background-color: chartreuse;
+}
+
+.table-cards {
+    background-color: cyan;
+}
+
+.character {
+    background-color: coral;
+}
+
+.role {
+    background-color: blueviolet;
+}
+
+.gun {
+    background-color: darkgreen;
+}
+
+.name {
+    background-color: seagreen;
+}

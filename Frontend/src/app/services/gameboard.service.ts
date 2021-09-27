@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { environment } from 'src/environments/environment';
-import { GameBoard } from '../models';
+import { GameBoard, OtherPlayer } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +29,13 @@ export class GameboardService {
     })
   }
 
-  public getGameBoard(userId: String) {
+  public getGameBoard(userId: string) {
     return this.client.get<GameBoard>("http://localhost:15300/GameBoard/user/" + userId)
   }
+
+  public getFilledOthers(otherPlayers: OtherPlayer[]) {
+    
+  }
+
   constructor(private client: HttpClient) { }
 }

@@ -3,11 +3,11 @@
         <div class="col-md-3 order-md-1 col-6 order-1">
             <h2>Chat!</h2>
         </div>
-        <div class="col-md-3 order-md-2 col-6 order-3">
-            <app-otherboard [player]="gameboard.otherPlayers[0]"></app-otherboard>
+        <div class="col-md-3 order-md-2 col-6 order-3" *ngIf="getPlayerByPosition(Position.TopLeft)">
+            <app-otherboard [player]="getPlayerByPosition(Position.TopLeft)"></app-otherboard>
         </div>
-        <div class="col-md-3 order-md-3 col-6 order-4">
-            <app-otherboard [player]="gameboard.otherPlayers[1]"></app-otherboard>
+        <div class="col-md-3 order-md-3 col-6 order-4" *ngIf="getPlayerByPosition(Position.TopRight)">
+            <app-otherboard [player]="getPlayerByPosition(Position.TopRight)"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-4 col-6 order-2">
             <h2>Log!</h2>
@@ -15,29 +15,28 @@
     </div>
     <div class="row half-height">
         <div class="col-md-3 order-md-1 col-6 order-1">
-            <div class="container-fluid max-height">
-                <div class="row half-height">
-                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
-                </div>
-                <div class="row half-height">
-                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
-                </div>
+            <div class="row half-height" *ngIf="getPlayerByPosition(Position.LeftTop)">
+                <app-otherboard [player]="getPlayerByPosition(Position.LeftTop)"></app-otherboard>
+            </div>
+            <div class="row half-height" *ngIf="getPlayerByPosition(Position.LeftBottom)">
+                <app-otherboard [player]="getPlayerByPosition(Position.LeftBottom)"></app-otherboard>
             </div>
         </div>
         <div class="col-md-6 order-md-2 col-12 order-3">
-            <div class="board">
+            <div class="board half-height">
                 lol
             </div>
         </div>
-        <div class="col-md-3 order-md-3 col-6 order-2">
-            <div class="container-fluid max-height">
-                <div class="row half-height">
-                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
-                </div>
-                <div class="row half-height">
-                    <app-otherboard [player]="gameboard.otherPlayers[2]"></app-otherboard>
-                </div>
+        <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
+            <div class="row half-height" *ngIf="getPlayerByPosition(Position.RightTop)">
+                <app-otherboard [player]="getPlayerByPosition(Position.RightTop)"></app-otherboard>
+            </div>
+            <div class="row half-height" *ngIf="getPlayerByPosition(Position.RightBottom)">
+                <app-otherboard [player]="getPlayerByPosition(Position.RightBottom)"></app-otherboard>
             </div>
         </div>
+    </div>
+    <div class="row quarter-height">
+        <app-ownboard [player]="gameboard.ownPlayer"></app-ownboard>
     </div>
 </div>

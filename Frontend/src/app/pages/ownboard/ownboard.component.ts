@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Player } from 'src/app/models';
 
 @Component({
   selector: 'app-ownboard',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./ownboard.component.css']
 })
 export class OwnboardComponent implements OnInit {
+  @Input() player: Player | undefined;
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.player);
   }
 
 }

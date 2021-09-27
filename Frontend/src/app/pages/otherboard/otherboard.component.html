@@ -1,5 +1,34 @@
 <div class="container-fluid other-table" *ngIf="player">
-    <div class="row">
-        <p>Player Table! {{player.userId}}</p>
+    <div class="row three-quarter-height">
+        <div class="col-3 own-cards">
+            <div class="row quarter-height">
+                <div class="name">{{player.userName}}</div>
+            </div>
+            <div class="row three-quarter-height">
+                <div class="m-1 own-cards">own-cards</div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="row quarter-height health">
+                <div class="col-2" *ngFor="let in of counter(player.actualHP); let i = index">hp {{i}}</div>
+            </div>
+            <div class="row three-quarter-height">
+                <div class="col-4 role">
+                    {{player.roleType | roleType}}
+                </div>
+                <div class="col-4 character">
+                    {{player.characterType | characterType}}
+                </div>
+                <div class="col-4 gun">
+                    Gun
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row quarter-height table-cards">
+        <p>Table cards</p>
+        <div class="col-3" *ngFor="let card of player.tablePlayerCards">
+            <app-card [card]="card"></app-card>
+        </div>
     </div>
 </div>

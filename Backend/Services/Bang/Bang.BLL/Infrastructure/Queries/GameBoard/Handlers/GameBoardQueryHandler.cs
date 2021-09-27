@@ -62,11 +62,29 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         {
             var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
             List<Player> players = new List<Player>(domain.Players);
-            var ownPlayer = _mapper.Map<PlayerViewModel>(players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found"));
-            var otherplayers = _mapper.Map<ICollection<PlayerByUserViewModel>>(players.FindAll(p => p.UserId != request.UserId));
+            Player player = players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found");
+            var ownPlayer = _mapper.Map<PlayerViewModel>(player);
+
+            int ownIndex = players.IndexOf(player);
+            int count = players.Count;
+            List<Player> otherplayers;
+            if(ownIndex == 0)
+            {
+                otherplayers = players.GetRange(1, count - 1);
+            }
+            else if(ownIndex == count - 1)
+            {
+                otherplayers = players.GetRange(0, count - 1);
+            }
+            else
+            {
+                otherplayers = players.GetRange(ownIndex + 1, count - ownIndex - 1);
+                otherplayers.AddRange(players.GetRange(0, ownIndex));
+            }
+            var otherplayersViewModel = _mapper.Map<ICollection<PlayerByUserViewModel>>(otherplayers);
             return _mapper.Map<GameBoardByUserViewModel>(domain,
                 opt => opt.AfterMap((src, dest) => {
-                        dest.OtherPlayers = otherplayers;
+                        dest.OtherPlayers = otherplayersViewModel;
                         dest.OwnPlayer = ownPlayer;
                         })
                 );

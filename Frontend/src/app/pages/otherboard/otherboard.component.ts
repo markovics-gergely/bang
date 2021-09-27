@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { OtherPlayer } from 'src/app/models';
+import { RoleTypePipe } from 'src/app/pipes/role-type.pipe';
 
 @Component({
   selector: 'app-otherboard',
@@ -12,7 +13,9 @@ export class OtherboardComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    console.log(this.player);
   }
 
+  counter(i: number) {
+    return new Array(i);
+  }
 }
