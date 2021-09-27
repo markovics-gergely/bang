@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace UserIdentity.API.Controllers
 {
