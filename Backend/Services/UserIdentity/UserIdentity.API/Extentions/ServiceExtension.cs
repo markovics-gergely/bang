@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 using MediatR;
+using UserIdentity.BLL.Infrastructure.Queries.Handlers;
 
 namespace UserIdentity.API.Extentions
 {
@@ -22,6 +23,7 @@ namespace UserIdentity.API.Extentions
             services.AddScoped<IFriendStore, FriendStore>();
             services.AddScoped<ILobbyStore, LobbyStore>();
 
+            services.AddScoped<IRequestHandler<GetActualAccountIdQuery, string>, AccountQueryHandler>();
             services.AddScoped<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();
 

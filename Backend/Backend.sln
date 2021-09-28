@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIdentity.DAL", "Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIdentity.API", "Services\UserIdentity\UserIdentity.API\UserIdentity.API.csproj", "{D28C6219-5BDF-4790-BC2F-017B4C44557A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.API", "ApiGateway\ApiGateway.API\ApiGateway.API.csproj", "{E12D8F2C-79B1-4FA5-BCBA-615F923EEB43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.API", "ApiGateway\ApiGateway.API\ApiGateway.API.csproj", "{E12D8F2C-79B1-4FA5-BCBA-615F923EEB43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

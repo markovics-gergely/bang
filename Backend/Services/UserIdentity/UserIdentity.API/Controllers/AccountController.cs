@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
 using UserIdentity.BLL.Application.Commands.User.DataTransferObject;
+using UserIdentity.BLL.Infrastructure.Queries.Queries;
 
 namespace UserIdentity.API.Controllers
 {
@@ -21,6 +22,14 @@ namespace UserIdentity.API.Controllers
         public AccountController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet("actual-account")]
+        public async Task<string> GetActualAccountIdAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetActualAccountIdQuery();
+
+            return await _mediator.Send(query, cancellationToken);
         }
 
         [AllowAnonymous]
