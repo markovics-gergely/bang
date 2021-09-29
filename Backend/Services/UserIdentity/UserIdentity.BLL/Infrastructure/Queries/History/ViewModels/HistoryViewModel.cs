@@ -1,4 +1,4 @@
-﻿using Bang.DAL.Domain.Constants.Enums;
+﻿using UserIdentity.DAL.Domain.Bang;
 
 using System;
 

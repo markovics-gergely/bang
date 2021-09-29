@@ -52,20 +52,20 @@ namespace UserIdentity.API.Controllers
             return Ok();
         }
 
-        [HttpPut("invite/{name}")]
-        public async Task<IActionResult> UpdateLobbyInviteTrueAsync(string name, CancellationToken cancellationToken)
+        [HttpPut("invite/{friendName}")]
+        public async Task<IActionResult> UpdateLobbyInviteTrueAsync(string friendName, CancellationToken cancellationToken)
         {
-            var command = new UpdateLobbyInviteTrueCommand(name);
+            var command = new UpdateLobbyInviteTrueCommand(friendName);
 
             await _mediator.Send(command, cancellationToken);
 
             return Ok();
         }
 
-        [HttpPut("accept-invite/{name}")]
-        public async Task<IActionResult> UpdateLobbyInviteFalseAsync(string name, CancellationToken cancellationToken)
+        [HttpPut("accept-invite/{friendName}")]
+        public async Task<IActionResult> UpdateLobbyInviteFalseAsync(string friendName, CancellationToken cancellationToken)
         {
-            var command = new UpdateLobbyInviteFalseCommand(name);
+            var command = new UpdateLobbyInviteFalseCommand(friendName);
 
             await _mediator.Send(command, cancellationToken);
 

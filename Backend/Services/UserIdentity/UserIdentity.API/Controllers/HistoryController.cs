@@ -1,7 +1,7 @@
 ﻿using UserIdentity.BLL.Application.Commands.Commands;
 using UserIdentity.BLL.Infrastructure.Queries.Queries;
 using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
-using Bang.DAL.Domain.Constants.Enums;
+using UserIdentity.DAL.Domain.Bang;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
+using UserIdentity.DAL.Domain.Bang;
 
 namespace UserIdentity.API.Controllers
 {
@@ -36,11 +37,13 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateHistoryAsync(RoleType roleType, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateHistoryAsync(RoleType playedRole, int placement, CancellationToken cancellationToken)
         {
-            var command = new CreateLobbyCommand();
+            var command = new CreateHistoryCommand(playedRole, placement);
 
-            return await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
     }

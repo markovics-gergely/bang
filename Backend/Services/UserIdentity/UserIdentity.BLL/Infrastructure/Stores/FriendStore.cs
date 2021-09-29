@@ -15,12 +15,10 @@ namespace UserIdentity.BLL.Infrastructure.Stores
     public class FriendStore : IFriendStore
     {
         private readonly UserIdentityDbContext _dbContext;
-        private readonly IAccountStore _accountStore;
 
-        public FriendStore(UserIdentityDbContext dbContext, IAccountStore accountStore)
+        public FriendStore(UserIdentityDbContext dbContext)
         {
             _dbContext = dbContext;
-            _accountStore = accountStore;
         }
 
         public async Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken)
@@ -56,6 +54,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken)
         {
+            if (ownId == friendId)
+            {
+                throw new EntityNotFoundException("You can't delete yourself from friends!");
+            }
+
             var friends = await _dbContext.Friends
                 .Where(user => 
                     (user.SenderId == ownId && user.ReceiverId == friendId) ||
@@ -69,6 +72,21 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             _dbContext.Friends.RemoveRange(friends);
             await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateIsInviteAsync(string senderId, string receiverId, bool isInvite, CancellationToken cancellationToken)
+        {
+            var friend = await _dbContext.Friends.Where(f => f.SenderId == senderId && f.ReceiverId == receiverId).FirstOrDefaultAsync(cancellationToken);
+
+            if(friend == null)
+            {
+                throw new EntityNotFoundException("Friend not found!");
+            }
+
+            friend.IsInvitedToGame = isInvite;
+
+            var entry = _dbContext.Attach(friend);
+            await _dbContext.SaveChangesAsync(cancellationToken);           
         }
     }
 }

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 using MediatR;
-using UserIdentity.BLL.Infrastructure.Queries.Handlers;
 
 namespace UserIdentity.API.Extentions
 {
@@ -19,25 +18,32 @@ namespace UserIdentity.API.Extentions
     {
         public static void AddServiceExtensions(this IServiceCollection services)
         {
-            services.AddScoped<IAccountStore, AccountStore>();
-            services.AddScoped<IFriendStore, FriendStore>();
-            services.AddScoped<ILobbyStore, LobbyStore>();
+            services.AddTransient<IAccountStore, AccountStore>();
+            services.AddTransient<IFriendStore, FriendStore>();
+            services.AddTransient<IHistoryStore, HistoryStore>();
+            services.AddTransient<ILobbyStore, LobbyStore>();
 
-            services.AddScoped<IRequestHandler<GetActualAccountIdQuery, string>, AccountQueryHandler>();
-            services.AddScoped<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();
 
-            services.AddScoped<IRequestHandler<GetFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
-            services.AddScoped<IRequestHandler<GetUnacceptedFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
-            services.AddScoped<IRequestHandler<CreateFriendCommand, Unit>, FriendCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteFriendCommand, Unit>, FriendCommandHandler>();
+            services.AddTransient<IRequestHandler<GetActualAccountIdQuery, string>, AccountQueryHandler>();
+            services.AddTransient<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();
 
-            services.AddScoped<IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>, LobbyQueryHandler>();
-            services.AddScoped<IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>, LobbyQueryHandler>();
-            services.AddScoped<IRequestHandler<CreateLobbyAccountCommand, Unit>, LobbyCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteLobbyAccountCommand, Unit>, LobbyCommandHandler>();
-            services.AddScoped<IRequestHandler<CreateLobbyCommand, string>, LobbyCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<GetFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
+            services.AddTransient<IRequestHandler<GetUnacceptedFriendsQuery, IEnumerable<FriendViewModel>>, FriendQueryHandler>();
+            services.AddTransient<IRequestHandler<CreateFriendCommand, Unit>, FriendCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteFriendCommand, Unit>, FriendCommandHandler>();
+
+            services.AddTransient<IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>, LobbyQueryHandler>();
+            services.AddTransient<IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>, LobbyQueryHandler>();
+            services.AddTransient<IRequestHandler<CreateLobbyAccountCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteLobbyAccountCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateLobbyCommand, string>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>, LobbyCommandHandler>();
+
+            services.AddTransient<IRequestHandler<GetHistoriesQuery, IEnumerable<HistoryViewModel>>, HistoryQueryHandler>();
+            services.AddTransient<IRequestHandler<CreateHistoryCommand, Unit>, HistoryCommandHandler>();
         }
     }
 }

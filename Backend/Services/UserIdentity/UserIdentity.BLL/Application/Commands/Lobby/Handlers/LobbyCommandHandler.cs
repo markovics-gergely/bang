@@ -21,30 +21,38 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         private readonly IMapper _mapper;
         private readonly ILobbyStore _lobbyStore;
         private readonly IAccountStore _accountStore;
+        private readonly IFriendStore _friendStore;
 
-        public LobbyCommandHandler(IMapper mapper, ILobbyStore lobbyStore, IAccountStore accountStore)
+        public LobbyCommandHandler(IMapper mapper, ILobbyStore lobbyStore, IAccountStore accountStore, IFriendStore friendStore)
         {
             _mapper = mapper;
             _lobbyStore = lobbyStore;
             _accountStore = accountStore;
+            _friendStore = friendStore;
         }
 
         public async Task<Unit> Handle(CreateLobbyAccountCommand request, CancellationToken cancellationToken)
         {
-            await _lobbyStore.CreateLobbyAccountAsync(_accountStore.GetActualAccountId(), request.Password, cancellationToken);
+            var ownId = _accountStore.GetActualAccountId();
+
+            await _lobbyStore.CreateLobbyAccountAsync(ownId, request.Password, cancellationToken);
 
             return Unit.Value;
         }
         public async Task<Unit> Handle(DeleteLobbyAccountCommand request, CancellationToken cancellationToken)
         {
-            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, _accountStore.GetActualAccountId(), cancellationToken);
+            var ownId = _accountStore.GetActualAccountId();
+
+            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, ownId, cancellationToken);
 
             return Unit.Value;
         }
 
         public async Task<string> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
         {
-            return await _lobbyStore.CreateLobbyAsync(_accountStore.GetActualAccountId(), cancellationToken);
+            var ownId = _accountStore.GetActualAccountId();
+
+            return await _lobbyStore.CreateLobbyAsync(ownId, cancellationToken);
         }
 
         public async Task<Unit> Handle(DeleteLobbyAccountByOwnerCommand request, CancellationToken cancellationToken)
@@ -58,12 +66,12 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(UpdateLobbyInviteFalseCommand request, CancellationToken cancellationToken)
         {
-            var friendId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
             var ownId = _accountStore.GetActualAccountId();
+            var friendId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
-            await _lobbyStore.UpdateLobbyAccountIsInvite(ownId, false, cancellationToken);
+            await _friendStore.UpdateIsInviteAsync(friendId, ownId, false, cancellationToken);
 
-            var password = await _lobbyStore.GetPasswordByAccountId(friendId, cancellationToken);
+            var password = await _lobbyStore.GetPasswordByAccountIdAsync(friendId, cancellationToken);
             await _lobbyStore.CreateLobbyAccountAsync(ownId, password, cancellationToken);
 
             return Unit.Value;
@@ -72,8 +80,9 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         public async Task<Unit> Handle(UpdateLobbyInviteTrueCommand request, CancellationToken cancellationToken)
         {
             var ownId = _accountStore.GetActualAccountId();
+            var friendId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
-            await _lobbyStore.UpdateLobbyAccountIsInvite(ownId, true, cancellationToken);
+            await _friendStore.UpdateIsInviteAsync(ownId, friendId, true, cancellationToken);
 
             return Unit.Value;
         }

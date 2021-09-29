@@ -35,7 +35,9 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         public async Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken)
         {
             if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
-                return;
+            {
+                throw new InvalidActionException("Player has already in lobby!");
+            }
 
             var lobbyAccount = new LobbyAccount
             {
@@ -55,24 +57,27 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             var actualAccId = _accountStore.GetActualAccountId();
 
             if (actualLobby == null || kickableAcc == null)
+            {
                 throw new EntityNotFoundException("Lobby or player not found!");
+            }
 
             var playersOfLobby = (await GetLobbyAccountsAsync(lobbyId, cancellationToken)).ToList();
 
             if (playersOfLobby.Count() == 1)
             {
+                await DeleteLobbyAccountsAsync(kickableAcc.LobbyId, cancellationToken);
                 await DeleteLobbyAsync(kickableAcc.LobbyId, cancellationToken);
-                return;
             }
             else
             {
                 _dbContext.LobbyAccounts.Remove(kickableAcc);
                 await _dbContext.SaveChangesAsync(cancellationToken);
+                playersOfLobby.Remove(kickableAcc);
 
-                if (actualAccId == actualLobby.OwnerId)
+                if (accountId == actualLobby.OwnerId)
                 {
                     actualLobby.OwnerId = playersOfLobby.FirstOrDefault().AccountId;
-                    await _dbContext.SaveChangesAsync(cancellationToken);
+                    await UpdateLobbyAsync(actualLobby, cancellationToken);
                 }
             }
         }
@@ -95,6 +100,13 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return password;
         }
 
+        public async Task<string> GetPasswordByAccountIdAsync(string accountId, CancellationToken cancellationToken)
+        {
+            var lobbyId = (await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken)).LobbyId;
+
+            return (await _dbContext.Lobbies.Where(la => la.Id == lobbyId).FirstOrDefaultAsync(cancellationToken)).Password;
+        }
+
         private async Task DeleteLobbyAsync(long id, CancellationToken cancellationToken)
         {
             var lobby = await _dbContext.Lobbies.Where(l => l.Id == id).FirstOrDefaultAsync(cancellationToken);
@@ -102,11 +114,17 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _dbContext.Lobbies.Remove(lobby);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        public async Task<string> GetPasswordByAccountId(string accountId, CancellationToken cancellationToken)
+        private async Task DeleteLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
         {
-            var lobbyId = (await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken)).LobbyId;
-            return (await _dbContext.Lobbies.Where(la => la.Id == lobbyId).FirstOrDefaultAsync(cancellationToken)).Password;
+            var lobbyAccounts = await _dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).ToListAsync(cancellationToken);
+
+            _dbContext.LobbyAccounts.RemoveRange(lobbyAccounts);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        private async Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken)
+        {     
+            _dbContext.Attach(lobby);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         private async Task<long> GetLobbyIdByPasswordAsync(string password, CancellationToken cancellationToken)
         {
@@ -130,11 +148,6 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             } while (await _dbContext.Lobbies.AnyAsync(l => l.Password == password));
 
             return password;
-        }
-
-        public async Task UpdateLobbyAccountIsInvite(string accountId, bool isInvite, CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

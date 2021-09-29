@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using UserIdentity.DAL.Domain.Bang;
+using System;
 
 namespace UserIdentity.BLL.Infrastructure.Stores
 {
@@ -23,13 +25,26 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _accountStore = accountStore;
         }
 
-        public async Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<History>> GetHistoriesAsync(string ownId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Friends
-                .Include(r => r.Sender)
-                .Include(s => s.Receiver)
-                .Where(user => user.SenderId == ownId || user.ReceiverId == ownId)
+            return await _dbContext.Histories
+                .Where(history => history.AccountId == ownId)
+                .OrderBy(history => history.CreatedAt)
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task CreateHistoryAsync(string ownId, RoleType playedRole, int placement, CancellationToken cancellationToken)
+        {
+            var history = new History
+            {
+                AccountId = ownId,
+                PlayedRole = playedRole,
+                Placement = placement,
+                CreatedAt = DateTime.Now
+            };
+
+            await _dbContext.Histories.AddAsync(history, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
