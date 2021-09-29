@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { OtherPlayer } from 'src/app/models';
-import { RoleTypePipe } from 'src/app/pipes/role-type.pipe';
+import { CardService } from 'src/app/services/card.service';
+import { CharacterService } from 'src/app/services/character.service';
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-otherboard',
@@ -10,7 +12,7 @@ import { RoleTypePipe } from 'src/app/pipes/role-type.pipe';
 })
 export class OtherboardComponent implements OnInit {
   @Input() player: OtherPlayer | undefined;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public roleService: RoleService, public characterService: CharacterService, public cardService: CardService) { }
 
   ngOnInit(): void {
   }

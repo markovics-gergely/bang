@@ -1,5 +1,6 @@
-<div class="card-container">
-    <img class="card img-fluid rounded mx-auto d-block" src="getCardBack() || 'https://via.placeholder.com/340x255'" alt="card-back"/>
-    <img class="card img-fluid rounded mx-auto d-block" src="getCardColorFilter()" alt="card-color"/>
-    <img class="card img-fluid rounded mx-auto d-block" src="getCardNumberFilter()" alt="card-number"/>
+<div class="card-container" *ngIf="card">
+    <img class="card img-fluid rounded" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
+    <img class="card img-fluid rounded" [src]="getCardColorFilter(card.cardColorType | cardColorType)" alt="card-color"/>
+    <img class="card img-fluid rounded" [src]="getCardNumberFilter(card.frenchNumber | cardNumber)" 
+         alt="card-number" (mouseover)="setCovered(true)" (mouseout)="setCovered(false)"/>
 </div>

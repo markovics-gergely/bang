@@ -31,7 +31,7 @@ export enum CardType
     Gatling,
     Saloon,
     WellsFargo,
-    Jail,
+    Jail, //Passive
     Mustang,
     Barrel,
     Scope,

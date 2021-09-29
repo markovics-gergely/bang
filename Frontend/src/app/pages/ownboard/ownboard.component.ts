@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Player } from 'src/app/models';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Card, Player } from 'src/app/models';
 
 @Component({
   selector: 'app-ownboard',
@@ -8,6 +8,9 @@ import { Player } from 'src/app/models';
 })
 export class OwnboardComponent implements OnInit {
   @Input() player: Player | undefined;
+  @Output() hoverItemEvent = new EventEmitter<string>();
+
+  private playMode: boolean = true;
 
   constructor() { }
 
@@ -15,4 +18,7 @@ export class OwnboardComponent implements OnInit {
     console.log(this.player);
   }
 
+  public cardHovered(card: string) {
+    this.hoverItemEvent.emit(card);
+  }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GameBoard, OtherPlayer } from 'src/app/models';
+import { Card, GameBoard, OtherPlayer } from 'src/app/models';
 import { HttpClient } from '@angular/common/http';
-import { GameboardService } from 'src/app/services/gameboard.service';
+import { GameboardService, Position } from 'src/app/services/gameboard.service';
+import { CardService } from 'src/app/services/card.service';
 
 @Component({
   selector: 'app-gameboard',
@@ -11,7 +12,10 @@ import { GameboardService } from 'src/app/services/gameboard.service';
 })
 export class GameboardComponent implements OnInit {
   gameboard: GameBoard | undefined;
-  constructor(private gameBoardService: GameboardService, private route: ActivatedRoute, private http: HttpClient) { }
+  cardHovered: boolean = false;
+  hoveredCard: Card | undefined;
+
+  constructor(public gameBoardService: GameboardService, public cardService: CardService, private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -23,50 +27,17 @@ export class GameboardComponent implements OnInit {
   }
 
   public getPlayerByPosition(pos: Position) {
-    let players = this.gameboard?.otherPlayers;
-    if(players && this.gameboard) {
-      let count = this.gameboard.otherPlayers.length;
-      switch(pos) {
-        case Position.LeftBottom : 
-          return players[0];
-        case Position.LeftTop :
-          if(count < 6) {
-            return undefined;
-          } 
-          return players[1];
-        case Position.TopLeft :
-          if(count < 6) {
-            return players[1];
-          }
-          return players[2];
-        case Position.TopRight :
-          if(count <= 3) {
-            return undefined;
-          }
-          if(count == 6) {
-            return players[3];
-          }
-          return players[2];
-        case Position.RightTop :
-          if(count <= 4) {
-            return undefined;
-          }
-          return players[count - 2];
-        case Position.RightBottom : 
-          return players[count - 1];
-      }
-    }
-    return undefined;
+    return this.gameBoardService.getPlayerByPosition(pos, this.gameboard?.otherPlayers);
   }
 
-  public get Position(): typeof Position { return Position; }
-}
-
-export enum Position {
-  LeftBottom,
-  LeftTop,
-  TopLeft,
-  TopRight,
-  RightTop,
-  RightBottom
+  public setCardHovered(card: string) {
+    if(card) {
+      this.cardHovered = true;
+      let obj = JSON.parse(card);
+      this.hoveredCard = obj;
+    } else {
+      this.cardHovered = false;
+      this.hoveredCard = undefined;
+    }
+  }
 }

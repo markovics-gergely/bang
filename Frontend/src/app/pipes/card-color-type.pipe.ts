@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CardColorType } from '../models';
 
 @Pipe({
-  name: 'cardColorTypePipe'
+  name: 'cardColorType'
 })
 export class CardColorTypePipe implements PipeTransform {
   private static lookup = ["Spades", "Clubs", "Hearts", "Diamonds"];

@@ -4,5 +4,11 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    height: 20%;
+    position: fixed;
+    bottom: 0;
+}
+
+.max-height {
     height: 100%;
 }

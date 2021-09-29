@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { JsonHubProtocol } from '@microsoft/signalr';
 import { Card, CardColorType, CardType } from 'src/app/models';
 import { CardColorTypePipe } from 'src/app/pipes/card-color-type.pipe';
 import { CardNumberPipe } from 'src/app/pipes/card-number.pipe';
 import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
+import { CardService } from 'src/app/services/card.service';
 
 @Component({
   selector: 'app-card',
@@ -11,41 +13,41 @@ import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
 })
 export class CardComponent implements OnInit {
   @Input() card: Card | undefined;
+  @Output() cardHoverEvent = new EventEmitter<string>();
 
-  private static assetPath: string = "../../../assets/cards/";
-
-  constructor() { }
+  constructor(private cardService: CardService) { }
 
   ngOnInit(): void {
   }
 
-  public getCardBack() {
+  public getCardBack(type: string) {
     if(this.card){
-      return CardComponent.assetPath + "Cards/" + (this.card.cardType as CardType | CardTypePipe) + ".png";
+      return this.cardService.getCardBack(type);
     }
     return null;
   }
 
-  public getCardColorFilter() {
+  public getCardColorFilter(color: string) {
     if(this.card){
-      return CardComponent.assetPath + "French/colors/" + (this.card.cardColorType as CardColorType | CardColorTypePipe) + ".png";
+      return this.cardService.getCardColorFilter(color);
     }
     return null;
   }
 
-  public getCardNumberFilter() {
+  public getCardNumberFilter(number: string) {
     if(this.card){
-      return CardComponent.assetPath + "French/numbers/" + 
-                            (this.isRed(this.card.cardColorType) ? "red/" : "black/") + 
-                            (this.card.frenchNumber as number | CardNumberPipe) + ".png";
+      return this.cardService.getCardNumberFilter(number, this.card.cardColorType);
     }
     return null;
   }
 
-  public isRed(cardColorType: CardColorType) {
-    if(cardColorType == CardColorType.Hearts || cardColorType == CardColorType.Diamonds) {
-      return true;
+  public setCovered(inside: boolean) {
+    if(inside) {
+      let string = JSON.stringify(this.card);
+      this.cardHoverEvent.emit(string);
+    } else {
+      this.cardHoverEvent.emit(undefined);
     }
-    return false;
+    
   }
 }
