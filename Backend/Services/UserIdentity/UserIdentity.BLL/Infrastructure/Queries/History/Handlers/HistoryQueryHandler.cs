@@ -11,25 +11,29 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 
-namespace UserIdentity.BLL.Infrastructure.Queries.History.Handlers
+namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 {
     public class HistoryQueryHandler :
         IRequestHandler<GetHistoriesQuery, IEnumerable<HistoryViewModel>>
     {
         private readonly IMapper _mapper;
-        private readonly IFriendStore _friendStore;
+        private readonly IHistoryStore _historyStore;
         private readonly IAccountStore _accountStore;
 
-        public HistoryQueryHandler(IMapper mapper, IFriendStore friendStore, IAccountStore accountStore)
+        public HistoryQueryHandler(IMapper mapper, IHistoryStore historyStore, IAccountStore accountStore)
         {
             _mapper = mapper;
-            _friendStore = friendStore;
+            _historyStore = historyStore;
             _accountStore = accountStore;
         }
 
-        public Task<IEnumerable<HistoryViewModel>> Handle(GetHistoriesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<HistoryViewModel>> Handle(GetHistoriesQuery request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var ownId = _accountStore.GetActualAccountId();
+
+            var domain = await _historyStore.GetHistoriesAsync(ownId, cancellationToken);
+
+            return _mapper.Map<IEnumerable<HistoryViewModel>>(domain);
         }
     }
 }

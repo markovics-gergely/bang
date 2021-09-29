@@ -12,7 +12,6 @@ namespace UserIdentity.BLL.Application.Interfaces
         Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken);
         Task DeleteLobbyAccountAsync(long lobbyId, string accountId, CancellationToken cancellationToken);
         Task<string> CreateLobbyAsync(string accountId, CancellationToken cancellationToken);
-        Task<string> GetPasswordByAccountId(string accountId, CancellationToken cancellationToken);
-        Task UpdateLobbyAccountIsInvite(string accountId, bool isInvite, CancellationToken cancellationToken);
+        Task<string> GetPasswordByAccountIdAsync(string accountId, CancellationToken cancellationToken);
     }
 }

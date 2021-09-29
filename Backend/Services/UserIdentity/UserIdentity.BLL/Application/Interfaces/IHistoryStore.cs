@@ -1,4 +1,5 @@
 ﻿using UserIdentity.DAL.Domain;
+using UserIdentity.DAL.Domain.Bang;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -6,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace UserIdentity.BLL.Application.Interfaces
 {
-    public interface IFriendStore
+    public interface IHistoryStore
     {
-        Task<IEnumerable<Friend>> GetFriendsAsync(string ownId, CancellationToken cancellationToken);
-        Task CreateFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
-        Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
+        Task<IEnumerable<History>> GetHistoriesAsync(string ownId, CancellationToken cancellationToken);
+        Task CreateHistoryAsync(string ownId, RoleType playedRole, int placement, CancellationToken cancellationToken);
     }
 }

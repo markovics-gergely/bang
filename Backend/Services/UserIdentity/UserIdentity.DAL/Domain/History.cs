@@ -1,6 +1,7 @@
-﻿using Bang.DAL.Domain.Constants.Enums;
+﻿using UserIdentity.DAL.Domain.Bang;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserIdentity.DAL.Domain
 {
