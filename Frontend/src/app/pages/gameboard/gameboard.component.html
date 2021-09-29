@@ -1,0 +1,57 @@
+<div class="container-fluid max-height" *ngIf="gameboard">
+    <div class="row upper-row">
+        <div class="col-md-3 order-md-1 col-6 order-1">
+            <h2>Chat!</h2>
+        </div>
+        <div class="col-md-3 order-md-2 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
+            <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"></app-otherboard>
+        </div>
+        <div class="col-md-3 order-md-3 col-6 order-4" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
+            <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"></app-otherboard>
+        </div>
+        <div class="col-md-3 order-md-4 col-6 order-2">
+            <h2>Log!</h2>
+        </div>
+    </div>
+    <div class="row body-row">
+        <div class="col-md-3 order-md-1 col-6 order-1">
+            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
+                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
+            </div>
+            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftBottom)">
+                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"></app-otherboard>
+            </div>
+        </div>
+        <div class="col-md-6 order-md-2 col-12 order-3">
+            <div class="board">
+                lol
+            </div>
+        </div>
+        <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
+            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
+                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
+            </div>
+            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightBottom)">
+                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"></app-otherboard>
+            </div>
+        </div>
+    </div>
+    <div class="row dummy-lower-row"></div>
+    <div class="row lower-row">
+        <app-ownboard class="p-0" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer"></app-ownboard>
+    </div>
+</div>
+<div class="card-data mx-auto my-auto container-fluid" *ngIf="cardHovered">
+    <div class="row card-row max-width">
+        <div class="col-12 max-height">
+            <div class="card-container" *ngIf="hoveredCard">
+                <img class="card img-fluid rounded" [src]="cardService.getCardBack(hoveredCard.cardType | cardType) || 'https://via.placeholder.com/340x255'" alt="card-back"/>
+                <img class="card img-fluid rounded" [src]="cardService.getCardColorFilter(hoveredCard.cardColorType | cardColorType)" alt="card-color"/>
+                <img class="card img-fluid rounded" [src]="cardService.getCardNumberFilter(hoveredCard.frenchNumber | cardNumber, hoveredCard.cardColorType)" alt="card-number"/>
+            </div>
+            <div class="description" [ngClass]="cardService.isActive(hoveredCard.cardType) ? 'description-brown' : 'description-blue'" *ngIf="hoveredCard">
+                <p>{{hoveredCard.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>

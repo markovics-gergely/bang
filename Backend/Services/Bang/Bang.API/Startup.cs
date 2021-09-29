@@ -25,6 +25,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using Bang.API.SignalR;
 
 namespace Bang.API
 {
@@ -34,6 +35,8 @@ namespace Bang.API
         {
             Configuration = configuration;
         }
+
+        public const string CorsPolicy = "CorsPolicy";
 
         public IConfiguration Configuration { get; }
 
@@ -64,7 +67,7 @@ namespace Bang.API
             services.AddScoped<IRequestHandler<PlayCardCommand, Unit>, CardCommandHandler>();
 
             services.AddScoped<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
-            services.AddScoped<IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>, GameBoardQueryHandler>();
+            services.AddScoped<IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
             services.AddScoped<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();
@@ -97,7 +100,7 @@ namespace Bang.API
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
+                options.AddPolicy(CorsPolicy, builder =>
                 {
                     builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
                            .AllowAnyMethod()
@@ -105,6 +108,7 @@ namespace Bang.API
                            .AllowCredentials();
                 });
             });
+            services.AddSignalR();
 
             services.AddProblemDetails(options =>
             {
@@ -132,13 +136,14 @@ namespace Bang.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors("Cors");
+            app.UseCors(CorsPolicy);
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors(CorsPolicy);
+                endpoints.MapHub<GameHub>("/game").RequireCors(CorsPolicy);
             });
 
             app.UseHangfireDashboard();

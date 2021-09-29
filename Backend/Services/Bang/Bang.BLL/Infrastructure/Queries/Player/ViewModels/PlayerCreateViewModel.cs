@@ -5,6 +5,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
     public class PlayerCreateViewModel
     {
         public string UserId { get; set; }
+        public string UserName { get; set; }
         public long GameBoardId { get; set; }
         public CharacterType CharacterType { get; set; }
         public RoleType RoleType { get; set; }

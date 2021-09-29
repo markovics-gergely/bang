@@ -76,7 +76,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 1,
                             CharacterType = "BartCassidy",
-                            Description = "",
+                            Description = "Minden sebződéskor húzhat egy lapot a pakliból.",
                             MaxHP = 4,
                             Name = "Bart Cassidy"
                         },
@@ -84,7 +84,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 2,
                             CharacterType = "BlackJack",
-                            Description = "",
+                            Description = "Második lapját felcsapva húzza, ha az piros (♥ (kör) vagy ♦ (káró)), húzhat egy harmadikat.",
                             MaxHP = 4,
                             Name = "Black Jack"
                         },
@@ -92,7 +92,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 3,
                             CharacterType = "CalamityJanet",
-                            Description = "",
+                            Description = "Használhat BANG! kártyát Missed!-ként (Elvétve!) és fordítva.Ettől még nem lőhet kettőt).",
                             MaxHP = 4,
                             Name = "Calamity Janet"
                         },
@@ -100,7 +100,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 4,
                             CharacterType = "ElGringo",
-                            Description = "",
+                            Description = "Sebződésenként húzhat egy lapot a sebző kezéből. Ha Dynamite (Dinamit) sebzi, akkor senkitől sem húz.",
                             MaxHP = 3,
                             Name = "El Gringo"
                         },
@@ -108,7 +108,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 5,
                             CharacterType = "JesseJones",
-                            Description = "",
+                            Description = "A saját laphúzás fázisában (1.fázis) mindig eldöntheti, hogy az első lapot a húzópakliból, vagy egy másik játékos kezéből húzza.A második lapot mindig a húzópakliból húzza.",
                             MaxHP = 4,
                             Name = "Jesse Jones"
                         },
@@ -116,7 +116,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 6,
                             CharacterType = "Jourdonnais",
-                            Description = "",
+                            Description = "Úgy kell rá tekinteni, mintha lenne egy Barrel (Hordó) kártya előtte (= „beépített hordó”), vagyis minden ellene kijátszott BANG! ellen felcsaphatja a húzópakli legfelső lapját, és ha az ♥ (kör), akkor elkerülte a lövést. (Ha van még egy hordója, akkor mindkettőre húzhat.) ",
                             MaxHP = 4,
                             Name = "Jourdonnais"
                         },
@@ -124,7 +124,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 7,
                             CharacterType = "KitCarlson",
-                            Description = "",
+                            Description = "A saját laphúzás fázisában (1.fázis) 3 lapot húz, amiből egyet visszatesz a pakli tetejére(tehát nem eldobja!). ",
                             MaxHP = 4,
                             Name = "Kit Carlson"
                         },
@@ -132,7 +132,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 8,
                             CharacterType = "LuckyDuke",
-                            Description = "",
+                            Description = "Mindig, amikor fel kell csapnia egy lapot valamelyik kártya hatása miatt(Dynamite (Dinamit), Barrel (Hordó), Jail (Börtön)),akkor két lapot csaphat fel és a számára kedvezőbbet választhatja.",
                             MaxHP = 4,
                             Name = "Lucky Duke"
                         },
@@ -140,7 +140,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 9,
                             CharacterType = "PaulRegret",
-                            Description = "",
+                            Description = "Minden játékos eggyel nagyobb távolságra levőnek látja őt (= „beépített MUSTANG”). (Ha van még egy MUSTANG - ja, akkor + 2 távra van.)",
                             MaxHP = 3,
                             Name = "Paul Regret"
                         },
@@ -148,7 +148,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 10,
                             CharacterType = "PedroRamirez",
-                            Description = "",
+                            Description = "A saját laphúzás fázisában (1.fázis) az első lapját húzhatja az eldobott lapok tetejéről.A második lapot mindenképpen a húzópakliból húzza.",
                             MaxHP = 4,
                             Name = "Pedro Ramirez"
                         },
@@ -156,7 +156,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 11,
                             CharacterType = "RoseDoolan",
-                            Description = "",
+                            Description = "Minden játékost eggyel kisebb távolságra levőnek lát (= „beépített SCOPE”). (Ha van még egy SCOPE - ja, akkor - 2 távra van)",
                             MaxHP = 4,
                             Name = "Rose Doolan"
                         },
@@ -164,7 +164,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 12,
                             CharacterType = "SidKetchum",
-                            Description = "",
+                            Description = "Két kártyáért visszanyerhet egy életet.",
                             MaxHP = 4,
                             Name = "Sid Ketchum"
                         },
@@ -172,7 +172,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 13,
                             CharacterType = "SlabTheKiller",
-                            Description = "",
+                            Description = "Az ő lövése csak két Missed!-el (Elvétve!) védhető. Az egyik lehet Barrel(Hordó), vagy Jourdonnais esetében akár mindkettő",
                             MaxHP = 4,
                             Name = "Slab the Killer"
                         },
@@ -180,7 +180,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 14,
                             CharacterType = "SuzyLafayette",
-                            Description = "",
+                            Description = "Ha elfogy a lapja a kezéből, azonnal húzhat egy újabbat.",
                             MaxHP = 4,
                             Name = "Suzy Lafayette"
                         },
@@ -188,7 +188,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 15,
                             CharacterType = "VultureSam",
-                            Description = "",
+                            Description = "Mindig, amikor egy játékos kiesik a játékból, elveszi a kieső játékos kézben tartott es asztalon levő lapjait.",
                             MaxHP = 4,
                             Name = "Vulture Sam"
                         },
@@ -196,7 +196,7 @@ namespace Bang.DAL.Migrations
                         {
                             Id = 16,
                             CharacterType = "WillyTheKid",
-                            Description = "",
+                            Description = "Akárhány lövést leadhat a meglévő fegyverének megfelelő távolságban.",
                             MaxHP = 4,
                             Name = "Willy the Kid"
                         });
@@ -227,28 +227,28 @@ namespace Bang.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "",
+                            Description = "A banditák nyernek, ha a seriff meghal.",
                             Name = "Bandita",
                             RoleType = "Outlaw"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "",
+                            Description = "A renegát nyer, ha mindenki mást megöl. (Tehát a renegát csak úgy nyerhet, ha egyedül marad életben és utoljára a seriffet ölte meg.)",
                             Name = "Renegát",
                             RoleType = "Renegade"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "",
+                            Description = "A seriff és helyettese(i) nyernek, ha csak ő(k) maradt(ak) életben, azaz akkor, ha minden banditát és a renegátot is megölik és a seriff még él.",
                             Name = "Seriff",
                             RoleType = "Sheriff"
                         },
                         new
                         {
                             Id = 4,
-                            Description = "",
+                            Description = "A seriff és helyettese(i) nyernek, ha csak ő(k) maradt(ak) életben, azaz akkor, ha minden banditát és a renegátot is megölik és a seriff még él.",
                             Name = "Seriffhelyettes",
                             RoleType = "Vice"
                         });
@@ -386,6 +386,9 @@ namespace Bang.DAL.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameBoardId");
@@ -405,7 +408,7 @@ namespace Bang.DAL.Migrations
                             Id = 1,
                             CardEffectType = "card_active",
                             CardType = "Bang",
-                            Description = "Bang!",
+                            Description = "Rálövés egy játékosra, aki lőtávolon belül van. A megtámadott, ha nem tudja kivédeni(ld.Barrel(Hordó) és Missed!(Elvétve!)), egy életet veszít.Ha meghal és van Beer (Sör) lapja, azonnal kijátszhatja (egyik eset, amikor lapot játszhat ki, aki nincs soron). Egy körben csak egy BANG! játszható ki (kivétel Volcanic fegyver és Willy the Kid személyisége).",
                             Name = "Bang!"
                         },
                         new
@@ -421,7 +424,7 @@ namespace Bang.DAL.Migrations
                             Id = 3,
                             CardEffectType = "card_active",
                             CardType = "Beer",
-                            Description = "Sör",
+                            Description = "A játékos egy életet visszanyer. Mindenkinek maximum annyi élete lehet, amennyi kezdéskor volt.Ha valaki meghal és van sör lapja, azonnal kijátszhatja(egyik eset, amikor lapot játszhat ki, aki nincs soron). Ha már csak két játékos van életben, nem lehet sört inni! ",
                             Name = "Sör"
                         },
                         new
@@ -429,7 +432,7 @@ namespace Bang.DAL.Migrations
                             Id = 4,
                             CardEffectType = "card_active",
                             CardType = "CatBalou",
-                            Description = "Cat Balou",
+                            Description = "Bármelyik másik játékossal eldobathat egy lapot (magával nem) a kezéből véletlenszerűen, vagy az asztalról.Nincs védett lap, minden eldobatható.",
                             Name = "Cat Balou"
                         },
                         new
@@ -437,7 +440,7 @@ namespace Bang.DAL.Migrations
                             Id = 5,
                             CardEffectType = "card_active",
                             CardType = "Panic",
-                            Description = "Pánik!",
+                            Description = " Legfeljebb 1 távolságra levő játékostól elhúzhat egy lapot, az asztalról, vagy a kezéből, utóbbiból véletlenszerűen.Nincs védett lap, minden elhúzható.",
                             Name = "Pánik!"
                         },
                         new
@@ -445,7 +448,7 @@ namespace Bang.DAL.Migrations
                             Id = 6,
                             CardEffectType = "card_active",
                             CardType = "Duel",
-                            Description = "Párbaj",
+                            Description = "Egy tetszőleges játékos kihívása párbajra (távolságtól függetlenül). A párbaj menete: a felek felváltva lőnek(BANG! lerakásával), a kihívott kezd.Aki először nem tud rakni, az veszít egy életet. (Semelyik elkerülő lap nem érvényesül a párbaj alatt, és a Duel (Párbaj) nem minősül BANG!-nek.) Abban az esetben, ha egy párbajt kezdeményező bandita elveszíti az utolsó életét az érte járó 3 lap jutalmat senki nem kapja meg.",
                             Name = "Párbaj"
                         },
                         new
@@ -453,7 +456,7 @@ namespace Bang.DAL.Migrations
                             Id = 7,
                             CardEffectType = "card_active",
                             CardType = "GeneralStore",
-                            Description = "Szatócsbolt",
+                            Description = "Ahány élő játékos játékban van, annyi lapot a pakliból felfordítanak.Mindenki választ egyet, a lapot kijátszó játékos kezdi a sort.",
                             Name = "Szatócsbolt"
                         },
                         new
@@ -461,7 +464,7 @@ namespace Bang.DAL.Migrations
                             Id = 8,
                             CardEffectType = "card_active",
                             CardType = "Indians",
-                            Description = "Indiánok!",
+                            Description = " Összes többi játékost megtámadja, csak lövéssel (BANG! berakásával) védhető(egyik eset, amikor lapot játszhat ki, aki nincs soron). Nem minősül lövésnek, tehát eben a körben még használható BANG! vagy GATLING.",
                             Name = "Indiánok!"
                         },
                         new
@@ -469,7 +472,7 @@ namespace Bang.DAL.Migrations
                             Id = 9,
                             CardEffectType = "card_active",
                             CardType = "Stagecoach",
-                            Description = "Postakocsi",
+                            Description = "Kijátszója 2 lapot húzhat a pakliból.",
                             Name = "Postakocsi"
                         },
                         new
@@ -477,7 +480,7 @@ namespace Bang.DAL.Migrations
                             Id = 10,
                             CardEffectType = "card_active",
                             CardType = "Gatling",
-                            Description = "Gatling",
+                            Description = "A kijátszón kívül mindenkire rálő (hordó és elugrás lehet menedék). Nem minősül lövésnek, tehát ebben a körben BANG! még használható. ",
                             Name = "Gatling"
                         },
                         new
@@ -485,7 +488,7 @@ namespace Bang.DAL.Migrations
                             Id = 11,
                             CardEffectType = "card_active",
                             CardType = "Saloon",
-                            Description = "Kocsma",
+                            Description = "Mindenki visszanyer egy életet. Úgy használható, mint a Beer (Sör), de mindenki kap egy életet, ha tud(maximum annyi élete lehet mindenkinek, mint kezdéskor volt). Ha már csak két játékos van életben, sört ugyan nem lehet inni, de Saloon(Szalon) lap még kijátszható! ",
                             Name = "Kocsma"
                         },
                         new
@@ -493,7 +496,7 @@ namespace Bang.DAL.Migrations
                             Id = 12,
                             CardEffectType = "card_active",
                             CardType = "WellsFargo",
-                            Description = "Wells Fargo",
+                            Description = "Kijátszója 3 lapot húzhat a pakliból.",
                             Name = "Wells Fargo"
                         });
                 });
@@ -510,7 +513,7 @@ namespace Bang.DAL.Migrations
                             Id = 13,
                             CardEffectType = "card_passive",
                             CardType = "Jail",
-                            Description = "Börtön",
+                            Description = "A seriff kivételével bárkire rátehető. Akire kijátszották, amikor sorra kerülne, először felcsap egy lapot, ha az kör, akkor nem kerül börtönbe(megkezdheti a körét az 1. fázissal), különben ebből a körből kimarad(a következőből nem). A lapot mindkét esetben az eldobott lapokra helyezzük.Ha a játékos nem kerül sorra, akkor is el kell dobnia a többletlapjait! Amíg a játékos be van börtönözve, addig lőhetnek rá es használhat Missed! (Elvétve!) es Beer(Sör) lapokat, de Barrel-t(Hordó) nem.Ez a lap is eldobatható Cat Balou-val vagy Panic!-kal(Pánik!). Ha van az asztalon Jail(Börtön) is Dynamite(Dinamit) mellett, akkor az előbb asztalra kerülő érvényesül először. ",
                             Name = "Börtön"
                         },
                         new
@@ -518,7 +521,7 @@ namespace Bang.DAL.Migrations
                             Id = 14,
                             CardEffectType = "card_passive",
                             CardType = "Mustang",
-                            Description = "Musztáng",
+                            Description = "Módosítják a távolságokat. Nem lehet két azonos lovunk. A Mustang tulajdonosa mindenkitől egyel messzebb van, ha támadják(védekező lap). Az Scope(Távcső) tulajdonosához mindenki egyel közelebb van, ha támadni akar(támadó lap). (ld.még Paul Regret, Rose Doolan). ",
                             Name = "Musztáng"
                         },
                         new
@@ -526,7 +529,7 @@ namespace Bang.DAL.Migrations
                             Id = 15,
                             CardEffectType = "card_passive",
                             CardType = "Barrel",
-                            Description = "Hordó",
+                            Description = "Aki előtt van hordó, amikor rálőnek, felcsaphat egy lapot, ha az ♥ (kör), akkor nem találták el, ha nem az, akkor még védekezhet más módon. Egy játékos előtt nem lehet több hordó. ",
                             Name = "Hordó"
                         },
                         new
@@ -534,7 +537,7 @@ namespace Bang.DAL.Migrations
                             Id = 16,
                             CardEffectType = "card_passive",
                             CardType = "Scope",
-                            Description = "Távcső",
+                            Description = "Módosítják a távolságokat. Nem lehet két azonos lovunk. A Mustang tulajdonosa mindenkitől egyel messzebb van, ha támadják(védekező lap). Az Scope(Távcső) tulajdonosához mindenki egyel közelebb van, ha támadni akar(támadó lap). (ld.még Paul Regret, Rose Doolan). ",
                             Name = "Távcső"
                         },
                         new
@@ -542,7 +545,7 @@ namespace Bang.DAL.Migrations
                             Id = 17,
                             CardEffectType = "card_passive",
                             CardType = "Dynamite",
-                            Description = "Dinamit",
+                            Description = "Aki kijátssza, maga elé helyezi. A következő körtől kezdődően, amikor a dinamitot birtokló játékosra kerül a sor, először felcsap rá egy lapot.Ha ez ♠ (pikk) 2, 3, ..,9, akkor felrobban a dinamit és a játékos 3 életet veszít (nem védhető). Ha nem robbant fel, akkor a lapot a következő játékos elé helyezi. Ez addig megy, míg valakinél fel nem robban, vagy ellopják (pánik / PANIC), eldobatják(Cat Balou). Aki ettől hal meg, annak nincs gyilkosa (ld.jutalmazás-büntetés). Ha van az asztalon Dynamite(Dinamit) is Jail(Börtön) mellett, akkor az előbb asztalra kerülő érvényesül először. ",
                             Name = "Dinamit"
                         },
                         new
@@ -550,7 +553,7 @@ namespace Bang.DAL.Migrations
                             Id = 18,
                             CardEffectType = "card_passive",
                             CardType = "Volcanic",
-                            Description = "Gyorstüzelő",
+                            Description = "A kártyákon lévő fegyverek meghatározzák, hogy milyen messzire tud lőni a játékos(ld.Lőtávolság). Az asztalra kell helyezni magunk elé. Legfeljebb egy fegyverkártya lehet előttünk, ha újat tesz le valaki, a régit el kell dobnia. Akinek nincs fegyvere, az egy távolságra tud lőni (az alapértelmezett pisztolyával). A Volcanic fegyver sajátossága, hogy tulajdonosa több lövést is leadhat körönként(ld. BANG!, Gatling, Willy the Kid). ",
                             Name = "Gyorstüzelő"
                         },
                         new
@@ -558,7 +561,7 @@ namespace Bang.DAL.Migrations
                             Id = 19,
                             CardEffectType = "card_passive",
                             CardType = "Schofield",
-                            Description = "Schofield",
+                            Description = "A kártyákon lévő fegyverek meghatározzák, hogy milyen messzire tud lőni a játékos(ld.Lőtávolság). Az asztalra kell helyezni magunk elé. Legfeljebb egy fegyverkártya lehet előttünk, ha újat tesz le valaki, a régit el kell dobnia. Akinek nincs fegyvere, az egy távolságra tud lőni (az alapértelmezett pisztolyával). ",
                             Name = "Schofield"
                         },
                         new
@@ -566,7 +569,7 @@ namespace Bang.DAL.Migrations
                             Id = 20,
                             CardEffectType = "card_passive",
                             CardType = "Remingtion",
-                            Description = "Remingtion",
+                            Description = "A kártyákon lévő fegyverek meghatározzák, hogy milyen messzire tud lőni a játékos(ld.Lőtávolság). Az asztalra kell helyezni magunk elé. Legfeljebb egy fegyverkártya lehet előttünk, ha újat tesz le valaki, a régit el kell dobnia. Akinek nincs fegyvere, az egy távolságra tud lőni (az alapértelmezett pisztolyával). ",
                             Name = "Remingtion"
                         },
                         new
@@ -574,7 +577,7 @@ namespace Bang.DAL.Migrations
                             Id = 21,
                             CardEffectType = "card_passive",
                             CardType = "Karabine",
-                            Description = "Karabély",
+                            Description = "A kártyákon lévő fegyverek meghatározzák, hogy milyen messzire tud lőni a játékos(ld.Lőtávolság). Az asztalra kell helyezni magunk elé. Legfeljebb egy fegyverkártya lehet előttünk, ha újat tesz le valaki, a régit el kell dobnia. Akinek nincs fegyvere, az egy távolságra tud lőni (az alapértelmezett pisztolyával). ",
                             Name = "Karabély"
                         },
                         new
@@ -582,7 +585,7 @@ namespace Bang.DAL.Migrations
                             Id = 22,
                             CardEffectType = "card_passive",
                             CardType = "Winchester",
-                            Description = "Winchester",
+                            Description = "A kártyákon lévő fegyverek meghatározzák, hogy milyen messzire tud lőni a játékos(ld.Lőtávolság). Az asztalra kell helyezni magunk elé. Legfeljebb egy fegyverkártya lehet előttünk, ha újat tesz le valaki, a régit el kell dobnia. Akinek nincs fegyvere, az egy távolságra tud lőni (az alapértelmezett pisztolyával). ",
                             Name = "Winchester"
                         });
                 });

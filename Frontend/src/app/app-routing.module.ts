@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { LoginComponent } from './pages/login/login.component';
+import { GameboardComponent } from './pages/gameboard/gameboard.component';
+import { RegistrationComponent } from './pages/registration/registration.component';
 
 
 const routes: Routes = [
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegistrationComponent,
+  },
+  {
+    path: 'gameboard/:userid',
+    component: GameboardComponent,
   },
   {
     path: '**',

@@ -1,0 +1,47 @@
+<div class="container-fluid other-table" *ngIf="player">
+    <div class="row upper-row">
+        <div class="col-3 px-0">
+            <div class="name">{{player.userName}}</div>
+        </div>
+        <div class="col-9" style="padding-left: 0;">
+            <div class="row health">
+                <div class="col-2" *ngFor="let in of counter(player.actualHP); let i = index">
+                    <img class="card img-fluid rounded" src="../../../assets/images/hp.png" alt="hp {{i}}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row body-row">
+        <div class="col-6 col-md-3">
+            <div class="row max-height transparent">
+                <div class="card-container own-cards">
+                    <img class="card img-fluid rounded" src="../../../assets/cards/Cards/Background.png"
+                        alt="card-back" />
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 role">
+            <div class="card-container">
+                <img class="card img-fluid rounded" [src]="roleService.getRolePath(player.roleType | roleType)"
+                        alt="role-pic" />
+            </div>
+        </div>
+        <div class="col-6 col-md-3 character">
+            <div class="card-container">
+                <img class="card img-fluid rounded" [src]="characterService.getCharacterPath(player.characterType | characterType)"
+                        alt="character-pic" />
+            </div>
+        </div>
+        <div class="col-6 col-md-3 gun">
+            <div class="card-container">
+                <app-card [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+            </div>
+        </div>
+    </div>
+    <div class="row table-row">
+        <p>Table cards</p>
+        <div class="col-3" *ngFor="let card of player.tablePlayerCards">
+            <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"></app-card>
+        </div>
+    </div>
+</div>

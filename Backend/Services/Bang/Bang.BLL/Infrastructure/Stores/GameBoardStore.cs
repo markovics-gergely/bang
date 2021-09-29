@@ -202,6 +202,11 @@ namespace Bang.BLL.Infrastructure.Stores
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
             return await _dbContext.GameBoards.Where(g => g.Players.Contains(player))
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)
+                .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }

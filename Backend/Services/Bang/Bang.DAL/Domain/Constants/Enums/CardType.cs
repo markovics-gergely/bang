@@ -25,4 +25,38 @@
         Karabine,
         Winchester
     }
+
+    public static class CardTypeMethods
+    {
+        public static bool IsWeapon(this CardType type)
+        {
+            switch(type)
+            {
+                case CardType.Schofield:
+                case CardType.Remingtion:
+                case CardType.Volcanic:
+                case CardType.Karabine: return true;
+                default: return false;
+            }
+        }
+
+        public static bool IsRangeModifier(this CardType type)
+        {
+            switch (type)
+            {
+                case CardType.Scope:
+                case CardType.Mustang: return true;
+                default: return false;
+            }
+        }
+
+        public static bool NeedsTarget(this CardType type)
+        {
+            switch (type)
+            {
+                case CardType.Jail: return true;
+                default: return false;
+            }
+        }
+    }
 }

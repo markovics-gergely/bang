@@ -20,6 +20,13 @@ namespace Bang.BLL.Application.Effects.Cards
             CardEffectMap.Add(CardType.Volcanic, new WeaponCardEffect(1));
             CardEffectMap.Add(CardType.Remingtion, new WeaponCardEffect(3));
             CardEffectMap.Add(CardType.Karabine, new WeaponCardEffect(4));
+
+            CardEffectMap.Add(CardType.Barrel, new PassiveCardEffect());
+            CardEffectMap.Add(CardType.Dynamite, new PassiveCardEffect());
+            CardEffectMap.Add(CardType.Mustang, new PassiveCardEffect());
+            CardEffectMap.Add(CardType.Scope, new PassiveCardEffect());
+
+            CardEffectMap.Add(CardType.Scope, new JailCardEffect());
         }
 
         public static CardEffectHandler Instance

@@ -1,0 +1,21 @@
+<div class="container-fluid own-table" *ngIf="player">
+    <div class="row max-height mx-auto">
+        <div class="col-1 max-height buttons">
+
+        </div>
+        <div class="col-3 max-height player-data">
+
+        </div>
+        <div class="col-4">
+            <div class="row max-height mx-auto">
+                <div class="col-1 max-height m-0 p-0" *ngFor="let card of player.handPlayerCards">
+                    <app-card (cardHoverEvent)="cardHovered($event)" [card]="card"></app-card>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-4 max-height table">
+
+        </div>
+    </div>
+</div>

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain;
+using UserIdentity.BLL.Application.Interfaces;
+using Bang.BLL.Application.Exceptions;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -16,7 +19,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>,
         IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>,
         IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>,
-        IRequestHandler<GetGameBoardByUserQuery, GameBoardViewModel>
+        IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -55,11 +58,36 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             return _mapper.Map<FrenchCardViewModel>(domain);
         }
 
-        public async Task<GameBoardViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
+        public async Task<GameBoardByUserViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
         {
             var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
+            List<Player> players = new List<Player>(domain.Players);
+            Player player = players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found");
+            var ownPlayer = _mapper.Map<PlayerViewModel>(player);
 
-            return _mapper.Map<GameBoardViewModel>(domain);
+            int ownIndex = players.IndexOf(player);
+            int count = players.Count;
+            List<Player> otherplayers;
+            if(ownIndex == 0)
+            {
+                otherplayers = players.GetRange(1, count - 1);
+            }
+            else if(ownIndex == count - 1)
+            {
+                otherplayers = players.GetRange(0, count - 1);
+            }
+            else
+            {
+                otherplayers = players.GetRange(ownIndex + 1, count - ownIndex - 1);
+                otherplayers.AddRange(players.GetRange(0, ownIndex));
+            }
+            var otherplayersViewModel = _mapper.Map<ICollection<PlayerByUserViewModel>>(otherplayers);
+            return _mapper.Map<GameBoardByUserViewModel>(domain,
+                opt => opt.AfterMap((src, dest) => {
+                        dest.OtherPlayers = otherplayersViewModel;
+                        dest.OwnPlayer = ownPlayer;
+                        })
+                );
         }
     }
 }

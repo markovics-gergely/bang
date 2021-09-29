@@ -1,13 +1,9 @@
-﻿using Bang.BLL.Application.Effects.Cards.CardEffectQueries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bang.BLL.Application.Effects.Cards.CardEffects
 {
-    public class WeaponCardEffect : CardEffect
+    public class WeaponCardEffect : PassiveCardEffect
     {
         public int Range { get; set; }
         
@@ -16,9 +12,10 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
             Range = range;
         }
 
-        public override async Task Execute(CardEffectQuery query)
+        public override async Task Execute(CardEffectQuery query, CancellationToken cancellationToken)
         {
-            query.Player.ShootingRange = Range;
+            query.PlayerCard.Player.ShootingRange = Range;
+            await base.Execute(query, cancellationToken);
         }
     }
 }
