@@ -3,11 +3,11 @@
         <div class="col-md-3 order-md-1 col-6 order-1">
             <h2>Chat!</h2>
         </div>
-        <div class="col-md-3 order-md-2 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
-            <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"></app-otherboard>
+        <div class="col-md-3 order-md-2 col-6 order-3 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
+            <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"></app-otherboard>
         </div>
-        <div class="col-md-3 order-md-3 col-6 order-4" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
-            <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"></app-otherboard>
+        <div class="col-md-3 order-md-3 col-6 order-4 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
+            <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-4 col-6 order-2">
             <h2>Log!</h2>
@@ -16,10 +16,10 @@
     <div class="row body-row">
         <div class="col-md-3 order-md-1 col-6 order-1">
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
-                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
             </div>
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftBottom)">
-                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"></app-otherboard>
             </div>
         </div>
         <div class="col-md-6 order-md-2 col-12 order-3">
@@ -29,10 +29,10 @@
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
-                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
             </div>
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightBottom)">
-                <app-otherboard class="p-0 m-0" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"></app-otherboard>
             </div>
         </div>
     </div>
@@ -41,16 +41,26 @@
         <app-ownboard class="p-0" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer"></app-ownboard>
     </div>
 </div>
-<div class="card-data mx-auto my-auto container-fluid" *ngIf="cardHovered">
+<div class="card-data mx-auto my-auto container-fluid" *ngIf="hovered" ng-disabled="true">
     <div class="row card-row max-width">
-        <div class="col-12 max-height">
-            <div class="card-container" *ngIf="hoveredCard">
+        <div class="col-12 max-height" *ngIf="hoveredCard">
+            <div class="card-container">
                 <img class="card img-fluid rounded" [src]="cardService.getCardBack(hoveredCard.cardType | cardType) || 'https://via.placeholder.com/340x255'" alt="card-back"/>
                 <img class="card img-fluid rounded" [src]="cardService.getCardColorFilter(hoveredCard.cardColorType | cardColorType)" alt="card-color"/>
                 <img class="card img-fluid rounded" [src]="cardService.getCardNumberFilter(hoveredCard.frenchNumber | cardNumber, hoveredCard.cardColorType)" alt="card-number"/>
             </div>
-            <div class="description" [ngClass]="cardService.isActive(hoveredCard.cardType) ? 'description-brown' : 'description-blue'" *ngIf="hoveredCard">
+            <div class="description" [ngClass]="cardService.isActive(hoveredCard.cardType) ? 'description-brown' : 'description-blue'">
                 <p>{{hoveredCard.description}}</p>
+            </div>
+        </div>
+        <div class="col-12 max-height" *ngIf="hoveredCharacter !== undefined">
+            <div class="card-container-full">
+                <img class="card img-fluid rounded" [src]="characterService.getCharacterPath(hoveredCharacter | characterType)" alt="character-back"/>
+            </div>
+        </div>
+        <div class="col-12 max-height" *ngIf="hoveredRole !== undefined">
+            <div class="card-container-full">
+                <img class="card img-fluid rounded" [src]="roleService.getRolePath(hoveredRole | roleType)" alt="role-back"/>
             </div>
         </div>
     </div>

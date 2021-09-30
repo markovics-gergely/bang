@@ -59,6 +59,12 @@ export enum CardColorType
     Diamonds
 }
 
+export enum HoverEnum {
+    Card,
+    Role,
+    Character
+}
+
 export interface Card {
     id: number;
     name: string;
@@ -67,6 +73,20 @@ export interface Card {
     cardType: CardType;
     cardColorType: CardColorType;
     frenchNumber: number;
+}
+
+export interface Role {
+    id: number;
+    name: string;
+    description: string;
+    roleType: RoleType;
+}
+
+export interface Character {
+    id: number;
+    name: string;
+    description: string;
+    characterType: CharacterType;
 }
 
 export interface Player {
@@ -107,4 +127,8 @@ export interface GameBoard {
 
     ownPlayer: Player;
     otherPlayers: OtherPlayer[];
+}
+
+export interface PostGameBoard {
+    userIds: {userId: string, userName: string}[];
 }

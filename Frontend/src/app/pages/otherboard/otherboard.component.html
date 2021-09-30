@@ -23,13 +23,13 @@
         <div class="col-6 col-md-3 role">
             <div class="card-container">
                 <img class="card img-fluid rounded" [src]="roleService.getRolePath(player.roleType | roleType)"
-                        alt="role-pic" />
+                        alt="role-pic" (mouseenter)="setRoleHovered($event, true)" (mouseleave)="setRoleHovered($event, false)" />
             </div>
         </div>
         <div class="col-6 col-md-3 character">
             <div class="card-container">
                 <img class="card img-fluid rounded" [src]="characterService.getCharacterPath(player.characterType | characterType)"
-                        alt="character-pic" />
+                        alt="character-pic" (mouseenter)="setCharacterHovered($event, true)" (mouseleave)="setCharacterHovered($event, false)" />
             </div>
         </div>
         <div class="col-6 col-md-3 gun">

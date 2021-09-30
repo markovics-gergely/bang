@@ -5,6 +5,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     height: calc(100% - 10px);
+    width: calc(100% - 10px);
     margin: 5px;
     border-radius: 10px;
     padding-bottom: 5px;
@@ -25,6 +26,7 @@
     border: 3px solid dodgerblue;
     border-radius: 5px;
     text-align: center;
+    min-height: 100px;
 }
 
 .max-height {

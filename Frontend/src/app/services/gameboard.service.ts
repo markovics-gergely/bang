@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { GameBoard, OtherPlayer } from '../models';
+import { GameBoard, OtherPlayer, Player, PostGameBoard } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class GameboardService {
   
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl('http://localhost:15300/game')
+                            .withUrl(`${environment.bangBaseUrl}/game`)
                             .build();
     this.hubConnection
       .start()
@@ -29,17 +30,17 @@ export class GameboardService {
     })
   }
 
-  public getGameBoard(userId: string) {
-    return this.client.get<GameBoard>("http://localhost:15300/GameBoard/user/" + userId)
+  public getGameBoard(userId: string): Observable<GameBoard> {
+    return this.client.get<GameBoard>(`${environment.bangBaseUrl}/GameBoard/user/` + userId)
   }
 
-  public getFilledOthers(otherPlayers: OtherPlayer[]) {
-    
+  public postGameBoard(userIds: PostGameBoard): Observable<Object> {
+    return this.client.post(`${environment.bangBaseUrl}/GameBoard`, userIds)
   }
 
   constructor(private client: HttpClient) { }
 
-  public getPlayerByPosition(pos: Position, players: OtherPlayer[] | undefined) {
+  public getPlayerByPosition(pos: Position, players: OtherPlayer[] | undefined): OtherPlayer | undefined {
     if(players) {
       let count = players.length;
       switch(pos) {

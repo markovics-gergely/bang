@@ -16,6 +16,7 @@ import { CardTypePipe } from './pipes/card-type.pipe';
 import { CardNumberPipe } from './pipes/card-number.pipe';
 import { RoleTypePipe } from './pipes/role-type.pipe';
 import { CharacterTypePipe } from './pipes/character-type.pipe';
+import { CastPipe } from './pipes/cast.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CharacterTypePipe } from './pipes/character-type.pipe';
     CardTypePipe,
     CardNumberPipe,
     RoleTypePipe,
-    CharacterTypePipe
+    CharacterTypePipe,
+    CastPipe
   ],
   imports: [
     BrowserModule,
