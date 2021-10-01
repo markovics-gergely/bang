@@ -80,7 +80,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<long> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
         {
-            if (request.Dto.UserIds.Count < 4)
+            if (request.Dto.UserIds.Count() < 4)
                 throw new NotEnoughPlayerException("Nem csatlakozott be elég játékos!");
 
             var domain = _mapper.Map<GameBoard>(request.Dto);
@@ -98,7 +98,7 @@ namespace Bang.BLL.Application.Commands.Handlers
             var frenchCardDataList = cardTypes.Zip(frenchCards, (c, f) => new { frenchCard = f, type = c }).ToList();
             
             //Players
-            int playerCount = request.Dto.UserIds.Count;
+            int playerCount = request.Dto.UserIds.Count();
             int outlawCount = playerCount > 5 ? 3 : 2;
             int viceCount = playerCount == 4 ? 0 : playerCount == 7 ? 2 : 1;
 

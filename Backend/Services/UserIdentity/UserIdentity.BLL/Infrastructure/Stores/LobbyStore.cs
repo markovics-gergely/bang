@@ -34,15 +34,22 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken)
         {
-            if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
+            var lobbyId = await GetLobbyIdByPasswordAsync(password, cancellationToken);
+
+            if (_dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).Count() == 7)
             {
-                throw new InvalidActionException("Player has already in lobby!");
+                throw new InvalidActionException("Lobby is full!");
+            }
+
+            if (await _dbContext.Lobbies.Where(la => la.Id == lobbyId).Select(s => s.GameBoardId).FirstOrDefaultAsync(cancellationToken) != 0)
+            {
+                throw new InvalidActionException("The game has started!");
             }
 
             var lobbyAccount = new LobbyAccount
             {
                 AccountId = accountId,
-                LobbyId = await GetLobbyIdByPasswordAsync(password, cancellationToken),
+                LobbyId = lobbyId,
                 IsConnected = true
             };
 
@@ -114,16 +121,25 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _dbContext.Lobbies.Remove(lobby);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<Lobby> GetLobbyByIdAsync(long lobbyId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Lobbies.Where(l => l.Id == lobbyId).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Lobby not found");
+        }
+
+        public async Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken)
+        {
+            _dbContext.Attach(lobby);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+
         private async Task DeleteLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
         {
             var lobbyAccounts = await _dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).ToListAsync(cancellationToken);
 
             _dbContext.LobbyAccounts.RemoveRange(lobbyAccounts);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-        private async Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken)
-        {     
-            _dbContext.Attach(lobby);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
         private async Task<long> GetLobbyIdByPasswordAsync(string password, CancellationToken cancellationToken)

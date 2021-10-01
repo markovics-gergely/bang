@@ -8,6 +8,7 @@ namespace UserIdentity.DAL.Domain
         public string Password { get; set; }
         public string OwnerId { get; set; }
         public Account Owner { get; set; }
+        public long GameBoardId { get; set; }
         public ICollection<LobbyAccount> LobbyAccounts { get; set; } = new List<LobbyAccount>();
     }
 }

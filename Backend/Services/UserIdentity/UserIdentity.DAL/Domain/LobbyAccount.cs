@@ -7,6 +7,6 @@
         public Lobby Lobby { get; set; }
         public string AccountId { get; set; }
         public Account Account { get; set; }
-        public bool IsConnected { get; set; }
+        public bool IsConnected { get; set; } 
     }
 }

@@ -1,12 +1,16 @@
 ﻿using UserIdentity.BLL.Application.Commands.Commands;
 using UserIdentity.BLL.Application.Interfaces;
 
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 
 using AutoMapper;
 using MediatR;
-using UserIdentity.BLL.Application.Exceptions;
+using Newtonsoft.Json;
+using System.Text;
+using UserIdentity.DAL.Domain;
+using System;
 
 namespace UserIdentity.BLL.Application.Commands.Handlers
 {
@@ -16,19 +20,22 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         IRequestHandler<CreateLobbyCommand, string>,
         IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>,
-        IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>
+        IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>,
+        IRequestHandler<CreateGameBoardCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ILobbyStore _lobbyStore;
         private readonly IAccountStore _accountStore;
         private readonly IFriendStore _friendStore;
+        private readonly HttpClient _httpClient;
 
-        public LobbyCommandHandler(IMapper mapper, ILobbyStore lobbyStore, IAccountStore accountStore, IFriendStore friendStore)
+        public LobbyCommandHandler(IMapper mapper, ILobbyStore lobbyStore, IAccountStore accountStore, IFriendStore friendStore, IHttpClientFactory httpClientFactory)
         {
             _mapper = mapper;
             _lobbyStore = lobbyStore;
             _accountStore = accountStore;
             _friendStore = friendStore;
+            _httpClient = httpClientFactory.CreateClient("http://localhost:15200");
         }
 
         public async Task<Unit> Handle(CreateLobbyAccountCommand request, CancellationToken cancellationToken)
@@ -83,6 +90,22 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             var friendId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
             await _friendStore.UpdateIsInviteAsync(ownId, friendId, true, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
+        {
+            var json = JsonConvert.SerializeObject(request.Dto);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"gameboard", data);
+            var gameBoardId = Int64.Parse(await response.Content.ReadAsStringAsync());
+
+            var lobby = await _lobbyStore.GetLobbyByIdAsync(request.LobbyId, cancellationToken);
+            lobby.GameBoardId = gameBoardId;
+
+            await _lobbyStore.UpdateLobbyAsync(lobby, cancellationToken);
 
             return Unit.Value;
         }

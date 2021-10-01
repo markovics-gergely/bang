@@ -1,4 +1,5 @@
 ﻿using UserIdentity.BLL.Application.Commands.Commands;
+using UserIdentity.BLL.Application.Commands.DataTransferObjects;
 using UserIdentity.BLL.Infrastructure.Queries.Queries;
 using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 
@@ -40,6 +41,16 @@ namespace UserIdentity.API.Controllers
             var command = new CreateLobbyCommand();
 
             return await _mediator.Send(command, cancellationToken);
+        }
+
+        [HttpPost("{id}/start-game")]
+        public async Task<IActionResult> CreateGameBoardAsync(int id, [FromBody] GameBoardDto dto, CancellationToken cancellationToken)
+        {
+            var command = new CreateGameBoardCommand(id, dto);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
 
         [HttpPost("connect/{password}")]

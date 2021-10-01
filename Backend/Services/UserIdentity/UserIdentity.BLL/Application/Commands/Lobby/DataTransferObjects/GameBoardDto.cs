@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bang.BLL.Application.Commands.DataTransferObjects
+namespace UserIdentity.BLL.Application.Commands.DataTransferObjects
 {
     public class GameBoardDto
     {
