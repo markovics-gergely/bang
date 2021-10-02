@@ -24,9 +24,8 @@ export class GameboardComponent implements OnInit {
               private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
-    //let userDatas: { userId: string, userName: string}[] = [{userId:"1", userName:"user1"}, {userId:"2", userName:"user2"}, {userId:"3", userName:"user3"}, {userId:"4", userName:"user4"}, {userId:"5", userName:"user5"}, {userId:"6", userName:"user7"}];
-    //this.gameBoardService.postGameBoard({userIds: userDatas});
-
+    this.gameBoardService.postGameBoard({maxTurnTime: 5, userIds: [{userId:"1", userName:"user1"}, {userId:"2", userName:"user2"}, {userId:"3", userName:"user3"}, {userId:"4", userName:"user4"}, {userId:"5", userName:"user5"}, {userId:"6", userName:"user7"}]}).subscribe(resp => console.log(resp));
+    
     this.route.params.subscribe(params => {
       this.gameBoardService.getGameBoard(params['userid'])
         .subscribe(resp => {this.gameboard = resp; console.log(resp);})

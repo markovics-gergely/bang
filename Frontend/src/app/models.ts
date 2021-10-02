@@ -130,5 +130,6 @@ export interface GameBoard {
 }
 
 export interface PostGameBoard {
+    maxTurnTime: number;
     userIds: {userId: string, userName: string}[];
 }

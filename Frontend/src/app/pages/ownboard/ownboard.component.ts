@@ -15,7 +15,6 @@ export class OwnboardComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.player);
   }
 
   public cardHovered(card: string) {

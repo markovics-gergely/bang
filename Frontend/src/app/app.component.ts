@@ -24,7 +24,6 @@ export class AppComponent {
   private startHttpRequest = () => {
     this.http.get('http://localhost:15300/character', httpOptions)
       .subscribe(res => {
-        console.log(res);
       })
   }
 }

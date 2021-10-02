@@ -14,7 +14,6 @@ export class RoleService {
   }
 
   getRolePath(role: string): string {
-    console.log(RoleService.assetPath + role + ".png");
     return RoleService.assetPath + role + ".png";
   }
 
