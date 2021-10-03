@@ -127,6 +127,8 @@ export interface GameBoard {
 
     ownPlayer: Player;
     otherPlayers: OtherPlayer[];
+
+    lastDiscardedGameBoardCard: Card;
 }
 
 export interface PostGameBoard {

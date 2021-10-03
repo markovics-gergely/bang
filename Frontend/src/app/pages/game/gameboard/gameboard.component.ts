@@ -24,7 +24,7 @@ export class GameboardComponent implements OnInit {
               private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.gameBoardService.postGameBoard({maxTurnTime: 5, userIds: [{userId:"1", userName:"user1"}, {userId:"2", userName:"user2"}, {userId:"3", userName:"user3"}, {userId:"4", userName:"user4"}, {userId:"5", userName:"user5"}, {userId:"6", userName:"user7"}]}).subscribe(resp => console.log(resp));
+    //this.gameBoardService.postGameBoard({maxTurnTime: 5, userIds: [{userId:"1", userName:"user1"}, {userId:"2", userName:"user2"}, {userId:"3", userName:"user3"}, {userId:"4", userName:"user4"}, {userId:"5", userName:"user5"}, {userId:"6", userName:"user7"}]}).subscribe(resp => console.log(resp));
     
     this.route.params.subscribe(params => {
       this.gameBoardService.getGameBoard(params['userid'])
@@ -73,6 +73,16 @@ export class GameboardComponent implements OnInit {
       this.hoveredCard = undefined;
       this.hoveredCharacter = undefined;
       this.hoveredRole = undefined;
+    }
+  }
+
+  public setOnlyCardHovered(hoverData: string) {
+    if(hoverData) {
+      this.hovered = true;
+      this.hoveredCard = JSON.parse(hoverData);
+    } else {
+      this.hovered = false;
+      this.hoveredCard = undefined;
     }
   }
 

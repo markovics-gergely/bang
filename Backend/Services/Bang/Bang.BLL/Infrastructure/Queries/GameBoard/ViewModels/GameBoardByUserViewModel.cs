@@ -14,6 +14,6 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
 
         public PlayerViewModel OwnPlayer { get; set; }
         public ICollection<PlayerByUserViewModel> OtherPlayers { get; set; }
-        public DiscardedGameBoardCard LastDiscardedGameBoardCard { get; set; }
+        public FrenchCardViewModel LastDiscardedGameBoardCard { get; set; }
     }
 }
