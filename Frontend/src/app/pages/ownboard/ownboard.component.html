@@ -1,21 +1,70 @@
-<div class="container-fluid own-table" *ngIf="player">
-    <div class="row max-height mx-auto">
-        <div class="col-1 max-height buttons">
-
+<div class="container-fluid own-table p-0" *ngIf="player">
+    <div class="row h-100 mx-auto">
+        <div class="col-3 col-md-1 order-md-1 order-2 h-100 buttons">
+            <div class="row h-100 max-width align-items-center">
+                <div class="col-12 button-slot">
+                    <button type="button" class="btn health-button menu-button" placement="top" ngbTooltip="Lose health" [openDelay]="500"></button>
+                </div>
+            </div>
+            <div class="row h-100 max-width align-items-center">
+                <div class="col-12 button-slot">
+                    <button type="button" class="btn discard-card-button menu-button" placement="top" [ngbTooltip]="playMode ? 'Discard mode' : 'Play mode'" [openDelay]="500" [ngClass]="playMode ? 'discard-card-button' : 'play-card-button'" (click)="playMode = !playMode"></button>
+                </div>
+            </div>
+            <div class="row h-100 max-width align-items-center">
+                <div class="col-12 button-slot">
+                    <button type="button" class="btn end-turn-button menu-button" placement="top" ngbTooltip="End turn" [openDelay]="500"></button>
+                </div>
+            </div>
         </div>
-        <div class="col-3 max-height player-data">
-
+        <div class="col-9 col-md-3 order-md-2 order-3 h-100 player-data">
+            <div class="row upper-row">
+                <div class="col-12" style="padding-left: 0;">
+                    <div class="row health">
+                        <div class="col-2" *ngFor="let in of counter(player.actualHP); let i = index">
+                            <img class="card img-fluid rounded" src="../../../assets/images/hp.png" alt="hp {{i}}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row body-row">
+                <div class="col-4 role">
+                    <div class="card-container">
+                        <img class="card img-fluid rounded" [src]="roleService.getRolePath(player.roleType | roleType)"
+                                alt="role-pic" (mouseenter)="setRoleHovered($event, true)" (mouseleave)="setRoleHovered($event, false)" />
+                    </div>
+                </div>
+                <div class="col-4 character">
+                    <div class="card-container">
+                        <img class="card img-fluid rounded" [src]="characterService.getCharacterPath(player.characterType | characterType)"
+                                alt="character-pic" (mouseenter)="setCharacterHovered($event, true)" (mouseleave)="setCharacterHovered($event, false)" />
+                    </div>
+                </div>
+                <div class="col-4 gun">
+                    <p>Weapon</p>
+                    <div class="card-container">
+                        <app-card [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
+        <div class="col-11 col-md-4 order-md-3 order-1 card-block" [ngClass]="hoverActive ? 'dark-bg' : ''">
             <div class="row max-height mx-auto">
-                <div class="col-1 max-height m-0 p-0" *ngFor="let card of player.handPlayerCards">
-                    <app-card (cardHoverEvent)="cardHovered($event)" [card]="card"></app-card>
+                <div class="col-12 card-list">
+                    <div class="max-height max-width m-0 p-0" *ngFor="let card of player.handPlayerCards">
+                        <app-card (cardHoverEvent)="cardHovered($event)" [card]="card"></app-card>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-4 max-height table">
-
+        <div class="col-12 col-md-4 order-md-4 order-4 max-height table-block">
+            <div class="row table-row">
+                <p>Table cards</p>
+                <div class="col-3" *ngFor="let card of player.tablePlayerCards">
+                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"></app-card>
+                </div>
+            </div>
         </div>
     </div>
 </div>

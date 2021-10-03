@@ -1,7 +1,9 @@
 <div class="container-fluid max-height" *ngIf="gameboard">
     <div class="row upper-row">
         <div class="col-md-3 order-md-1 col-6 order-1">
-            <h2>Chat!</h2>
+            <div class="w-100 chat">
+                <h2>Chat!</h2>
+            </div>
         </div>
         <div class="col-md-3 order-md-2 col-6 order-3 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"></app-otherboard>
@@ -10,7 +12,9 @@
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-4 col-6 order-2">
-            <h2>Log!</h2>
+            <div class="w-100 chat">
+                <h2>Log!</h2>
+            </div>
         </div>
     </div>
     <div class="row body-row">
@@ -23,8 +27,17 @@
             </div>
         </div>
         <div class="col-md-6 order-md-2 col-12 order-3">
-            <div class="board">
-                lol
+            <div class="row board">
+                <div class="col-12 h-50 d-flex justify-content-center align-items-center">
+                    <div class="card-on-board">
+                            <app-card (cardHoverEvent)="setOnlyCardHovered($event)" class="h-100" *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="gameboard.lastDiscardedGameBoardCard"></app-card>
+                    </div>
+                    <div class="card-on-board">
+                        <img class="h-100 img-fluid rounded" src="../../../assets/cards/Cards/Background-plain.png"
+                            alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" />
+                    </div>
+                    
+                </div>
             </div>
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
@@ -38,7 +51,7 @@
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
-        <app-ownboard class="p-0" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer"></app-ownboard>
+        <app-ownboard class="p-0" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer" [hoverActive]="hovered"></app-ownboard>
     </div>
 </div>
 <div class="card-data mx-auto my-auto container-fluid" *ngIf="hovered" ng-disabled="true">
