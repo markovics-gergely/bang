@@ -1,0 +1,22 @@
+<div class="container">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <div class="auth-title"> BANG! </div>
+    <div class="auth-subtitle"> Bejelentkezés </div>
+
+    <div class="auth-input">
+      <input type="text" placeholder="Felhasználónév" class="form-control" formControlName="username">
+    </div>
+
+    <div class="auth-input">
+      <input type="password" placeholder="Jelszó" class="form-control" formControlName="password">
+    </div>
+
+    <div class="flex auth-submit">
+      <button type="submit" class="btn btn-success"> Belépés </button>
+    </div>
+
+    <div class="auth-navigate" >
+      <a [routerLink]="['../registration']" style="color: brown;"> Regisztráció </a>
+    </div>
+  </form>
+</div>

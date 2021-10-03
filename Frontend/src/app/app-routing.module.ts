@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './pages/login/login.component';
-import { GameboardComponent } from './pages/gameboard/gameboard.component';
-import { RegistrationComponent } from './pages/registration/registration.component';
+import { LoginComponent } from './pages/authorization/login/login.component';
+import { GameboardComponent } from './pages/game/gameboard/gameboard.component';
+import { RegistrationComponent } from './pages/authorization/registration/registration.component';
+import { MenuComponent } from './pages/menu/menu/menu.component';
 
 
 const routes: Routes = [
@@ -12,8 +13,12 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'register',
+    path: 'registration',
     component: RegistrationComponent,
+  },
+  {
+    path: 'menu',
+    component: MenuComponent,
   },
   {
     path: 'gameboard/:userid',

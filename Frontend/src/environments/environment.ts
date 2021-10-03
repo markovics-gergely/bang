@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  bangBaseUrl: 'http://localhost:15300'
+  bangBaseUrl: 'http://localhost:15300',
+  userIdentityBaseUrl: 'http://localhost:15200'
 };
 
 /*
