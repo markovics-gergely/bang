@@ -22,10 +22,12 @@ namespace Bang.BLL.Infrastructure.Stores
     public class GameBoardStore : IGameBoardStore
     {
         private readonly BangDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
 
-        public GameBoardStore(BangDbContext dbContext)
+        public GameBoardStore(BangDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
         }
 
         public async Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken)
@@ -121,6 +123,8 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
+            var aid = await _accountStore.GetActualAccountId();
+            Console.WriteLine(aid);
             return await _dbContext.GameBoards.Where(c => c.Id == id)
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
                 .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)

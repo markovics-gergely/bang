@@ -18,7 +18,7 @@
 
 
 .player-data {
-    background-image: url("../../../assets/images/table.jpg");
+    background-image: url(../../../../assets/images/table.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size:cover;
@@ -26,7 +26,7 @@
 }
 
 .card-block {
-    background-image: url("../../../assets/images/table.jpg");
+    background-image: url(../../../../assets/images/table.jpg);
     background-position: bottom;
     background-repeat: no-repeat;
     background-size: 100% 50%;
@@ -55,25 +55,25 @@
 }
 
 .health-button {
-    background: url(../../../assets/images/icons/health-decrease.svg) no-repeat center center;
+    background: url(../../../../assets/images/icons/health-decrease.svg) no-repeat center center;
     background-size: contain;
     background-color: rgb(117, 15, 15);
 }
 
 .discard-card-button {
-    background: url(../../../assets/images/icons/card-discard.svg) no-repeat center center;
+    background: url(../../../../assets/images/icons/card-discard.svg) no-repeat center center;
     background-size: contain;
     background-color: rgb(8, 61, 121);
 }
 
 .play-card-button {
-    background: url(../../../assets/images/icons/card-pick.svg) no-repeat center center;
+    background: url(../../../../assets/images/icons/card-pick.svg) no-repeat center center;
     background-size: contain;
     background-color: rgb(6, 38, 75);
 }
 
 .end-turn-button {
-    background: url(../../../assets/images/icons/pointing.svg) no-repeat center center;
+    background: url(../../../../assets/images/icons/pointing.svg) no-repeat center center;
     background-size: contain;
     background-color: rgb(14, 134, 30);
 }
@@ -91,7 +91,7 @@
     align-items: center;
     justify-content: space-around;
     flex-direction: column;
-    background-image: url("../../../assets/images/table.jpg");
+    background-image: url(../../../../assets/images/table.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size:cover;
@@ -203,7 +203,7 @@
 }
 
 .table-block {
-    background-image: url("../../../assets/images/table.jpg");
+    background-image: url(../../../../assets/images/table.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size:cover;

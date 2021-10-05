@@ -9,7 +9,14 @@ using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Joins.PlayerCards;
 
+using System.Linq;
+
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Bang.DAL.Converters;
+using Bang.DAL.Comparers;
 
 namespace Bang.DAL
 {
@@ -97,30 +104,33 @@ namespace Bang.DAL
                 .HasValue<ActiveCard>(CardConstants.ActiveCard)
                 .HasValue<PassiveCard>(CardConstants.PassiveCard);
 
+            var cardConverter = new EnumToStringConverter<CardType>();
             modelBuilder
                 .Entity<Card>()
                 .Property(c => c.CardType)
-                .HasConversion<string>();
+                .HasConversion(cardConverter);
 
+            var characterConverter = new EnumToStringConverter<CharacterType>();
             modelBuilder
                 .Entity<Character>()
                 .Property(c => c.CharacterType)
-                .HasConversion<string>();
+                .HasConversion(characterConverter);
 
+            var roleConverter = new EnumToStringConverter<RoleType>();
             modelBuilder
                 .Entity<Role>()
                 .Property(r => r.RoleType)
-                .HasConversion<string>();
+                .HasConversion(roleConverter);
 
             modelBuilder
                 .Entity<ActiveCard>()
                 .Property(r => r.CardType)
-                .HasConversion<string>();
+                .HasConversion(cardConverter);
 
             modelBuilder
                 .Entity<PassiveCard>()
                 .Property(r => r.CardType)
-                .HasConversion<string>();
+                .HasConversion(cardConverter);
 
             modelBuilder
                 .Entity<Player>()
@@ -131,6 +141,19 @@ namespace Bang.DAL
                 .Entity<Player>()
                 .Property(p => p.Placement)
                 .HasDefaultValue(0);
+
+            var playedConverter = new EnumCollectionJsonValueConverter<CardType>();
+            var playedComparer = new CollectionValueComparer<CardType>();
+            modelBuilder
+                .Entity<Player>()
+                .Property(p => p.PlayedCards)
+                .HasConversion(playedConverter)
+                .Metadata.SetValueComparer(playedComparer);
+
+            modelBuilder
+                .Entity<GameBoard>()
+                .Property(g => g.TurnPhase)
+                .HasDefaultValue(PhaseEnum.Drawing);
 
             modelBuilder.Entity<ActiveCard>()
                 .HasData(
