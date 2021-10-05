@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using MediatR;
 
-namespace UserIdentity.API.Extentions
+namespace UserIdentity.API.Extensions
 {
     public static class ServiceExtension
     {

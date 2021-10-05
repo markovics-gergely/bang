@@ -1,7 +1,19 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/registration",
+      "DownstreamPathTemplate": "/connect/token",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/identity/login",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Account/registration",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -11,13 +23,9 @@
       ],
       "UpstreamPathTemplate": "/api/identity/registration",
       "UpstreamHttpMethod": [ "Post" ]
-      //"AuthenticationOptions": {
-      //  "AuthenticationProviderKey": "Bearer",
-      //  "AllowedScopes": []
-      //}
     },
     {
-      "DownstreamPathTemplate": "/actual-account",
+      "DownstreamPathTemplate": "/Account/actual-account",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -26,11 +34,11 @@
         }
       ],
       "UpstreamPathTemplate": "/api/identity/actual-account",
-      "UpstreamHttpMethod": [ "Get" ]
-      //"AuthenticationOptions": {
-      //  "AuthenticationProviderKey": "Bearer",
-      //  "AllowedScopes": []
-      //}
+      "UpstreamHttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     }
   ]
 }

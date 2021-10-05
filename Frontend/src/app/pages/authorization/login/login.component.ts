@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
-  token: string = this.tokenService.getToken();
+  token: string = this.tokenService.getAccessToken();
 
   constructor(private authorizationService: AuthorizationService, private tokenService: TokenService, private router: Router) {}
 
