@@ -10,12 +10,14 @@ using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Application.Commands.Commands;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bang.API.Controllers
 {
-    [EnableCors(Startup.CorsPolicy)]
+    //[EnableCors(Startup.CorsPolicy)]
     [Route("[controller]")]
     [ApiController]
+    //[Authorize]
     public class CardController
     {
         private readonly IMediator _mediator;

@@ -32,14 +32,17 @@ namespace ApiGateway.API
         {
             services.AddOcelot();
 
-            services.AddCors(options => options.AddPolicy("CorsPolicy",
-               builder =>
-               {
-                   builder.AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .SetIsOriginAllowed((host) => true)
-                          .AllowCredentials();
-               }));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    
+                    builder.SetIsOriginAllowed((host) => true)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+            });
 
             services.AddAuthentication(options =>
             {
@@ -48,15 +51,40 @@ namespace ApiGateway.API
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(options => {
+                    options.Authority = Configuration.GetValue<string>("Authentication:AuthorityDocker");
+                    options.Audience = Configuration.GetValue<string>("Authentication:AuthorityDocker") + "/resources";
                     options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
+                    /*options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("useridentity")),
+                        ClockSkew = TimeSpan.Zero,
+                        LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+                        {
+                            var now = DateTime.UtcNow + validationParameters.ClockSkew;
+
+                            return (!notBefore.HasValue || now > notBefore) && expires.HasValue && expires > now;
+                        },
+                        RequireExpirationTime = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidIssuer = "http://useridentity.api",
+                        ValidAudience = "http://useridentity.api",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("useridentity")) // TODO: Add to settings
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            if (!string.IsNullOrWhiteSpace(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };*/
                 });
         }
 
@@ -69,8 +97,11 @@ namespace ApiGateway.API
 
             app.UseHttpsRedirection();
 
+            app.UseCors("CorsPolicy");
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

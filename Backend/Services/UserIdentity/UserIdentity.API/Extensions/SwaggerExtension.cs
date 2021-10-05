@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace UserIdentity.API.Extentions
+namespace UserIdentity.API.Extensions
 {
     public static class SwaggerExtension
     {
