@@ -6,8 +6,7 @@ namespace ApiGateway.API.Extensions
     {
         public static void AddOcelotJsonFiles(this IConfigurationBuilder config)
         {
-            config.AddJsonFile("ocelot.Bang.json");
-            config.AddJsonFile("ocelot.UserIdentity.json");
+            config.AddJsonFile("ocelot.json");
         }
     }
 }

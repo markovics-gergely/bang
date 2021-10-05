@@ -18,6 +18,9 @@ namespace Bang.API.Extensions
     {
         public static void AddServiceExtensions(this IServiceCollection services)
         {
+            services.AddHttpClient<IAccountStore, AccountStore>();
+
+            services.AddTransient<IAccountStore, AccountStore>();
             services.AddTransient<ICharacterStore, CharacterStore>();
             services.AddTransient<IRoleStore, RoleStore>();
             services.AddTransient<ICardStore, CardStore>();
