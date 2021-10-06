@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Hangfire;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using System;
 
 namespace Bang.API
 {
@@ -40,7 +41,7 @@ namespace Bang.API
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
             services.AddSignalR();
 
-            services.AddControllers();   
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, BangDbContext dbContext)

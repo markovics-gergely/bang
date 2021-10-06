@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
+using System;
+using System.Diagnostics;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -17,11 +19,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
     {
         private readonly IMapper _mapper;
         private readonly ICardStore _cardStore;
+        private readonly IAccountStore _accountStore;
 
-        public CardQueryHandler(IMapper mapper, ICardStore cardStore)
+        public CardQueryHandler(IMapper mapper, ICardStore cardStore, IAccountStore accountStore)
         {
             _mapper = mapper;
             _cardStore = cardStore;
+            _accountStore = accountStore;
         }
 
         public async Task<CardViewModel> Handle(GetCardByTypeQuery request, CancellationToken cancellationToken)

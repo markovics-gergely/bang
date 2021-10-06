@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Bang.API.Controllers
 {
-    //[EnableCors(Startup.CorsPolicy)]
     [Route("[controller]")]
     [ApiController]
     [Authorize]

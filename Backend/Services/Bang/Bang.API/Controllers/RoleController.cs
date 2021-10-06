@@ -10,11 +10,13 @@ using MediatR;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.DAL.Domain.Constants.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bang.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class RoleController
     {
         private readonly IMediator _mediator;

@@ -35,10 +35,6 @@
       ],
       "UpstreamPathTemplate": "/api/identity/actual-account",
       "UpstreamHttpMethod": [ "Get" ]
-      //"AuthenticationOptions": {
-      //  "AuthenticationProviderKey": "Bearer",
-      //  "AllowedScopes": []
-      //}
     },
     {
       "DownstreamPathTemplate": "/Card",
