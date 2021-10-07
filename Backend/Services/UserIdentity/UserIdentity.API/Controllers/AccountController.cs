@@ -34,7 +34,7 @@ namespace UserIdentity.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("registration")]
-        public async Task<ActionResult<bool>> CreateAccountAsync(RegistrationDto registerDto, CancellationToken cancellationToken)
+        public async Task<ActionResult<bool>> CreateAccountAsync([FromBody]RegistrationDto registerDto, CancellationToken cancellationToken)
         {
             var command = new CreateAccountCommand(registerDto);
 

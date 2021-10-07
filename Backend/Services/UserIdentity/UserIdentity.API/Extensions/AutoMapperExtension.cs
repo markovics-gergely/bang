@@ -2,9 +2,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UserIdentity.API.Extentions
+namespace UserIdentity.API.Extensions
 {
-    internal static class AutoMapperExtension
+    public static class AutoMapperExtension
     {
         public static void AddAutoMapperExtensions(this IServiceCollection services)
         {

@@ -11,11 +11,13 @@ using MediatR;
 using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bang.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class CharacterController : ControllerBase
     {
         private readonly IMediator _mediator;

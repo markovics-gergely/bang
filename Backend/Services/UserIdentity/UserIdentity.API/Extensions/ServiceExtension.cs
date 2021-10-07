@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using MediatR;
 
-namespace UserIdentity.API.Extentions
+namespace UserIdentity.API.Extensions
 {
     public static class ServiceExtension
     {
@@ -22,7 +22,6 @@ namespace UserIdentity.API.Extentions
             services.AddTransient<IFriendStore, FriendStore>();
             services.AddTransient<IHistoryStore, HistoryStore>();
             services.AddTransient<ILobbyStore, LobbyStore>();
-
 
             services.AddTransient<IRequestHandler<GetActualAccountIdQuery, string>, AccountQueryHandler>();
             services.AddTransient<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();

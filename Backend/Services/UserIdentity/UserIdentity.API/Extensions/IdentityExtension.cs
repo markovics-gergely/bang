@@ -1,17 +1,20 @@
-﻿using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using UserIdentity.DAL;
+using UserIdentity.DAL.Domain;
+
+using System.Collections.Generic;
+using System.Security.Claims;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using UserIdentity.DAL;
-using UserIdentity.DAL.Domain;
 
-namespace UserIdentity.API.Extentions
+using IdentityModel;
+using IdentityServer4;
+using IdentityServer4.Models;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+namespace UserIdentity.API.Extensions
 {
     public static class IdentityExtension
     {
@@ -36,18 +39,6 @@ namespace UserIdentity.API.Extentions
                 .AddInMemoryApiScopes(GetApiScopes(configuration))
                 .AddInMemoryClients(GetClients(configuration))
                 .AddAspNetIdentity<Account>();
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = configuration.GetValue<string>("Authentication:AuthorityDocker");
-                    options.Audience = configuration.GetValue<string>("Authentication:AuthorityDocker") + "/resources";
-                    options.RequireHttpsMetadata = false;
-                });
         }
 
         private static IEnumerable<IdentityResource> GetIdentityResources(IConfiguration configuration)

@@ -1,4 +1,4 @@
-using UserIdentity.API.Extentions;
+using UserIdentity.API.Extensions;
 using UserIdentity.DAL;
 
 using System.Reflection;
@@ -27,11 +27,12 @@ namespace UserIdentity.API
         {
             services.AddDbContext<UserIdentityDbContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            );    
-
+            );
+        
             services.AddAutoMapperExtensions();
             services.AddExceptionExtensions();
             services.AddIdentityExtensions(Configuration);
+            services.AddAuthenticationExtensions(Configuration);
             services.AddServiceExtensions();
             services.AddSwaggerExtension(Configuration);
 
@@ -39,17 +40,6 @@ namespace UserIdentity.API
             services.AddSignalR();
 
             services.AddControllers();
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials();
-                });
-            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserIdentityDbContext dbContext)
@@ -69,7 +59,7 @@ namespace UserIdentity.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseIdentityServer();

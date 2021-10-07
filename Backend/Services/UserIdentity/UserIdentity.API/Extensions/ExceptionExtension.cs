@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Hellang.Middleware.ProblemDetails;
 
-namespace UserIdentity.API.Extentions
+namespace UserIdentity.API.Extensions
 {
     public static class ExceptionExtension
     {

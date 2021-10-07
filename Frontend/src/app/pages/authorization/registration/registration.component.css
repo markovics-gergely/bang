@@ -1,0 +1,30 @@
+.auth-title {
+    color:brown;
+    text-align: center;
+    font-size: 80px;
+    font-family: Cambria;
+}
+
+.auth-subtitle {
+    color:brown;
+    text-align: center;
+    font-size: 50px;
+    font-family: Cambria;
+}
+
+.auth-input {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 2%;
+}
+
+.auth-submit {
+    margin-top: 2%;
+    text-align: center;
+}
+
+.auth-navigate {
+    margin-top: 1%;
+    text-align: center;
+    color:brown;
+}
