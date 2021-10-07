@@ -118,7 +118,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task DeletePlayerPlayedCardAsync(CancellationToken cancellationToken)
         {
-            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
             var player = await GetPlayerByUserIdAsync(userId, cancellationToken);
             player.PlayedCards.Clear();
             await _dbContext.SaveChangesAsync(cancellationToken);

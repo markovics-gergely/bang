@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Bang.API.Extensions
 {
@@ -19,13 +20,14 @@ namespace Bang.API.Extensions
         public static void AddServiceExtensions(this IServiceCollection services)
         {
             services.AddHttpClient<IAccountStore, AccountStore>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            services.AddTransient<IAccountStore, AccountStore>();
             services.AddTransient<ICharacterStore, CharacterStore>();
             services.AddTransient<IRoleStore, RoleStore>();
             services.AddTransient<ICardStore, CardStore>();
             services.AddTransient<IPlayerStore, PlayerStore>();
             services.AddTransient<IGameBoardStore, GameBoardStore>();
-            services.AddTransient<IAccountStore, AccountStore>();
 
             services.AddTransient<IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddTransient<IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>, CharacterQueryHandler>();

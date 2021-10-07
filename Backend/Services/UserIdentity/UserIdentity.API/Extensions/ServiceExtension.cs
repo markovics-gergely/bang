@@ -23,7 +23,6 @@ namespace UserIdentity.API.Extensions
             services.AddTransient<IHistoryStore, HistoryStore>();
             services.AddTransient<ILobbyStore, LobbyStore>();
 
-
             services.AddTransient<IRequestHandler<GetActualAccountIdQuery, string>, AccountQueryHandler>();
             services.AddTransient<IRequestHandler<CreateAccountCommand, bool>, AccountCommandHandler>();
             services.AddTransient<IRequestHandler<DeleteAccountCommand, Unit>, AccountCommandHandler>();

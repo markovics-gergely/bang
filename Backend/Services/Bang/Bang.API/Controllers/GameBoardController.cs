@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bang.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class GameBoardController
     {
         private readonly IMediator _mediator;

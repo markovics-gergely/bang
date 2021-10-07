@@ -18,24 +18,23 @@ using Bang.BLL.Application.Effects.Cards;
 using Bang.DAL.Domain;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
     public class AccountStore : IAccountStore
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpContext _httpContext;
 
-        public AccountStore(IHttpClientFactory httpClientFactory)
+        public AccountStore(IHttpContextAccessor httpContextAccessor)
         {
-            _httpClient = httpClientFactory.CreateClient("useridentity");
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<string> GetActualAccountIdAsync(CancellationToken cancellationToken)
+        public string GetActualAccountId()
         {
-            /*var response = await _httpClient.GetAsync($"Account/actual-account", cancellationToken);
-            var body = await response.Content.ReadAsStringAsync();
-            return body;*/
-            return "string1";
+            return _httpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
         }
     }
 }

@@ -13,6 +13,6 @@ namespace Bang.BLL.Application.Interfaces
 {
     public interface IAccountStore
     {
-        Task<string> GetActualAccountIdAsync(CancellationToken cancellationToken);
+        string GetActualAccountId();
     }
 }

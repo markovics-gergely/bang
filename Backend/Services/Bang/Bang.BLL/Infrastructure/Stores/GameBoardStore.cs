@@ -127,7 +127,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
-            var aid = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var aid = _accountStore.GetActualAccountId();
             Console.WriteLine(aid);
             return await _dbContext.GameBoards.Where(c => c.Id == id)
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
@@ -235,7 +235,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken)
         {
-            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
             var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
             gameBoard.TurnPhase = phaseEnum;
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -243,7 +243,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task SetGameBoardTargetReasonAsync(TargetReason? targetReason, CancellationToken cancellationToken)
         {
-            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
             var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
             gameBoard.TargetReason = targetReason;
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -251,7 +251,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task EndGameBoardTurnAsync(CancellationToken cancellationToken)
         {
-            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
             var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
             var cards = gameBoard.ActualPlayer.HandPlayerCards;
             if (cards.Count > gameBoard.ActualPlayer.ActualHP)

@@ -63,7 +63,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         public async Task<PermissionViewModel> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)
         {
             var permission = new PermissionViewModel();
-            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
             var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
             if(userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer.UserId)
             {
