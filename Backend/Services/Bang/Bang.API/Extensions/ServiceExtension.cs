@@ -18,11 +18,14 @@ namespace Bang.API.Extensions
     {
         public static void AddServiceExtensions(this IServiceCollection services)
         {
+            services.AddHttpClient<IAccountStore, AccountStore>();
+
             services.AddTransient<ICharacterStore, CharacterStore>();
             services.AddTransient<IRoleStore, RoleStore>();
             services.AddTransient<ICardStore, CardStore>();
             services.AddTransient<IPlayerStore, PlayerStore>();
             services.AddTransient<IGameBoardStore, GameBoardStore>();
+            services.AddTransient<IAccountStore, AccountStore>();
 
             services.AddTransient<IRequestHandler<GetCharacterByTypeQuery, CharacterViewModel>, CharacterQueryHandler>();
             services.AddTransient<IRequestHandler<GetCharactersQuery, IEnumerable<CharacterViewModel>>, CharacterQueryHandler>();

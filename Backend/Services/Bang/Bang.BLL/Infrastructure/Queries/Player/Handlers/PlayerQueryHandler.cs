@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Bang.BLL.Infrastructure.Queries.GameBoard.ViewModels;
-using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -64,7 +63,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         public async Task<PermissionViewModel> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)
         {
             var permission = new PermissionViewModel();
-            var userId = await _accountStore.GetActualAccountId();
+            var userId = await _accountStore.GetActualAccountIdAsync(cancellationToken);
             var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
             if(userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer.UserId)
             {

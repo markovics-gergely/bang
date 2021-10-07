@@ -1,6 +1,7 @@
 ﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain;
 using Bang.DAL.Domain.Catalog.Cards;
+using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 
 using System.Collections.Generic;
@@ -29,5 +30,8 @@ namespace Bang.BLL.Application.Interfaces
         Task SetGameBoardEndAsync(long gameBoardId, CancellationToken cancellationToken);
         Task SetGameBoardActualPlayerAsync(long gameBoardId, long playerId, CancellationToken cancellationToken);
         Task SetGameBoardTargetedPlayerAsync(long gameBoardId, long? playerId, CancellationToken cancellationToken);
+        Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken);
+        Task SetGameBoardTargetReasonAsync(TargetReason? targetReason, CancellationToken cancellationToken);
+        Task EndGameBoardTurnAsync(CancellationToken cancellationToken);
     }
 }

@@ -8,6 +8,7 @@ namespace Bang.BLL.Application.Interfaces
     public interface IPlayerStore
     {
         Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken);
+        Task<Player> GetPlayerByUserIdAsync(string userId, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
@@ -16,5 +17,6 @@ namespace Bang.BLL.Application.Interfaces
         Task<long> DecrementPlayerHealthAsync(long playerId, CancellationToken cancellationToken);
         Task<int> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken);
         Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken);
+        Task DeletePlayerPlayedCardAsync(CancellationToken cancellationToken);
     }
 }

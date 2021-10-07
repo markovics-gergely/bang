@@ -32,9 +32,10 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<string> GetActualAccountIdAsync(CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetAsync($"Account/actual-account", cancellationToken);
+            /*var response = await _httpClient.GetAsync($"Account/actual-account", cancellationToken);
             var body = await response.Content.ReadAsStringAsync();
-            return body;
+            return body;*/
+            return "string1";
         }
     }
 }
