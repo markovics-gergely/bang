@@ -22,10 +22,16 @@ namespace Bang.BLL.Infrastructure.Stores
     public class GameBoardStore : IGameBoardStore
     {
         private readonly BangDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
+        private readonly IPlayerStore _playerStore;
+        private readonly ICardStore _cardStore;
 
-        public GameBoardStore(BangDbContext dbContext)
+        public GameBoardStore(BangDbContext dbContext, IAccountStore accountStore, IPlayerStore playerStore, ICardStore cardStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
+            _playerStore = playerStore;
+            _cardStore = cardStore;
         }
 
         public async Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken)
@@ -121,6 +127,8 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
+            var aid = _accountStore.GetActualAccountId();
+            Console.WriteLine(aid);
             return await _dbContext.GameBoards.Where(c => c.Id == id)
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
                 .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)
@@ -222,6 +230,46 @@ namespace Bang.BLL.Infrastructure.Stores
         {
             GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
             gameBoard.ActualPlayerId = playerId;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            gameBoard.TurnPhase = phaseEnum;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SetGameBoardTargetReasonAsync(TargetReason? targetReason, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            gameBoard.TargetReason = targetReason;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task EndGameBoardTurnAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            var cards = gameBoard.ActualPlayer.HandPlayerCards;
+            if (cards.Count > gameBoard.ActualPlayer.ActualHP)
+            {
+                var rnd = new Random();
+                var throwable = cards.OrderBy(x => rnd.Next()).Take(cards.Count - gameBoard.ActualPlayer.ActualHP);
+                foreach (var card in throwable)
+                {
+                    await _cardStore.PlaceHandPlayerCardToDiscardedAsync(card, cancellationToken);
+                }
+            }
+            await _playerStore.DeletePlayerPlayedCardAsync(cancellationToken);
+            gameBoard.TurnPhase = PhaseEnum.Drawing;
+
+            var players = new List<Player>(await _playerStore.GetPlayersAliveByGameBoardAsync(gameBoard.Id, cancellationToken));
+            int actualId = players.FindIndex(p => p.Id == gameBoard.ActualPlayer.Id);
+            var nextPlayer = actualId == players.Count - 1 ? players[0] : players[actualId + 1];
+            gameBoard.ActualPlayer = nextPlayer;
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

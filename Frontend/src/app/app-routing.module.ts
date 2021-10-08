@@ -21,7 +21,7 @@ const routes: Routes = [
     component: MenuComponent,
   },
   {
-    path: 'gameboard/:userid',
+    path: 'gameboard',
     component: GameboardComponent,
   },
   {

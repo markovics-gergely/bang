@@ -1,27 +1,30 @@
 <div class="container-fluid max-height" *ngIf="gameboard">
     <div class="row upper-row">
-        <div class="col-md-3 order-md-1 col-6 order-1">
+        <!-- <div class="col-md-3 order-md-1 col-6 order-1">
             <div class="w-100 chat">
                 <h2>Chat!</h2>
             </div>
+        </div> -->
+        <div class="col-md-3 order-md-1 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
+            <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
         </div>
-        <div class="col-md-3 order-md-2 col-6 order-3 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
+        <div class="col-md-3 order-md-2 col-6 order-1 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"></app-otherboard>
         </div>
-        <div class="col-md-3 order-md-3 col-6 order-4 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
+        <div class="col-md-3 order-md-3 col-6 order-2 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"></app-otherboard>
         </div>
-        <div class="col-md-3 order-md-4 col-6 order-2">
+        <div class="col-md-3 order-md-4 col-6 order-4 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
+            <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
+        </div>
+        <!-- <div class="col-md-3 order-md-4 col-6 order-2">
             <div class="w-100 chat">
                 <h2>Log!</h2>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="row body-row">
         <div class="col-md-3 order-md-1 col-6 order-1">
-            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
-                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
-            </div>
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftBottom)">
                 <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"></app-otherboard>
             </div>
@@ -41,9 +44,6 @@
             </div>
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
-            <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
-                <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
-            </div>
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightBottom)">
                 <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"></app-otherboard>
             </div>
@@ -51,6 +51,14 @@
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
+        <div class="chat-table">
+                
+            <div class="chat">
+            
+                <h2>Chat!</h2>
+            </div>
+        </div>
+        
         <app-ownboard class="p-0" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer" [hoverActive]="hovered"></app-ownboard>
     </div>
 </div>

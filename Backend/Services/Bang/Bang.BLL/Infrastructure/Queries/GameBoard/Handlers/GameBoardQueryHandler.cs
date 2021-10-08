@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Bang.DAL.Domain;
-using UserIdentity.BLL.Application.Interfaces;
 using Bang.BLL.Application.Exceptions;
+using System;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -23,11 +23,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
+        private readonly IAccountStore _accountStore;
 
-        public GameBoardQueryHandler(IMapper mapper, IGameBoardStore gameBoardStore)
+        public GameBoardQueryHandler(IMapper mapper, IGameBoardStore gameBoardStore, IAccountStore accountStore)
         {
             _mapper = mapper;
             _gameBoardStore = gameBoardStore;
+            _accountStore = accountStore;
         }
 
         public async Task<GameBoardViewModel> Handle(GetGameBoardQuery request, CancellationToken cancellationToken)
@@ -60,9 +62,10 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
 
         public async Task<GameBoardByUserViewModel> Handle(GetGameBoardByUserQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            var domain = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
             List<Player> players = new List<Player>(domain.Players);
-            Player player = players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found");
+            Player player = players.Find(p => p.UserId == userId) ?? throw new EntityNotFoundException("Player not found");
             var ownPlayer = _mapper.Map<PlayerViewModel>(player);
 
             int ownIndex = players.IndexOf(player);

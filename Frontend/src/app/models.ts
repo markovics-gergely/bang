@@ -122,6 +122,7 @@ export interface OtherPlayer {
 export interface GameBoard {
     id: number;
     actualPlayerId: number;
+    targetedPlayerId: number;
     maxTurnTime: number;
     isOver: boolean;
 

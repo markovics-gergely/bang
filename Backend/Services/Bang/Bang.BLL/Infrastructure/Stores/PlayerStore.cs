@@ -17,10 +17,12 @@ namespace Bang.BLL.Infrastructure.Stores
     public class PlayerStore : IPlayerStore
     {
         private readonly BangDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
 
-        public PlayerStore(BangDbContext dbContext)
+        public PlayerStore(BangDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
         }
 
         public async Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken)
@@ -28,7 +30,6 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Players.Where(c => c.Id == id)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
-                //.Include(p => p.User)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
         }
@@ -113,6 +114,23 @@ namespace Bang.BLL.Infrastructure.Stores
             Player player = await GetPlayerAsync(playerId, cancellationToken);
             player.Placement = placement;
             await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeletePlayerPlayedCardAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var player = await GetPlayerByUserIdAsync(userId, cancellationToken);
+            player.PlayedCards.Clear();
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<Player> GetPlayerByUserIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Players.Where(c => c.UserId == userId)
+                .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
         }
     }
 }

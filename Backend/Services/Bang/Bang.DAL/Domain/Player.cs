@@ -25,5 +25,6 @@ namespace Bang.DAL.Domain
 
         public ICollection<HandPlayerCard> HandPlayerCards { get; set; } = new List<HandPlayerCard>();
         public ICollection<TablePlayerCard> TablePlayerCards { get; set; } = new List<TablePlayerCard>();
+        public ICollection<CardType> PlayedCards { get; set; } = new List<CardType>();
     }
 }
