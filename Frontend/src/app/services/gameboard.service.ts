@@ -30,12 +30,12 @@ export class GameboardService {
     })
   }
 
-  public getGameBoard(userId: string): Observable<GameBoard> {
-    return this.client.get<GameBoard>(`${environment.bangBaseUrl}/GameBoard/user/` + userId)
+  public getGameBoard(): Observable<GameBoard> {
+    return this.client.get<GameBoard>(`${environment.baseUrl}/api/bang/gameboard/user`)
   }
 
   public postGameBoard(userIds: PostGameBoard): Observable<Object> {
-    return this.client.post(`${environment.bangBaseUrl}/GameBoard`, userIds)
+    return this.client.post(`${environment.baseUrl}/api/bang/gameboard`, userIds)
   }
 
   constructor(private client: HttpClient) { }

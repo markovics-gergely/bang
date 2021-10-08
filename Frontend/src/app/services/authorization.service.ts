@@ -31,4 +31,8 @@ export class AuthorizationService {
 
     return this.client.post(`${environment.baseUrl}/api/identity/login`, body.toString(), {headers: headers})
   }
+
+  public getActualUserId(): Observable<Object> {
+    return this.client.get(`${environment.baseUrl}/api/identity/actual-account`)
+  }
 }

@@ -1,6 +1,4 @@
-﻿using Bang.BLL.Application.Commands.DataTransferObjects;
-using Bang.BLL.Application.Commands.Commands;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

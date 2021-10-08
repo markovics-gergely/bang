@@ -7,6 +7,8 @@ import { CardService } from 'src/app/services/card.service';
 import { stringify } from 'querystring';
 import { RoleService } from 'src/app/services/role.service';
 import { CharacterService } from 'src/app/services/character.service';
+import { environment } from 'src/environments/environment';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-gameboard',
@@ -21,18 +23,14 @@ export class GameboardComponent implements OnInit {
   hoveredCharacter: CharacterType | undefined;
 
   constructor(public gameBoardService: GameboardService, public cardService: CardService, public roleService: RoleService, public characterService: CharacterService,
-              private route: ActivatedRoute, private http: HttpClient) { }
+              private route: ActivatedRoute, private http: HttpClient, private tokenService: TokenService) { }
 
   ngOnInit(): void {
-    //this.gameBoardService.postGameBoard({maxTurnTime: 5, userIds: [{userId:"1", userName:"user1"}, {userId:"2", userName:"user2"}, {userId:"3", userName:"user3"}, {userId:"4", userName:"user4"}, {userId:"5", userName:"user5"}]}).subscribe(resp => console.log(resp));
-    
-    
-    this.route.params.subscribe(params => {
-      this.gameBoardService.getGameBoard(params['userid'])
-        .subscribe(resp => {this.gameboard = resp; console.log(resp);})
-    }, () => {
-      console.log("Could not get gameboard");
-    })
+    this.http.get<GameBoard[]>(`${environment.baseUrl}/api/bang/gameboard/all`).subscribe(resp => console.log(resp));
+    this.http.get<Card[]>(`${environment.baseUrl}/api/bang/cards`).subscribe(resp => console.log(resp));
+
+    this.gameBoardService.getGameBoard()
+      .subscribe(resp => {this.gameboard = resp; console.log(resp);})
   }
 
   public getPlayerByPosition(pos: Position) {

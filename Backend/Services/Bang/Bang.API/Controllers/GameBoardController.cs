@@ -26,18 +26,10 @@ namespace Bang.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GameBoardViewModel>> GetGameBoardAsync(int id, CancellationToken cancellationToken)
+        [HttpGet("user")]
+        public async Task<ActionResult<GameBoardByUserViewModel>> GetGameBoardByUserAsync(CancellationToken cancellationToken)
         {
-            var query = new GetGameBoardQuery(id);
-
-            return await _mediator.Send(query, cancellationToken);
-        }
-
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<GameBoardByUserViewModel>> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
-        {
-            var query = new GetGameBoardByUserQuery(userId);
+            var query = new GetGameBoardByUserQuery();
 
             return await _mediator.Send(query, cancellationToken);
         }
@@ -58,7 +50,7 @@ namespace Bang.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<GameBoardViewModel>>> GetGameBoardsAsync(CancellationToken cancellationToken)
         {
             var query = new GetGameBoardsQuery();
