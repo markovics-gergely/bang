@@ -17,8 +17,6 @@ export class RegistrationComponent implements OnInit {
     confirmedPassword: new FormControl('', Validators.required)
   });
 
-  token: string = this.tokenService.getAccessToken();
-
   constructor(private authorizationService: AuthorizationService, private tokenService: TokenService, private router: Router) { }
 
   ngOnInit(): void {}
@@ -30,6 +28,7 @@ export class RegistrationComponent implements OnInit {
       confirmedPassword: this.registrationForm.get('confirmedPassword')?.value,
     };
 
+    
     this.authorizationService.registration(registrationDto).subscribe(
       res => {
         console.log(res)

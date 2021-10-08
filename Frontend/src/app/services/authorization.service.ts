@@ -16,7 +16,7 @@ export class AuthorizationService {
   constructor(private client: HttpClient) { }
 
   public registration(registrationDto: RegistrationDto): Observable<Object> {
-    return this.client.post(`${environment.userIdentityBaseUrl}/Account/registration`, registrationDto)
+    return this.client.post(`${environment.baseUrl}/api/identity/registration`, registrationDto)
   }
 
   public login(loginDto: LoginDto): Observable<Object> {
@@ -29,6 +29,6 @@ export class AuthorizationService {
     body.set('client_id', AuthorizationService.client_id);
     body.set('client_secret', AuthorizationService.client_secret);
 
-    return this.client.post(`${environment.userIdentityBaseUrl}/connect/token`, body.toString(), {headers: headers})
+    return this.client.post(`${environment.baseUrl}/api/identity/login`, body.toString(), {headers: headers})
   }
 }
