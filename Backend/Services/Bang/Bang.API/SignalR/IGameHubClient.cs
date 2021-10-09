@@ -8,5 +8,7 @@ namespace Bang.API.SignalR
     public interface IGameHubClient
     {
         Task GetGameBoard(string userid);
+        Task AddToGroup(string groupName);
+        Task RemoveFromGroup(string groupName);
     }
 }

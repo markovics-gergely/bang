@@ -69,9 +69,10 @@ namespace Bang.BLL.Infrastructure.Stores
             return player.Id;
         }
 
-        public async Task<long> DecrementPlayerHealthAsync(long playerId, CancellationToken cancellationToken)
+        public async Task<long> DecrementPlayerHealthAsync(CancellationToken cancellationToken)
         {
-            Player player = await GetPlayerAsync(playerId, cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            Player player = await GetPlayerByUserIdAsync(userId, cancellationToken);
             int hp = player.ActualHP;
             player.ActualHP = hp - 1;
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -126,6 +127,16 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<Player> GetPlayerByUserIdAsync(string userId, CancellationToken cancellationToken)
         {
+            return await _dbContext.Players.Where(c => c.UserId == userId)
+                .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+        }
+
+        public async Task<Player> GetOwnPlayerAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
             return await _dbContext.Players.Where(c => c.UserId == userId)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)

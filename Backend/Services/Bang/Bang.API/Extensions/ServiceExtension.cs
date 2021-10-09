@@ -42,6 +42,7 @@ namespace Bang.API.Extensions
             services.AddTransient<IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddTransient<IRequestHandler<DecrementPlayerHealthCommand, Unit>, PlayerCommandHandler>();
             services.AddTransient<IRequestHandler<PlayCardCommand, Unit>, CardCommandHandler>();
+            services.AddTransient<IRequestHandler<GetPermissionsQuery, PermissionViewModel>, PlayerQueryHandler>();
 
             services.AddTransient<IRequestHandler<GetGameBoardQuery, GameBoardViewModel>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();

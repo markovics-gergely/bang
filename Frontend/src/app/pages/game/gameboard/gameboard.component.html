@@ -1,10 +1,5 @@
 <div class="container-fluid max-height" *ngIf="gameboard">
-    <div class="row upper-row">
-        <!-- <div class="col-md-3 order-md-1 col-6 order-1">
-            <div class="w-100 chat">
-                <h2>Chat!</h2>
-            </div>
-        </div> -->
+    <div class="row upper-row justify-content-center">
         <div class="col-md-3 order-md-1 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
         </div>
@@ -17,11 +12,6 @@
         <div class="col-md-3 order-md-4 col-6 order-4 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
             <app-otherboard class="p-0 m-0" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"></app-otherboard>
         </div>
-        <!-- <div class="col-md-3 order-md-4 col-6 order-2">
-            <div class="w-100 chat">
-                <h2>Log!</h2>
-            </div>
-        </div> -->
     </div>
     <div class="row body-row">
         <div class="col-md-3 order-md-1 col-6 order-1">

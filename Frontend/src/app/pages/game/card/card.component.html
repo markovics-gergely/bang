@@ -1,5 +1,5 @@
-<div class="card-container" *ngIf="card">
-    <img class="card img-fluid rounded" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
+<div class="card-container" *ngIf="card" [style.--glow-color]="glowColor">
+    <img class="card img-fluid rounded card-bg" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
     <img class="card img-fluid rounded" [src]="getCardColorFilter(card.cardColorType | cardColorType)" alt="card-color"/>
     <img class="card img-fluid rounded" [src]="getCardNumberFilter(card.frenchNumber | cardNumber)" 
          alt="card-number" (mouseenter)="setCovered(true)" (mouseleave)="setCovered(false)"/>

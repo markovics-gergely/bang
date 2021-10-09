@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
-using Bang.BLL.Infrastructure.Queries.GameBoard.ViewModels;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -65,7 +64,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             var permission = new PermissionViewModel();
             var userId = _accountStore.GetActualAccountId();
             var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
-            if(userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer.UserId)
+            if(userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer?.UserId)
             {
                 permission.CanDoAnything = false;
                 return permission;

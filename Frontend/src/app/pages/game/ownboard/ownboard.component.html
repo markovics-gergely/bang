@@ -3,12 +3,12 @@
         <div class="col-3 col-md-1 order-md-1 order-2 h-100 buttons">
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn health-button menu-button" placement="top" ngbTooltip="Lose health" [openDelay]="500"></button>
+                    <button type="button" class="btn health-button menu-button" placement="top" ngbTooltip="Lose health" [openDelay]="500" (click)="decrementHealth()"></button>
                 </div>
             </div>
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn discard-card-button menu-button" placement="top" [ngbTooltip]="playMode ? 'Discard mode' : 'Play mode'" [openDelay]="500" [ngClass]="playMode ? 'discard-card-button' : 'play-card-button'" (click)="playMode = !playMode"></button>
+                    <button type="button" class="btn discard-card-button menu-button" placement="top" [ngbTooltip]="playMode ? 'Discard mode' : 'Play mode'" [openDelay]="500" [ngClass]="playMode ? 'discard-card-button' : 'play-card-button'" (click)="switchPlayMode()"></button>
                 </div>
             </div>
             <div class="row h-100 max-width align-items-center">
@@ -43,7 +43,7 @@
                 <div class="col-4 gun">
                     <p>Weapon</p>
                     <div class="card-container">
-                        <app-card [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+                        <app-card [playMode]="playMode" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
                     </div>
                 </div>
             </div>

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegistrationDto, LoginDto } from '../models';
 import { environment } from 'src/environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,15 @@ export class AuthorizationService {
     return this.client.post(`${environment.baseUrl}/api/identity/login`, body.toString(), {headers: headers})
   }
 
-  public getActualUserId(): Observable<Object> {
-    return this.client.get(`${environment.baseUrl}/api/identity/actual-account`)
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Accept': 'text/html, application/xhtml+xml, */*',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }),
+    responseType: 'text'
+  };
+
+  public getActualUserId() {
+    return this.client.get(`${environment.baseUrl}/api/identity/actual-account`, {responseType: 'text'});
   }
 }

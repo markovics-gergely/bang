@@ -43,7 +43,7 @@ namespace Bang.API.Controllers
         }
 
         [HttpPut("play-card/{playerCardId}")]
-        public async Task<ActionResult> DecrementPlayerHealthAsync(long playerCardId, CancellationToken cancellationToken)
+        public async Task<ActionResult> PlayCardAsync(long playerCardId, CancellationToken cancellationToken)
         {
             var command = new PlayCardCommand(playerCardId);
 

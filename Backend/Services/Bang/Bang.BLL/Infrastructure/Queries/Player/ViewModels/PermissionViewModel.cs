@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bang.BLL.Infrastructure.Queries.GameBoard.ViewModels
+namespace Bang.BLL.Infrastructure.Queries.ViewModels
 {
     public class PermissionViewModel
     {

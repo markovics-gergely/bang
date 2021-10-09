@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, HoverEnum, Player } from 'src/app/models';
 import { CardService } from 'src/app/services/card.service';
 import { CharacterService } from 'src/app/services/character.service';
+import { PlayerService } from 'src/app/services/player.service';
 import { RoleService } from 'src/app/services/role.service';
 
 @Component({
@@ -14,9 +15,10 @@ export class OwnboardComponent implements OnInit {
   @Input() hoverActive: boolean = false;
   @Output() hoverItemEvent = new EventEmitter<{data: string, type: HoverEnum}>();
 
-  playMode: boolean = true;
+  public playMode: boolean = true;
 
-  constructor(public cardService: CardService, public characterService: CharacterService, public roleService: RoleService) { }
+  constructor(public cardService: CardService, public characterService: CharacterService, public roleService: RoleService,
+              public playerService: PlayerService) { }
 
   ngOnInit(): void {
   }
@@ -53,6 +55,11 @@ export class OwnboardComponent implements OnInit {
     }
   }
 
-  onHover() {
+  decrementHealth() {
+    this.playerService.decrementPlayerHealth().subscribe(resp => console.log(resp));
+  }
+
+  switchPlayMode() {
+    this.playMode = !this.playMode;
   }
 }
