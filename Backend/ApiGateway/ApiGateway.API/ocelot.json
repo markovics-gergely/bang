@@ -95,6 +95,42 @@
       ],
       "UpstreamPathTemplate": "/api/bang/gameboard/user",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Player/decrement-health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/decrement-health",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Card/play-card/{playerCardId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/card/play-card/{playerCardId}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Player/permissions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/permissions",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ]
 }

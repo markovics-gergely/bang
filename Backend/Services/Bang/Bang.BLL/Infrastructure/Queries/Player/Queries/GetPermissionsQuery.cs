@@ -1,4 +1,4 @@
-﻿using Bang.BLL.Infrastructure.Queries.GameBoard.ViewModels;
+﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using MediatR;
 using System;
 using System.Collections.Generic;

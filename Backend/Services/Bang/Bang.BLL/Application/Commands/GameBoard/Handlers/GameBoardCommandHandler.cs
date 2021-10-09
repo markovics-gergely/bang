@@ -112,7 +112,7 @@ namespace Bang.BLL.Application.Commands.Handlers
             var characters = await _characterStore.GetCharactersAsync(cancellationToken);
             characters = characters.OrderBy(c => rnd.Next()).ToList().GetRange(0, playerCount);
             
-            foreach (var userTuple in request.Dto.UserIds.Zip(characters, (u, c) => new { UserDto = u, Character = c })
+            foreach (var userTuple in request.Dto.UserIds.OrderBy(order => rnd.Next()).Zip(characters, (u, c) => new { UserDto = u, Character = c })
                 .Zip(roles, (uc, r) => new { UserDto = uc.UserDto, Character = uc.Character, RoleType = r }))
             {
                 var player = new PlayerCreateViewModel()
@@ -126,11 +126,11 @@ namespace Bang.BLL.Application.Commands.Handlers
                     ActualHP = userTuple.Character.MaxHP + (userTuple.RoleType == RoleType.Sheriff ? 1 : 0)
                 };
                 var playerDomain = _mapper.Map<Player>(player);
-                await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
+                long playerId = await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
 
                 if(playerDomain.RoleType == RoleType.Sheriff)
                 {
-                    await _gameBoardStore.SetGameBoardActualPlayerAsync(gameBoardId, playerDomain.Id, cancellationToken);
+                    await _gameBoardStore.SetGameBoardActualPlayerAsync(gameBoardId, playerId, cancellationToken);
                 }
 
                 List<HandPlayerCard> playerCards = new List<HandPlayerCard>();

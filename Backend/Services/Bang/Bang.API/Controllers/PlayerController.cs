@@ -57,14 +57,22 @@ namespace Bang.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
-        [HttpPut("{id}/decrement-health")]
-        public async Task<ActionResult> DecrementPlayerHealthAsync(long id, CancellationToken cancellationToken)
+        [HttpPut("decrement-health")]
+        public async Task<ActionResult> DecrementPlayerHealthAsync(CancellationToken cancellationToken)
         {
-            var command = new DecrementPlayerHealthCommand(id);
+            var command = new DecrementPlayerHealthCommand();
 
             await _mediator.Send(command, cancellationToken);
 
             return new NoContentResult();
+        }
+
+        [HttpGet("permissions")]
+        public async Task<ActionResult<PermissionViewModel>> GetPermissionsAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetPermissionsQuery();
+
+            return await _mediator.Send(query, cancellationToken);
         }
     }
 }

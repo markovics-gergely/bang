@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { style } from '@angular/animations';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { JsonHubProtocol } from '@microsoft/signalr';
 import { Card, CardColorType, CardType } from 'src/app/models';
 import { CardColorTypePipe } from 'src/app/pipes/card-color-type.pipe';
@@ -14,10 +15,17 @@ import { CardService } from 'src/app/services/card.service';
 export class CardComponent implements OnInit {
   @Input() card: Card | undefined;
   @Output() cardHoverEvent = new EventEmitter<string>();
-
+  @Input() public playMode: boolean | undefined;
+  public glowColor: string | undefined;
+  
   constructor(private cardService: CardService) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges() {
+    this.glowColor = this.playMode ? '#11b314' : '#e6c612';
+    console.log(this.playMode);
   }
 
   public getCardBack(type: string) {

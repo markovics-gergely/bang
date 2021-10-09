@@ -46,11 +46,11 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DecrementPlayerHealthCommand request, CancellationToken cancellationToken)
         {
-            Player selectedPlayer = await _playerStore.GetPlayerAsync(request.PlayerId, cancellationToken);
-            long newHP = await _playerStore.DecrementPlayerHealthAsync(request.PlayerId, cancellationToken);
+            Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
+            long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
             if(newHP == 0)
             {
-                await _playerStore.SetPlayerPlacementAsync(request.PlayerId, selectedPlayer.GameBoardId, cancellationToken);
+                await _playerStore.SetPlayerPlacementAsync(selectedPlayer.Id, selectedPlayer.GameBoardId, cancellationToken);
             }
 
             int remainingPlayers = await _playerStore.GetRemainingPlayerCountAsync(selectedPlayer.GameBoardId, cancellationToken);

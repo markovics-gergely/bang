@@ -222,14 +222,21 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task SetGameBoardActualPlayerAsync(long gameBoardId, long playerId, CancellationToken cancellationToken)
         {
             GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
-            gameBoard.TargetedPlayerId = playerId;
+            gameBoard.ActualPlayerId = playerId;
+            Player player = await _playerStore.GetPlayerAsync(playerId, cancellationToken);
+            gameBoard.ActualPlayer = player;
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task SetGameBoardTargetedPlayerAsync(long gameBoardId, long? playerId, CancellationToken cancellationToken)
         {
             GameBoard gameBoard = await GetGameBoardAsync(gameBoardId, cancellationToken);
-            gameBoard.ActualPlayerId = playerId;
+            gameBoard.TargetedPlayerId = playerId;
+            if(playerId != null)
+            {
+                Player player = await _playerStore.GetPlayerAsync((long)playerId, cancellationToken);
+                gameBoard.TargetedPlayer = player;
+            }
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
