@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Card, Character, CharacterType, GameBoard, HoverEnum, OtherPlayer, PostGameBoard, Role, RoleType } from 'src/app/models';
+import { Card, CharacterType, GameBoard, HoverEnum, RoleType } from 'src/app/models';
 import { HttpClient } from '@angular/common/http';
-import { GameboardService, Position } from 'src/app/services/gameboard.service';
-import { CardService } from 'src/app/services/card.service';
+import { GameboardService, Position } from 'src/app/services/game/gameboard.service';
+import { CardService } from 'src/app/services/game/card.service';
 import { stringify } from 'querystring';
-import { RoleService } from 'src/app/services/role.service';
-import { CharacterService } from 'src/app/services/character.service';
+import { RoleService } from 'src/app/services/game/role.service';
+import { CharacterService } from 'src/app/services/game/character.service';
 import { environment } from 'src/environments/environment';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/services/authorization/token.service';
 
 @Component({
   selector: 'app-gameboard',

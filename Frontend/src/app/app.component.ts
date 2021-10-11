@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameboardService } from './services/gameboard.service';
+import { GameboardService } from './services/game/gameboard.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 const httpOptions = {
   headers: new HttpHeaders({ 

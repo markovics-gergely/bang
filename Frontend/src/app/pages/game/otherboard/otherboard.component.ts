@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CharacterType, HoverEnum, OtherPlayer, RoleType } from 'src/app/models';
-import { CardService } from 'src/app/services/card.service';
-import { CharacterService } from 'src/app/services/character.service';
-import { RoleService } from 'src/app/services/role.service';
+import { CardService } from 'src/app/services/game/card.service';
+import { CharacterService } from 'src/app/services/game/character.service';
+import { RoleService } from 'src/app/services/game/role.service';
 
 @Component({
   selector: 'app-otherboard',

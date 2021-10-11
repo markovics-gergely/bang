@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthorizationService } from 'src/app/services/authorization.service';
-import { LoginResponse, RegistrationDto } from 'src/app/models';
+import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
+import { RegistrationDto } from 'src/app/models';
 import { Router } from '@angular/router';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/services/authorization/token.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-registration',
@@ -17,7 +18,7 @@ export class RegistrationComponent implements OnInit {
     confirmedPassword: new FormControl('', Validators.required)
   });
 
-  constructor(private authorizationService: AuthorizationService, private tokenService: TokenService, private router: Router) { }
+  constructor(private authorizationService: AuthorizationService, private router: Router/*, private snackbar: SnackbarService*/) { }
 
   ngOnInit(): void {}
 
@@ -33,6 +34,7 @@ export class RegistrationComponent implements OnInit {
       res => {
         console.log(res)
 
+        //this.snackbar.open("Registration is successful!")
         this.router.navigate(['login']);
       },
       err => {

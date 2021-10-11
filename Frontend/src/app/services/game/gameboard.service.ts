@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { GameBoard, OtherPlayer, Player, PostGameBoard } from '../models';
+import { GameBoard, OtherPlayer, Player, PostGameBoard } from '../../models';
 
 @Injectable({
   providedIn: 'root'

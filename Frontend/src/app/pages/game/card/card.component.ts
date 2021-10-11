@@ -5,7 +5,7 @@ import { Card, CardColorType, CardType } from 'src/app/models';
 import { CardColorTypePipe } from 'src/app/pipes/card-color-type.pipe';
 import { CardNumberPipe } from 'src/app/pipes/card-number.pipe';
 import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
-import { CardService } from 'src/app/services/card.service';
+import { CardService } from 'src/app/services/game/card.service';
 
 @Component({
   selector: 'app-card',

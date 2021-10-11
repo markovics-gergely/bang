@@ -20,12 +20,16 @@ import { CastPipe } from './pipes/cast.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuComponent } from './pages/menu/menu/menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FriendComponent } from './pages/menu/friend/friend.component';
+import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
+    FriendComponent,
     GameboardComponent,
     OwnboardComponent,
     OtherboardComponent,
@@ -36,7 +40,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     RoleTypePipe,
     CharacterTypePipe,
     CastPipe,
-    MenuComponent
+    MenuComponent,
+    LobbyComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +50,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     NgbModule,
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {

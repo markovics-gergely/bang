@@ -1,6 +1,23 @@
 <div class="container">
-    <div> Menu works!</div>
+    <div class="friend-list">
+        <app-friend></app-friend>
+    </div>
+
     <div>
-        <button (click)="createGameBoard();" class="btn btn-primary-outline"> Gameboard Teszt </button>
+        <button type="button" class="lobby-button" (click)="createLobby()"> Create lobby </button>
+    </div>
+    <div>
+        <button type="button" class="lobby-button" (click)="joinLobby()"> Join lobby </button>
+    </div>
+
+    <div>
+        <button type="button" class="history-button" (click)="viewHistory()"> History </button>
+    </div>
+
+    <div>
+        <button type="button" class="account-button" (click)="logout()"> Logout </button>
+    </div>
+    <div>
+        <button type="button" class="account-button" (click)="deleteAccount()"> Delete account </button>
     </div>
 </div>

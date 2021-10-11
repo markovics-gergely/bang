@@ -1,0 +1,53 @@
+.base {
+    border-width: 2px 0 2px 2px;
+    border-color: bisque;
+    border-style: solid;
+    background-color: brown; 
+    height: 100%; 
+    border-radius: 20px 0px 0px 20px;
+}
+
+.top-list {
+    height: 70%;
+    border-width: 0 0 2px 0;
+    border-color: bisque;
+    border-style: solid;
+}
+
+.bottom-list {
+    height: 30%;
+}
+
+.title {
+    color: black;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    border-width: 0 0 2px 0;
+    border-color: bisque;
+    border-style: solid;
+}
+
+.list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100% - 52px);
+}
+
+.list-content {
+    color:black;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+.list-element {
+    color:black;
+    border-width: 2px;
+    border-color: bisque;
+    border-style: solid;
+    height: 50px;
+    color:bisque;
+    font-size: 30px;
+    margin: 10px 0 10px 0;
+}
