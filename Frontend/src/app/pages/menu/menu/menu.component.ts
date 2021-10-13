@@ -25,7 +25,7 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  /*createGameBoard() {
+  createGameBoard() {
     var users: RegistrationDto[] = [{username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
                                     {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
                                     {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
@@ -44,7 +44,7 @@ export class MenuComponent implements OnInit {
           this.router.navigateByUrl('/gameboard');
         });
     });   
-  }*/
+  }
 
   createLobby(){
     this.menuService.createLobby().subscribe(

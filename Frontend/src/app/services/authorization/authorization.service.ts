@@ -40,7 +40,7 @@ export class AuthorizationService {
     responseType: 'text'
   };
 
-  public getActualUserId() {
+  public getActualUserId(): Observable<string> {
     return this.client.get(`${environment.baseUrl}/api/identity/actual-account`, {responseType: 'text'});
   }
 }
