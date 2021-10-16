@@ -91,6 +91,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
         public async Task<string> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
         {
+            if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
+            {
+                throw new InvalidActionException("You can't create a lobby!");
+            }
+
             var password = await GeneratePasswordAsync();
 
             var lobby = new Lobby

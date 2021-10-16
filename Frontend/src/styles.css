@@ -2,7 +2,6 @@ html, body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    color: blue;
 }
 
 body {
@@ -16,3 +15,6 @@ body {
 .targetable {
     cursor: pointer;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

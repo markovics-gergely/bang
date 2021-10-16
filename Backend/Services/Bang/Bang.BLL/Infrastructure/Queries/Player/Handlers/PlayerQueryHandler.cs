@@ -79,7 +79,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == board.ActualPlayer.UserId)
             {
-                var targeted = board.TargetedPlayer;
                 var actual = board.ActualPlayer;
                 switch (board.TurnPhase)
                 {

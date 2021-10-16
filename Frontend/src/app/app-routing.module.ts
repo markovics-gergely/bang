@@ -5,7 +5,8 @@ import { LoginComponent } from './pages/authorization/login/login.component';
 import { GameboardComponent } from './pages/game/gameboard/gameboard.component';
 import { RegistrationComponent } from './pages/authorization/registration/registration.component';
 import { MenuComponent } from './pages/menu/menu/menu.component';
-
+import { HistoryComponent } from './pages/menu/history/history.component';
+import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,14 @@ const routes: Routes = [
   {
     path: 'menu',
     component: MenuComponent,
+  },
+  {
+    path: 'history',
+    component: HistoryComponent,
+  },
+  {
+    path: 'lobby',
+    component: LobbyComponent,
   },
   {
     path: 'gameboard',

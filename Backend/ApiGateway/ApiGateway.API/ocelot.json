@@ -37,6 +37,18 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
+      "DownstreamPathTemplate": "/Lobby",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
       "DownstreamPathTemplate": "/Card",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { RegistrationDto } from 'src/app/models';
-import { AuthorizationService } from 'src/app/services/authorization.service';
-import { GameboardService } from 'src/app/services/gameboard.service';
-import { TokenService } from 'src/app/services/token.service';
+import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
+import { GameboardService } from 'src/app/services/game/gameboard.service';
+import { TokenService } from 'src/app/services/authorization/token.service';
+import { MenuService } from 'src/app/services/menu/menu.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,7 +14,13 @@ import { TokenService } from 'src/app/services/token.service';
 })
 export class MenuComponent implements OnInit {
 
-  constructor(private tokenService: TokenService, private authService: AuthorizationService, private gameBoardService: GameboardService, private router: Router) { }
+  constructor(
+    private tokenService: TokenService, 
+    private authService: AuthorizationService, 
+    private gameBoardService: GameboardService, 
+    private router: Router,
+    private menuService: MenuService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -36,8 +43,35 @@ export class MenuComponent implements OnInit {
           console.log(r);
           this.router.navigateByUrl('/gameboard');
         });
-    });
-    
-    
+    });   
+  }
+
+  createLobby(){
+    this.menuService.createLobby().subscribe(
+      res => {
+        console.log(res);
+
+        this.router.navigate(['lobby']);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  joinLobby(){
+
+  }
+
+  viewHistory(){
+    this.router.navigateByUrl('/history');
+  }
+
+  logout(){
+
+  }
+
+  deleteAccount(){
+
   }
 }

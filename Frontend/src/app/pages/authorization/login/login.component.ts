@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginDto, LoginResponse } from 'src/app/models';
-import { AuthorizationService } from 'src/app/services/authorization.service';
+import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/services/authorization/token.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   token: string = this.tokenService.getAccessToken();
 
-  constructor(private authorizationService: AuthorizationService, private tokenService: TokenService, private router: Router) {}
+  constructor(private authorizationService: AuthorizationService, private tokenService: TokenService, private router: Router/*, private snackbar: SnackbarService*/) {}
 
   ngOnInit(): void {}
   
@@ -33,12 +34,14 @@ export class LoginComponent implements OnInit {
       res => {
         console.log(res);
       
-        this.setTokenData(loginDto, res as LoginResponse)
+        //this.snackbar.open("Login is successful!");
+        this.setTokenData(loginDto, res as LoginResponse);
         this.router.navigate(['menu']);
       },
       err => {
         console.log(err);
 
+        //this.snackbar.open("Try again!");
         this.tokenService.clear();
       }
     );

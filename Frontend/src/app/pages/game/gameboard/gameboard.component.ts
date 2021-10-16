@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Card, CharacterType, GameBoard, HoverEnum, Permissions, PlayCardDto, RoleType, TargetPermission } from 'src/app/models';
-import { GameboardService, Position } from 'src/app/services/gameboard.service';
-import { CardService, TargetType } from 'src/app/services/card.service';
-import { RoleService } from 'src/app/services/role.service';
-import { CharacterService } from 'src/app/services/character.service';
-import { PlayerService } from 'src/app/services/player.service';
+import { Card, CharacterType, GameBoard, HoverEnum, Permissions, PlayCardDto, RoleType, TargetPermission, TargetType } from 'src/app/models';
+import { GameboardService, Position } from 'src/app/services/game/gameboard.service';
+import { CardService } from 'src/app/services/game/card.service';
+import { RoleService } from 'src/app/services/game/role.service';
+import { CharacterService } from 'src/app/services/game/character.service';
+import { PlayerService } from 'src/app/services/game/player.service';
 import { OwnboardComponent } from '../ownboard/ownboard.component';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, HoverEnum, PlayCardDto, Player } from 'src/app/models';
-import { CardService, TargetType } from 'src/app/services/card.service';
-import { CharacterService } from 'src/app/services/character.service';
-import { PlayerService } from 'src/app/services/player.service';
-import { RoleService } from 'src/app/services/role.service';
+import { Card, HoverEnum, PlayCardDto, Player, TargetType } from 'src/app/models';
+import { CardService } from 'src/app/services/game/card.service';
+import { CharacterService } from 'src/app/services/game/character.service';
+import { PlayerService } from 'src/app/services/game/player.service';
+import { RoleService } from 'src/app/services/game/role.service';
 
 @Component({
   selector: 'app-ownboard',

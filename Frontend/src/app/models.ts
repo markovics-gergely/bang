@@ -189,3 +189,10 @@ export interface TargetPermission {
     canTargetCards?: boolean;
     canDrawFromMiddle?: boolean;
 }
+
+export enum TargetType {
+    None,
+    TargetPlayer,
+    TargetCard,
+    TargetPlayerOrCard
+}

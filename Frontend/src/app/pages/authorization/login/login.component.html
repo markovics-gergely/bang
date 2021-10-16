@@ -1,7 +1,7 @@
 <div class="container">
   <form [formGroup]="loginForm" (ngSubmit)="login()">
     <div class="auth-title"> BANG! </div>
-    <div class="auth-subtitle"> Bejelentkezés </div>
+    <div class="auth-subtitle"> Login </div>
 
     <div class="auth-input">
       <input type="text" placeholder="Felhasználónév" class="form-control" formControlName="username">
@@ -12,11 +12,11 @@
     </div>
 
     <div class="flex auth-submit">
-      <button type="submit" class="btn btn-success"> Belépés </button>
+      <button type="submit" class="btn btn-success"> Login </button>
     </div>
 
     <div class="auth-navigate" >
-      <a [routerLink]="['../registration']" style="color: brown;"> Regisztráció </a>
+      <a [routerLink]="['../registration']" style="color: brown;"> Registration </a>
     </div>
   </form>
 </div>
