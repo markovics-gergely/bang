@@ -23,5 +23,6 @@ namespace Bang.DAL.Domain
         public ICollection<Player> Players { get; set; } = new List<Player>();
         public ICollection<DrawableGameBoardCard> DrawableGameBoardCards { get; set; } = new List<DrawableGameBoardCard>();
         public ICollection<DiscardedGameBoardCard> DiscardedGameBoardCards { get; set; } = new List<DiscardedGameBoardCard>();
+        public ICollection<ScatteredGameBoardCard> ScatteredGameBoardCards { get; set; } = new List<ScatteredGameBoardCard>();
     }
 }

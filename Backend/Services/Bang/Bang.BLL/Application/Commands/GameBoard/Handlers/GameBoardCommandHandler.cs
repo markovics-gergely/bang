@@ -26,7 +26,8 @@ namespace Bang.BLL.Application.Commands.Handlers
     public class GameBoardCommandHandler :
         IRequestHandler<CreateGameBoardCommand, long>,
         IRequestHandler<ShuffleGameBoardCardsCommand>,
-        IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>
+        IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>,
+        IRequestHandler<EndGameBoardTurnCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -34,9 +35,11 @@ namespace Bang.BLL.Application.Commands.Handlers
         private readonly IPlayerStore _playerStore;
         private readonly IRoleStore _roleStore;
         private readonly ICharacterStore _characterStore;
+        private readonly IAccountStore _accountStore;
 
         public GameBoardCommandHandler(IMapper mapper, IGameBoardStore gameBoardStore, 
-            ICardStore cardStore, IPlayerStore playerStore, IRoleStore roleStore, ICharacterStore characterStore)
+            ICardStore cardStore, IPlayerStore playerStore, IRoleStore roleStore, ICharacterStore characterStore,
+            IAccountStore accountStore)
         {
             _mapper = mapper;
             _gameBoardStore = gameBoardStore;
@@ -44,9 +47,10 @@ namespace Bang.BLL.Application.Commands.Handlers
             _playerStore = playerStore;
             _roleStore = roleStore;
             _characterStore = characterStore;
+            _accountStore = accountStore;
         }
 
-        private List<CardType> GetCardTypes()
+        private static List<CardType> GetCardTypes()
         {
             var rnd = new Random();
             List<CardType> cardTypes = new List<CardType>();
@@ -130,7 +134,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
                 if(playerDomain.RoleType == RoleType.Sheriff)
                 {
-                    await _gameBoardStore.SetGameBoardActualPlayerAsync(gameBoardId, playerId, cancellationToken);
+                    await _gameBoardStore.SetGameBoardActualPlayerAsync(playerId, cancellationToken);
                 }
 
                 List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
@@ -174,7 +178,8 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(ShuffleGameBoardCardsCommand request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.GetGameBoardAsync(request.gameBoardId, cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            var domain = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
             await _gameBoardStore.ShuffleCardsAsync(domain, cancellationToken);
 
             return Unit.Value;
@@ -182,9 +187,15 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<FrenchCardViewModel> Handle(DiscardFromDrawableGameBoardCardCommand request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(request.gameBoardId, cancellationToken);
+            var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
 
             return _mapper.Map<FrenchCardViewModel>(domain);
+        }
+
+        public async Task<Unit> Handle(EndGameBoardTurnCommand request, CancellationToken cancellationToken)
+        {
+            await _gameBoardStore.EndGameBoardTurnAsync(cancellationToken);
+            return Unit.Value;
         }
     }
 }

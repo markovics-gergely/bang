@@ -13,7 +13,7 @@
             </div>
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn end-turn-button menu-button" placement="top" ngbTooltip="End turn" [openDelay]="500"></button>
+                    <button type="button" class="btn end-turn-button menu-button" placement="top" ngbTooltip="End turn" [openDelay]="500" (click)="endTurn()"></button>
                 </div>
             </div>
         </div>
@@ -43,16 +43,16 @@
                 <div class="col-4 gun">
                     <p>Weapon</p>
                     <div class="card-container">
-                        <app-card [playMode]="playMode" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+                        <app-card [glowColor]="playMode ? '#11b314' : '#e6c612'" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-11 col-md-4 order-md-3 order-1 card-block" [ngClass]="hoverActive ? 'dark-bg' : ''">
+        <div class="col-12 col-md-4 order-md-3 order-1 card-block" [ngClass]="hoverActive ? 'dark-bg' : ''">
             <div class="row max-height mx-auto">
-                <div class="col-12 card-list">
-                    <div class="max-height max-width m-0 p-0" *ngFor="let card of player.handPlayerCards">
-                        <app-card (cardHoverEvent)="cardHovered($event)" [card]="card"></app-card>
+                <div class="col-12 card-list p-0">
+                    <div class="h-100 card-wrapper" *ngFor="let card of player.handPlayerCards">
+                        <app-card [width]="130" [height]="200" (cardHoverEvent)="cardHovered($event)" [card]="card" (click)="(playMode && playCard(card)) || (!playMode && discardCard(card))"></app-card>
                     </div>
                 </div>
             </div>
@@ -60,9 +60,9 @@
         
         <div class="col-12 col-md-4 order-md-4 order-4 max-height table-block">
             <div class="row table-row">
-                <p>Table cards</p>
-                <div class="col-3" *ngFor="let card of player.tablePlayerCards">
-                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"></app-card>
+                <!--<p class="back-text">Table cards</p>-->
+                <div class="col-3 h-100 table-card-wrapper" *ngFor="let card of player.tablePlayerCards">
+                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [width]="110" [height]="170" [card]="card"></app-card>
                 </div>
             </div>
         </div>

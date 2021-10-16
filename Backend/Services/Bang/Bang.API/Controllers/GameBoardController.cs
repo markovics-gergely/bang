@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Bang.API.SignalR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Bang.API.Controllers
 {
@@ -20,10 +22,12 @@ namespace Bang.API.Controllers
     public class GameBoardController
     {
         private readonly IMediator _mediator;
+        private readonly IHubContext<GameHub, IGameHubClient> _hubContext;
 
-        public GameBoardController(IMediator mediator)
+        public GameBoardController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hubContext)
         {
             _mediator = mediator;
+            _hubContext = hubContext;
         }
 
         [HttpGet("user")]
@@ -34,18 +38,18 @@ namespace Bang.API.Controllers
             return await _mediator.Send(query, cancellationToken);
         }
 
-        [HttpGet("{id}/last-discarded")]
-        public async Task<ActionResult<FrenchCardViewModel>> GetLastDiscardedGameBoardCardAsync(int id, CancellationToken cancellationToken)
+        [HttpGet("last-discarded")]
+        public async Task<ActionResult<FrenchCardViewModel>> GetLastDiscardedGameBoardCardAsync(CancellationToken cancellationToken)
         {
-            var query = new GetLastDiscardedGameBoardCardQuery(id);
+            var query = new GetLastDiscardedGameBoardCardQuery();
 
             return await _mediator.Send(query, cancellationToken);
         }
 
-        [HttpGet("{id}/drawable-cards")]
-        public async Task<ActionResult<IEnumerable<FrenchCardViewModel>>> GetLastDiscardedGameBoardCardAsync(int id, [FromQuery] int number, CancellationToken cancellationToken)
+        [HttpGet("drawable-cards")]
+        public async Task<ActionResult<IEnumerable<FrenchCardViewModel>>> GetDrawableGameBoardCardsAsync([FromQuery] int number, CancellationToken cancellationToken)
         {
-            var query = new GetGameBoardCardsOnTopQuery(id, number);
+            var query = new GetGameBoardCardsOnTopQuery(number);
 
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
@@ -66,20 +70,30 @@ namespace Bang.API.Controllers
             return await _mediator.Send(command, cancellationToken);
         }
 
-        [HttpPost("{id}/shuffle-cards")]
-        public async Task ShuffleGameBoardCardsAsync(long id, CancellationToken cancellationToken)
+        [HttpPost("shuffle-cards")]
+        public async Task ShuffleGameBoardCardsAsync(CancellationToken cancellationToken)
         {
-            var command = new ShuffleGameBoardCardsCommand(id);
+            var command = new ShuffleGameBoardCardsCommand();
 
             await _mediator.Send(command, cancellationToken);
         }
 
-        [HttpPost("{id}/discard-card-from-drawable")]
-        public async Task<ActionResult<FrenchCardViewModel>> DiscardGameBoardCardFromDrawableAsync(long id, CancellationToken cancellationToken)
+        [HttpPost("discard-card-from-drawable")]
+        public async Task<ActionResult<FrenchCardViewModel>> DiscardGameBoardCardFromDrawableAsync(CancellationToken cancellationToken)
         {
-            var command = new DiscardFromDrawableGameBoardCardCommand(id);
+            var command = new DiscardFromDrawableGameBoardCardCommand();
 
-            return await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send(command, cancellationToken);
+            return result;
+        }
+
+        [HttpPut("end-turn")]
+        public async Task<ActionResult> EndGameBoardTurnAsync(CancellationToken cancellationToken)
+        {
+            var command = new EndGameBoardTurnCommand();
+
+            await _mediator.Send(command, cancellationToken);
+            return new NoContentResult();
         }
     }
 }

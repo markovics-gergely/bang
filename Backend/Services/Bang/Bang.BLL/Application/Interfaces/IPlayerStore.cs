@@ -1,4 +1,5 @@
 ﻿using Bang.DAL.Domain;
+using Bang.DAL.Domain.Constants.Enums;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +15,17 @@ namespace Bang.BLL.Application.Interfaces
         Task<IEnumerable<Player>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
+        Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(CancellationToken cancellationToken);
+        Task<Player> GetNextPlayerAliveByPlayerAsync(long playerId, CancellationToken cancellationToken);
         Task<long> CreatePlayerAsync(Player player, CancellationToken cancellationToken);
         Task<long> DecrementPlayerHealthAsync(CancellationToken cancellationToken);
+        Task<long> IncrementPlayerHealthAsync(CancellationToken cancellationToken);
+        Task<long> IncrementPlayerHealthAsync(long playerId, CancellationToken cancellationToken);
         Task<int> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken);
         Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken);
         Task DeletePlayerPlayedCardAsync(CancellationToken cancellationToken);
+        Task DiscardCardAsync(long playerCardId, CancellationToken cancellationToken);
+        Task AddPlayedCardAsync(CardType cardType, long playerId, CancellationToken cancellationToken);
+        Task AddPlayedCardAsync(CardType cardType, CancellationToken cancellationToken);
     }
 }

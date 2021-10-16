@@ -62,6 +62,12 @@ namespace Bang.DAL
                 .HasForeignKey(c => c.CardId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ScatteredGameBoardCard>()
+                .HasOne(g => g.Card)
+                .WithMany()
+                .HasForeignKey(c => c.CardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<HandPlayerCard>()
                 .HasOne(p => p.Card)
                 .WithMany()
@@ -90,7 +96,8 @@ namespace Bang.DAL
                 .HasDiscriminator(g => g.StatusType)
                 .HasValue<GameBoardCard>(GameBoardCardConstants.Base)
                 .HasValue<DrawableGameBoardCard>(GameBoardCardConstants.DrawableCard)
-                .HasValue<DiscardedGameBoardCard>(GameBoardCardConstants.DiscardedCard);
+                .HasValue<DiscardedGameBoardCard>(GameBoardCardConstants.DiscardedCard)
+                .HasValue<ScatteredGameBoardCard>(GameBoardCardConstants.ScatteredCard);
 
             modelBuilder.Entity<PlayerCard>()
                 .HasDiscriminator(p => p.StatusType)

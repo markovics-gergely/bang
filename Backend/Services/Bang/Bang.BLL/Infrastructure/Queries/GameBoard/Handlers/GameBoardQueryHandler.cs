@@ -48,14 +48,14 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
 
         public async Task<IEnumerable<FrenchCardViewModel>> Handle(GetGameBoardCardsOnTopQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.GetDrawableGameBoardCardsOnTopAsync(request.Id, request.Count, cancellationToken);
+            var domain = await _gameBoardStore.GetDrawableGameBoardCardsOnTopAsync(request.Count, cancellationToken);
 
             return _mapper.Map<IEnumerable<FrenchCardViewModel>>(domain);
         }
 
         public async Task<FrenchCardViewModel> Handle(GetLastDiscardedGameBoardCardQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.GetLastDiscardedGameBoardCardAsync(request.Id, cancellationToken);
+            var domain = await _gameBoardStore.GetLastDiscardedGameBoardCardAsync(cancellationToken);
 
             return _mapper.Map<FrenchCardViewModel>(domain);
         }

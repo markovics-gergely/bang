@@ -1,4 +1,4 @@
-<div class="card-container" *ngIf="card" [style.--glow-color]="glowColor">
+<div class="card-container" *ngIf="card" [style.--glowColor]="glowColor" [ngStyle]="{width: width + 'px', height: height + 'px'}">
     <img class="card img-fluid rounded card-bg" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
     <img class="card img-fluid rounded" [src]="getCardColorFilter(card.cardColorType | cardColorType)" alt="card-color"/>
     <img class="card img-fluid rounded" [src]="getCardNumberFilter(card.frenchNumber | cardNumber)" 

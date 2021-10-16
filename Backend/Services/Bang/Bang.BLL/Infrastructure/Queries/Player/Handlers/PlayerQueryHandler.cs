@@ -5,9 +5,11 @@ using Bang.BLL.Infrastructure.Queries.Queries;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Queries.Handlers
 {
@@ -69,13 +71,48 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                 permission.CanDoAnything = false;
                 return permission;
             }
-            if (userId == board.TargetedPlayer.UserId)
+            else if (userId == board.TargetedPlayer.UserId)
             {
                 var targeted = board.TargetedPlayer;
                 var actual = board.ActualPlayer;
-                permission.SetByTargetReason(board.TargetReason);
+                permission.SetByTargetReason(board.TargetReason, targeted, actual);
             }
-
+            else if (userId == board.ActualPlayer.UserId)
+            {
+                var targeted = board.TargetedPlayer;
+                var actual = board.ActualPlayer;
+                switch (board.TurnPhase)
+                {
+                    case PhaseEnum.Drawing:
+                        permission.CanDrawCard = true;
+                        if (actual.CharacterType == CharacterType.JesseJones)
+                        {
+                            permission.CanDrawFromOthersHands = true;
+                        }
+                        break;
+                    case PhaseEnum.Playing:
+                        permission.CanPlayCard = true;
+                        permission.CanPlayMissedCard = true;
+                        if (actual.PlayedCards.Contains(CardType.Bang) && 
+                            (actual.CharacterType == CharacterType.WillyTheKid || 
+                            actual.TablePlayerCards.Select(t => t.Card.CardType).Contains(CardType.Volcanic)))
+                        {
+                            permission.CanPlayBangCard = true;
+                        }
+                        else if (!actual.PlayedCards.Contains(CardType.Bang))
+                        {
+                            permission.CanPlayBangCard = true;
+                        }
+                        if (board.Players.Count(p => p.ActualHP > 0) > 2)
+                        {
+                            permission.CanPlayBeerCard = true;
+                        }
+                        break;
+                    case PhaseEnum.Throwing:
+                        permission.CanDiscardCard = true;
+                        break;
+                }
+            }
 
             return permission;
         }
