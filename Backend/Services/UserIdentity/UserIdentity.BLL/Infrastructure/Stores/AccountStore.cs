@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace UserIdentity.BLL.Infrastructure.Stores
 {
