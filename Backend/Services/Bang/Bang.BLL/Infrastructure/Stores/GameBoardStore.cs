@@ -221,6 +221,10 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ActualPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.ActualPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.TargetedPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.TargetedPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }

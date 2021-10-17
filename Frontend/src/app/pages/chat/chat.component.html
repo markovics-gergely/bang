@@ -1,7 +1,14 @@
-<div class="chat-table">
-                
-    <div class="chat">
-    
-        <h2>Chat!</h2>
+<div class="chat-container" [ngStyle]="{bottom: fromBottom + 'px'}" (mouseenter)="setHovered(true)"  (mouseleave)="setHovered(false)">
+    <div class="chat-table" [ngStyle]="{height: height + 'px'}">
+        <ng-scrollbar #scrollable class="chat-list" *ngIf="hovered">
+            <p class="list-item" *ngFor="let message of messages">{{message}}</p>
+        </ng-scrollbar>
+        <div class="chat">
+            <input type="text" placeholder="Write message..." class="chat-input" [(ngModel)]="messageValue">
+            <div class="btn send-button" (click)="sendMessage()">
+                <span class="material-icons button-text">sendoutlined</span>
+            </div>
+        </div>
     </div>
 </div>
+

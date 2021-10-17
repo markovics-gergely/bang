@@ -42,16 +42,9 @@
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
-        <div class="chat-table">
-                
-            <div class="chat">
-            
-                <h2>Chat!</h2>
-            </div>
-        </div>
-        
         <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer" [hoverActive]="hovered"></app-ownboard>
     </div>
+    <app-chat [fromBottom]="200" [animated]="true"></app-chat>
 </div>
 <div class="card-data mx-auto my-auto container-fluid" *ngIf="hovered" ng-disabled="true">
     <div class="row card-row max-width">
