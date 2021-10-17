@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using UserIdentity.BLL.Application.Hubs;
 
 namespace UserIdentity.API
 {
@@ -68,6 +69,9 @@ namespace UserIdentity.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapHub<FriendHub>("/chathub");
+                endpoints.MapHub<LobbyHub>("/lobbyhub");
             });
         }
     }
