@@ -31,7 +31,7 @@ export class GameboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameBoardService.getGameBoard()
-      .subscribe(resp => {this.gameboard = resp});
+      .subscribe(resp => {this.gameboard = resp; console.log(this.gameboard)});
     this.playerService.getPermissions()
       .subscribe(resp => this.permissions = resp);
   }

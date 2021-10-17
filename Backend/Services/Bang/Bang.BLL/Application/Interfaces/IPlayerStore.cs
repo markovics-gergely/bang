@@ -22,7 +22,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<long> IncrementPlayerHealthAsync(CancellationToken cancellationToken);
         Task<long> IncrementPlayerHealthAsync(long playerId, CancellationToken cancellationToken);
         Task<int> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken);
-        Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken);
+        Task SetPlayerPlacementAsync(long playerId, int placement, CancellationToken cancellationToken);
         Task DeletePlayerPlayedCardAsync(CancellationToken cancellationToken);
         Task DiscardCardAsync(long playerCardId, CancellationToken cancellationToken);
         Task AddPlayedCardAsync(CardType cardType, long playerId, CancellationToken cancellationToken);

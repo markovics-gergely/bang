@@ -71,7 +71,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                 permission.CanDoAnything = false;
                 return permission;
             }
-            else if (userId == board.TargetedPlayer.UserId)
+            else if (userId == board.TargetedPlayer?.UserId)
             {
                 var targeted = board.TargetedPlayer;
                 var actual = board.ActualPlayer;

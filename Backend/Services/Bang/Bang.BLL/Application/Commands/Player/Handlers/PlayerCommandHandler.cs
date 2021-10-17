@@ -48,13 +48,16 @@ namespace Bang.BLL.Application.Commands.Handlers
         {
             Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
             long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
-            if(newHP == 0)
+            int remainingPlayersCount = await _playerStore.GetRemainingPlayerCountAsync(selectedPlayer.GameBoardId, cancellationToken);
+            if (newHP == 0)
             {
-                await _playerStore.SetPlayerPlacementAsync(selectedPlayer.Id, selectedPlayer.GameBoardId, cancellationToken);
+                if (selectedPlayer.RoleType == RoleType.Sheriff)
+                {
+                    var players = await _playerStore.GetPlayersAliveByGameBoardAsync(cancellationToken);
+                }
+                
             }
-
-            int remainingPlayers = await _playerStore.GetRemainingPlayerCountAsync(selectedPlayer.GameBoardId, cancellationToken);
-            if(remainingPlayers == 0)
+            if(remainingPlayersCount == 0)
             {
                 await _gameBoardStore.DeleteAllGameBoardCardAsync(selectedPlayer.GameBoardId, cancellationToken);
                 List<Player> players = (List<Player>)await _playerStore.GetPlayersByGameBoardAsync(selectedPlayer.GameBoardId, cancellationToken);

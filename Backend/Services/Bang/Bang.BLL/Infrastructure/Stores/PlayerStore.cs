@@ -138,9 +138,8 @@ namespace Bang.BLL.Infrastructure.Stores
             return (await GetPlayersAliveByGameBoardAsync(gameBoardId, cancellationToken)).Count();
         }
 
-        public async Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken)
+        public async Task SetPlayerPlacementAsync(long playerId, int placement, CancellationToken cancellationToken)
         {
-            int placement = await GetRemainingPlayerCountAsync(gameBoardId, cancellationToken) + 1;
             Player player = await GetPlayerAsync(playerId, cancellationToken);
             player.Placement = placement;
             await _dbContext.SaveChangesAsync(cancellationToken);

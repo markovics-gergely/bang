@@ -28,7 +28,7 @@ namespace Bang.BLL.Application.Effects.Cards
                 { CardType.Scope, new PassiveCardEffect() },
                 { CardType.Jail, new JailCardEffect() },
 
-                { CardType.Missed, new ActiveCardEffect() },
+                { CardType.Missed, new MissedCardEffect() },
                 { CardType.CatBalou, new CatBalouCardEffect() },
                 { CardType.Panic, new PanicCardEffect() },
                 { CardType.Stagecoach, new DrawCardCardEffect(2) },

@@ -23,6 +23,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './pages/menu/friend/friend.component';
 import { LobbyComponent } from './pages/menu/lobby/lobby.component';
+import { ChatComponent } from './pages/chat/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LobbyComponent } from './pages/menu/lobby/lobby.component';
     CharacterTypePipe,
     CastPipe,
     MenuComponent,
-    LobbyComponent
+    LobbyComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
