@@ -121,7 +121,7 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
-      "DownstreamPathTemplate": "/Card/play-card/{playerCardId}",
+      "DownstreamPathTemplate": "/Card/play-card",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -129,7 +129,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/bang/card/play-card/{playerCardId}",
+      "UpstreamPathTemplate": "/api/bang/card/play-card",
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
@@ -143,6 +143,42 @@
       ],
       "UpstreamPathTemplate": "/api/bang/player/permissions",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/GameBoard/discard-card-from-drawable",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/gameboard/discard-card-from-drawable",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Card/discard-card/{playerCardId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/card/discard-card/{playerCardId}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/GameBoard/end-turn",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/gameboard/end-turn",
+      "UpstreamHttpMethod": [ "Put" ]
     }
   ]
 }

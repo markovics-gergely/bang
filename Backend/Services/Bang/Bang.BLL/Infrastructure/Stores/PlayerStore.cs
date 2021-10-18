@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Bang.DAL.Domain.Constants.Enums;
+using Bang.DAL.Domain.Joins.PlayerCards;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -18,11 +19,13 @@ namespace Bang.BLL.Infrastructure.Stores
     {
         private readonly BangDbContext _dbContext;
         private readonly IAccountStore _accountStore;
+        private readonly ICardStore _cardStore;
 
-        public PlayerStore(BangDbContext dbContext, IAccountStore accountStore)
+        public PlayerStore(BangDbContext dbContext, IAccountStore accountStore, ICardStore cardStore)
         {
             _dbContext = dbContext;
             _accountStore = accountStore;
+            _cardStore = cardStore;
         }
 
         public async Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken)
@@ -39,7 +42,6 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Players
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
-                //.Include(p => p.User)
                 .ToListAsync(cancellationToken);
         }
 
@@ -48,7 +50,6 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
-                //.Include(p => p.User)
                 .ToListAsync(cancellationToken);
         }
 
@@ -57,7 +58,16 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Players.Where(p => p.GameBoardId == gameBoardId && p.ActualHP > 0)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
-                //.Include(p => p.User)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            Player player = await GetPlayerByUserIdAsync(userId, cancellationToken);
+            return await _dbContext.Players.Where(p => p.GameBoardId == player.GameBoardId && p.ActualHP > 0)
+                .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
+                .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 .ToListAsync(cancellationToken);
         }
 
@@ -75,6 +85,25 @@ namespace Bang.BLL.Infrastructure.Stores
             Player player = await GetPlayerByUserIdAsync(userId, cancellationToken);
             int hp = player.ActualHP;
             player.ActualHP = hp - 1;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return player.ActualHP;
+        }
+
+        public async Task<long> IncrementPlayerHealthAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            Player player = await GetPlayerByUserIdAsync(userId, cancellationToken);
+            int hp = player.ActualHP;
+            player.ActualHP = hp == player.MaxHP ? hp : hp + 1;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return player.ActualHP;
+        }
+
+        public async Task<long> IncrementPlayerHealthAsync(long playerId, CancellationToken cancellationToken)
+        {
+            Player player = await GetPlayerAsync(playerId, cancellationToken);
+            int hp = player.ActualHP;
+            player.ActualHP = hp == player.MaxHP ? hp : hp + 1;
             await _dbContext.SaveChangesAsync(cancellationToken);
             return player.ActualHP;
         }
@@ -109,9 +138,8 @@ namespace Bang.BLL.Infrastructure.Stores
             return (await GetPlayersAliveByGameBoardAsync(gameBoardId, cancellationToken)).Count();
         }
 
-        public async Task SetPlayerPlacementAsync(long playerId, long gameBoardId, CancellationToken cancellationToken)
+        public async Task SetPlayerPlacementAsync(long playerId, int placement, CancellationToken cancellationToken)
         {
-            int placement = await GetRemainingPlayerCountAsync(gameBoardId, cancellationToken) + 1;
             Player player = await GetPlayerAsync(playerId, cancellationToken);
             player.Placement = placement;
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -142,6 +170,55 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
+        }
+
+        public async Task DiscardCardAsync(long playerCardId, CancellationToken cancellationToken)
+        {
+            HandPlayerCard playerCard = (HandPlayerCard)await _cardStore.GetPlayerCardAsync(playerCardId, cancellationToken);
+            await _cardStore.PlacePlayerCardToDiscardedAsync(playerCard, cancellationToken);
+        }
+
+        public async Task AddPlayedCardAsync(CardType cardType, long playerId, CancellationToken cancellationToken)
+        {
+            var player = await GetPlayerAsync(playerId, cancellationToken);
+            player.PlayedCards.Add(cardType);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.Players
+                    .SingleOrDefaultAsync(p => p.Id == playerId) == null)
+                    throw new EntityNotFoundException("Nem található a player");
+                else throw;
+            }
+        }
+
+        public async Task AddPlayedCardAsync(CardType cardType, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var player = await GetPlayerByUserIdAsync(userId, cancellationToken);
+            player.PlayedCards.Add(cardType);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.Players
+                    .SingleOrDefaultAsync(p => p.Id == player.Id) == null)
+                    throw new EntityNotFoundException("Nem található a player");
+                else throw;
+            }
+        }
+
+        public async Task<Player> GetNextPlayerAliveByPlayerAsync(long playerId, CancellationToken cancellationToken)
+        {
+            var player = await GetPlayerAsync(playerId, cancellationToken);
+            var players = new List<Player>(await GetPlayersAliveByGameBoardAsync(player.GameBoardId, cancellationToken));
+            int actualId = players.FindIndex(p => p.Id == playerId);
+            return actualId == players.Count - 1 ? players[0] : players[actualId + 1];
         }
     }
 }

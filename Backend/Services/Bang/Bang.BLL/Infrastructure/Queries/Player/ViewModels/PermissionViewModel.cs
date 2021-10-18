@@ -1,9 +1,5 @@
-﻿using Bang.DAL.Domain.Constants.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bang.DAL.Domain;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Infrastructure.Queries.ViewModels
 {
@@ -26,7 +22,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public bool CanPlayBeerCard { get; set; } = false;
         public bool CanUseBarrelCard { get; set; } = false;
 
-        public void SetByTargetReason(TargetReason? reason)
+        public void SetByTargetReason(TargetReason? reason, Player targeted, Player actual)
         {
             if(reason == null) { return; }
             switch(reason)
@@ -35,10 +31,18 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
                     CanLoseHealth = true;
                     CanUseBarrelCard = true;
                     CanPlayMissedCard = true;
+                    if (targeted.CharacterType == CharacterType.CalamityJanet)
+                    {
+                        CanPlayBangCard = true;
+                    }
                     break;
                 case TargetReason.Duel:
                     CanLoseHealth = true;
                     CanPlayBangCard = true;
+                    if (targeted.CharacterType == CharacterType.CalamityJanet)
+                    {
+                        CanPlayMissedCard = true;
+                    }
                     break;
                 case TargetReason.GeneralStore:
                     CanDrawFromMiddle = true;

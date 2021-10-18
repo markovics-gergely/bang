@@ -75,6 +75,12 @@ export interface Card {
     frenchNumber: number;
 }
 
+export interface PlayCardDto {
+    playerCardId: number;
+    targetPlayerId?: number;
+    targetPlayerCardId?: number;
+}
+
 export interface Role {
     id: number;
     name: string;
@@ -157,4 +163,36 @@ export interface RegistrationDto {
     username: string;
     password: string;
     confirmedPassword: string;
+}
+
+export interface Permissions {
+    canDoAnything: boolean;
+    canPlayCard: boolean;
+    canDrawCard: boolean;
+    canDiscardCard: boolean;
+    canPlayBangCard: boolean;
+    canLoseHealth: boolean;
+    canPlayMissedCard: boolean;
+    canDiscardFromDrawCard: boolean;
+    canDrawFromDiscardCard: boolean;
+    canTargetPlayers: boolean;
+    canDrawFromMiddle: boolean;
+    canSeeMiddleCards: boolean;
+    canDrawFromOthersHands: boolean;
+    canDrawFromOthersTable: boolean;
+    canPlayBeerCard: boolean;
+    canUseBarrelCard: boolean;
+}
+
+export interface TargetPermission {
+    canTargetPlayers?: boolean;
+    canTargetCards?: boolean;
+    canDrawFromMiddle?: boolean;
+}
+
+export enum TargetType {
+    None,
+    TargetPlayer,
+    TargetCard,
+    TargetPlayerOrCard
 }

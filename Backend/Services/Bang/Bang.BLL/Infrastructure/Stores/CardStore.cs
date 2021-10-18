@@ -2,7 +2,6 @@
 using Bang.BLL.Application.Interfaces;
 using Bang.DAL;
 using Bang.DAL.Domain.Catalog.Cards;
-using Bang.DAL.Domain.Constants;
 using Bang.DAL.Domain.Constants.Enums;
 
 using System.Collections.Generic;
@@ -22,10 +21,12 @@ namespace Bang.BLL.Infrastructure.Stores
     public class CardStore : ICardStore
     {
         private readonly BangDbContext _dbContext;
+        private readonly IAccountStore _accountStore;
 
-        public CardStore(BangDbContext dbContext)
+        public CardStore(BangDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
+            _accountStore = accountStore;
         }
 
         public async Task<Card> GetCardByTypeAsync(CardType type, CancellationToken cancellationToken)
@@ -37,21 +38,6 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<IEnumerable<Card>> GetCardsAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.Cards.ToListAsync(cancellationToken);
-        }
-
-        public async Task PlayCardAsync(long playerCardId, CancellationToken cancellationToken)
-        {
-            HandPlayerCard playerCard = (HandPlayerCard)await GetPlayerCardAsync(playerCardId, cancellationToken);
-            Dictionary<CardType, CardEffect> cardEffectMap = CardEffectHandler.Instance.CardEffectMap;
-
-            CardEffectQuery query = null;
-            if(playerCard.Card.CardType.NeedsTarget())
-            {
-                
-            }
-            await cardEffectMap[playerCard.Card.CardType].Execute(new CardEffectQuery(playerCard, this), cancellationToken);
-            
-            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<long> CreatePlayerCardAsync(PlayerCard playerCard, CancellationToken cancellationToken)
@@ -132,7 +118,7 @@ namespace Bang.BLL.Infrastructure.Stores
             return await CreatePlayerCardAsync(tablePlayerCard, cancellationToken);
         }
 
-        public async Task<long> PlaceHandPlayerCardToDiscardedAsync(HandPlayerCard playerCard, CancellationToken cancellationToken)
+        public async Task<long> PlacePlayerCardToDiscardedAsync(PlayerCard playerCard, CancellationToken cancellationToken)
         {
             DiscardedGameBoardCard discardedGameBoardCard = new DiscardedGameBoardCard()
             {
@@ -143,6 +129,19 @@ namespace Bang.BLL.Infrastructure.Stores
             };
             await DeletePlayerCardAsync(playerCard.Id, cancellationToken);
             return await CreateGameBoardCardAsync(discardedGameBoardCard, cancellationToken);
+        }
+
+        public async Task<long> PlacePlayerCardToHandAsync(PlayerCard playerCard, long playerId, CancellationToken cancellationToken)
+        {
+            HandPlayerCard handPlayerCard = new HandPlayerCard()
+            {
+                CardId = playerCard.CardId,
+                PlayerId = playerId,
+                CardColorType = playerCard.CardColorType,
+                FrenchNumber = playerCard.FrenchNumber
+            };
+            await DeletePlayerCardAsync(playerCard.Id, cancellationToken);
+            return await CreatePlayerCardAsync(handPlayerCard, cancellationToken);
         }
 
         public async Task DeletePlayerCardAsync(long playerCardId, CancellationToken cancellationToken)
@@ -164,11 +163,23 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<PlayerCard> GetPlayerCardAsync(long id, CancellationToken cancellationToken)
         {
-            return await _dbContext.PlayerCards.Where(c => c.Id == id)
-                .Include(p => p.Card)
-                .Include(p => p is HandPlayerCard ? (p as HandPlayerCard).Player : (p as TablePlayerCard).Player)
+            var playerCard = await _dbContext.PlayerCards.Where(c => c.Id == id)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("PlayerCard not found!");
+            if (playerCard is HandPlayerCard)
+            {
+                return await _dbContext.PlayerCards.Where(c => c.Id == id)
+                    .Include(p => ((HandPlayerCard)p).Card)
+                    .Include(p => ((HandPlayerCard)p).Player)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+            else
+            {
+                return await _dbContext.PlayerCards.Where(c => c.Id == id)
+                    .Include(p => ((TablePlayerCard)p).Card)
+                    .Include(p => ((TablePlayerCard)p).Player)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
         }
 
         public async Task DeleteAllPlayerCardAsync(long playerId, CancellationToken cancellationToken)

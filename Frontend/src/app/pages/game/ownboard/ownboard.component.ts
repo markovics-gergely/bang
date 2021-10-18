@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, HoverEnum, Player } from 'src/app/models';
+import { Card, HoverEnum, PlayCardDto, Player, TargetType } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 import { CharacterService } from 'src/app/services/game/character.service';
 import { PlayerService } from 'src/app/services/game/player.service';
@@ -14,8 +14,13 @@ export class OwnboardComponent implements OnInit {
   @Input() player: Player | undefined;
   @Input() hoverActive: boolean = false;
   @Output() hoverItemEvent = new EventEmitter<{data: string, type: HoverEnum}>();
+  @Output() selectCardEvent = new EventEmitter<TargetType>();
 
   public playMode: boolean = true;
+  public canChangePlayMode: boolean = true;
+  public selectedCard: Card | undefined;
+  private targetPlayerId: number | undefined;
+  private targetPlayerCardId: number | undefined;
 
   constructor(public cardService: CardService, public characterService: CharacterService, public roleService: RoleService,
               public playerService: PlayerService) { }
@@ -25,6 +30,46 @@ export class OwnboardComponent implements OnInit {
 
   public cardHovered(card: string) {
     this.hoverItemEvent.emit({data: card, type: HoverEnum.Card});
+  }
+
+  public cardAction(card: Card) {
+    if (this.playMode) {
+      this.playCard(card);
+    } else {
+      this.discardCard(card);
+      this.canChangePlayMode = false;
+    }
+  }
+
+  public discardCard(card: Card) {
+    this.playerService.discardFromHand(card.id).subscribe(resp => console.log(resp));
+  }
+
+  public playCard(card: Card) {
+    let target: TargetType = this.cardService.needsTargetPlayerOrCard(card.cardType);
+    if (target == TargetType.None) {
+      let playCardDto: PlayCardDto = {playerCardId: card.id, targetPlayerCardId: this.targetPlayerCardId, targetPlayerId: this.targetPlayerId}; 
+      this.playerService.playFromHand(playCardDto).subscribe(resp => console.log(resp));
+    }
+    else {
+      this.selectedCard = card;
+      this.selectCardEvent.emit(target);
+    }
+  }
+
+  public playCardFromTarget(id: number, isCard: boolean) {
+    let playCardDto;
+    if (isCard) {
+      playCardDto = {playerCardId: this.selectedCard?.id as number, targetPlayerCardId: id};
+    } else {
+      playCardDto = {playerCardId: this.selectedCard?.id as number, targetPlayerId: id}; 
+      
+    }
+    this.playerService.playFromHand(playCardDto).subscribe(resp => console.log(resp));
+  }
+
+  public endTurn() {
+    this.playerService.endTurn().subscribe(resp => console.log(resp));
   }
 
   counter(i: number) {
@@ -60,6 +105,8 @@ export class OwnboardComponent implements OnInit {
   }
 
   switchPlayMode() {
-    this.playMode = !this.playMode;
+    if (this.canChangePlayMode) {
+      this.playMode = !this.playMode;
+    }
   }
 }

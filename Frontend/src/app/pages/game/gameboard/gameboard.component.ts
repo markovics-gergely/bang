@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Card, CharacterType, GameBoard, HoverEnum, RoleType } from 'src/app/models';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Card, CharacterType, GameBoard, HoverEnum, Permissions, PlayCardDto, RoleType, TargetPermission, TargetType } from 'src/app/models';
 import { GameboardService, Position } from 'src/app/services/game/gameboard.service';
 import { CardService } from 'src/app/services/game/card.service';
-import { stringify } from 'querystring';
 import { RoleService } from 'src/app/services/game/role.service';
 import { CharacterService } from 'src/app/services/game/character.service';
-import { environment } from 'src/environments/environment';
-import { TokenService } from 'src/app/services/authorization/token.service';
+import { PlayerService } from 'src/app/services/game/player.service';
+import { OwnboardComponent } from '../ownboard/ownboard.component';
 
 @Component({
   selector: 'app-gameboard',
@@ -16,25 +13,54 @@ import { TokenService } from 'src/app/services/authorization/token.service';
   styleUrls: ['./gameboard.component.css']
 })
 export class GameboardComponent implements OnInit {
+  @ViewChild(OwnboardComponent)
+  private ownBoard: OwnboardComponent | undefined;
+
   gameboard: GameBoard | undefined;
+  permissions: Permissions | undefined;
+  targetPermissions: TargetPermission | undefined;
+  playTargetNeeded: TargetType | undefined;
+
   hovered: boolean = false;
   hoveredCard: Card | undefined;
   hoveredRole: RoleType | undefined;
   hoveredCharacter: CharacterType | undefined;
 
   constructor(public gameBoardService: GameboardService, public cardService: CardService, public roleService: RoleService, public characterService: CharacterService,
-              private route: ActivatedRoute, private http: HttpClient, private tokenService: TokenService) { }
+              public playerService: PlayerService) { }
 
   ngOnInit(): void {
-    this.http.get<GameBoard[]>(`${environment.baseUrl}/api/bang/gameboard/all`).subscribe(resp => console.log(resp));
-    this.http.get<Card[]>(`${environment.baseUrl}/api/bang/cards`).subscribe(resp => console.log(resp));
-
     this.gameBoardService.getGameBoard()
-      .subscribe(resp => {this.gameboard = resp; console.log(resp);})
+      .subscribe(resp => {
+        this.gameboard = resp; 
+        this.playerService.getPermissions()
+          .subscribe(resp => this.permissions = resp);
+      });
+    
   }
 
   public getPlayerByPosition(pos: Position) {
     return this.gameBoardService.getPlayerByPosition(pos, this.gameboard?.otherPlayers);
+  }
+
+  public discardFromDrawable() {
+    this.gameBoardService.discardFromDrawable().subscribe(resp => console.log(resp));
+  }
+
+  public playCardSelected(target: TargetType) {
+    this.playTargetNeeded = target;
+    if (target == TargetType.TargetCard) {
+      this.targetPermissions = {canTargetCards: true};
+    } else if (target == TargetType.TargetPlayer) {
+      this.targetPermissions = {canTargetPlayers: true};
+    } else if (target == TargetType.TargetPlayerOrCard) {
+      this.targetPermissions = {canTargetCards: true, canTargetPlayers: true}
+    }
+    console.log(this.ownBoard?.selectedCard);
+  }
+
+  public getCardTarget(selectData: { id: number | undefined, isCard: boolean }) {
+    this.ownBoard?.playCardFromTarget(selectData.id as number, selectData.isCard);
   }
 
   public setCardHovered(hoverData: {data: string, type: HoverEnum}) {
@@ -67,11 +93,6 @@ export class GameboardComponent implements OnInit {
         this.hovered = false;
         this.hoveredCard = undefined;
       }
-    } else {
-      this.hovered = false;
-      this.hoveredCard = undefined;
-      this.hoveredCharacter = undefined;
-      this.hoveredRole = undefined;
     }
   }
 

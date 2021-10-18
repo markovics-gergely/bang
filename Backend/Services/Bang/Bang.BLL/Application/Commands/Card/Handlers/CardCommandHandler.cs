@@ -9,21 +9,27 @@ using System.Threading;
 
 using AutoMapper;
 using MediatR;
+using Bang.DAL.Domain.Constants.Enums;
 
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class CardCommandHandler :
         IRequestHandler<CreateGameBoardCardCommand, long>,
         IRequestHandler<CreatePlayerCardCommand, long>,
-        IRequestHandler<PlayCardCommand, Unit>
+        IRequestHandler<PlayCardCommand, Unit>,
+        IRequestHandler<DiscardCardCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ICardStore _cardStore;
+        private readonly IPlayerStore _playerStore;
+        private readonly IGameBoardStore _gameBoardStore;
 
-        public CardCommandHandler(IMapper mapper, ICardStore cardStore)
+        public CardCommandHandler(IMapper mapper, ICardStore cardStore, IPlayerStore playerStore, IGameBoardStore gameBoardStore)
         {
             _mapper = mapper;
             _cardStore = cardStore;
+            _playerStore = playerStore;
+            _gameBoardStore = gameBoardStore;
         }
 
         public async Task<long> Handle(CreatePlayerCardCommand request, CancellationToken cancellationToken)
@@ -40,7 +46,25 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(PlayCardCommand request, CancellationToken cancellationToken)
         {
-            await _cardStore.PlayCardAsync(request.HandPlayerCardId, cancellationToken);
+            if (request.PlayCardDto.TargetPlayerCardId == null && request.PlayCardDto.TargetPlayerId == null)
+            {
+                await _gameBoardStore.PlayCardAsync(request.PlayCardDto.PlayerCardId, cancellationToken);
+            }
+            else if (request.PlayCardDto.TargetPlayerCardId != null)
+            {
+                await _gameBoardStore.PlayCardAsync(request.PlayCardDto.PlayerCardId, (long)request.PlayCardDto.TargetPlayerCardId, false, cancellationToken);
+            }
+            else
+            {
+                await _gameBoardStore.PlayCardAsync(request.PlayCardDto.PlayerCardId, (long)request.PlayCardDto.TargetPlayerId, true, cancellationToken);
+            }
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(DiscardCardCommand request, CancellationToken cancellationToken)
+        {
+            await _playerStore.DiscardCardAsync(request.PlayerCardId, cancellationToken);
+            await _gameBoardStore.SetGameBoardPhaseAsync(PhaseEnum.Throwing, cancellationToken);
             return Unit.Value;
         }
     }

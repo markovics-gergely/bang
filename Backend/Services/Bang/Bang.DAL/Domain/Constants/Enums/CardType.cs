@@ -49,14 +49,5 @@
                 default: return false;
             }
         }
-
-        public static bool NeedsTarget(this CardType type)
-        {
-            switch (type)
-            {
-                case CardType.Jail: return true;
-                default: return false;
-            }
-        }
     }
 }

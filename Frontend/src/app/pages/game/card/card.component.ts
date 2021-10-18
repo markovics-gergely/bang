@@ -10,22 +10,29 @@ import { CardService } from 'src/app/services/game/card.service';
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.css']
+  styleUrls: ['./card.component.css'],
+  host: {
+    '[style.height.px]':'height',
+    '[style.width.px]':'width',
+    '[style.--glow-color]':'glowColor'
+  }
 })
 export class CardComponent implements OnInit {
   @Input() card: Card | undefined;
   @Output() cardHoverEvent = new EventEmitter<string>();
-  @Input() public playMode: boolean | undefined;
-  public glowColor: string | undefined;
+
+  @Input() public width: number | undefined;
+  @Input() public height: number | undefined;
+  @Input() public glowColor: string | undefined;
   
   constructor(private cardService: CardService) { }
 
   ngOnInit(): void {
+    
   }
 
   ngOnChanges() {
-    this.glowColor = this.playMode ? '#11b314' : '#e6c612';
-    console.log(this.playMode);
+    console.log(this.glowColor);
   }
 
   public getCardBack(type: string) {

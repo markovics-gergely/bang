@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './pages/menu/friend/friend.component';
 import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 import { ChatComponent } from './pages/chat/chat.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ChatComponent } from './pages/chat/chat.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgScrollbarModule
   ],
   providers: [
     {

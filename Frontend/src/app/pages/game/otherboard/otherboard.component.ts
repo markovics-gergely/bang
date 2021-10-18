@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CharacterType, HoverEnum, OtherPlayer, RoleType } from 'src/app/models';
+import { Card, CharacterType, HoverEnum, OtherPlayer, Permissions, RoleType, TargetPermission } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 import { CharacterService } from 'src/app/services/game/character.service';
 import { RoleService } from 'src/app/services/game/role.service';
@@ -12,15 +12,34 @@ import { RoleService } from 'src/app/services/game/role.service';
 })
 export class OtherboardComponent implements OnInit {
   @Input() player: OtherPlayer | undefined;
+  @Input() permissions: Permissions | undefined;
+  @Input() targetPermissions: TargetPermission | undefined;
   @Output() hoverItemEvent = new EventEmitter<{ data: string, type: HoverEnum }>();
+  @Output() selectEvent = new EventEmitter<{ id: number | undefined, isCard: boolean }>();
 
-  constructor(private http: HttpClient, public roleService: RoleService, public characterService: CharacterService, public cardService: CardService) { }
+  constructor(public roleService: RoleService, public characterService: CharacterService, public cardService: CardService) { }
 
   ngOnInit(): void {
   }
 
   counter(i: number) {
     return new Array(i);
+  }
+
+  getTableClickable(): boolean {
+    if(this.targetPermissions) {
+      return this.targetPermissions.canTargetCards != undefined;
+    }
+    //TODO permissions
+    return true;
+  }
+
+  getPlayerClickable(): boolean {
+    if(this.targetPermissions) {
+      return this.targetPermissions.canTargetPlayers != undefined;
+    }
+    //TODO permissions
+    return true;
   }
 
   setCharacterHovered(e: MouseEvent, inside: boolean) {
@@ -45,5 +64,13 @@ export class OtherboardComponent implements OnInit {
     else {
       this.hoverItemEvent.emit(undefined);
     }
+  }
+
+  playerSelected() {
+    this.selectEvent.emit({ id: this.player?.id, isCard: false });
+  }
+
+  cardSelected(card: Card) {
+    this.selectEvent.emit({ id: card.id, isCard: true });
   }
 }

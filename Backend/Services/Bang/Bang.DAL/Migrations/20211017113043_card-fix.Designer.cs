@@ -4,14 +4,16 @@ using Bang.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    partial class BangDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211017113043_card-fix")]
+    partial class cardfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

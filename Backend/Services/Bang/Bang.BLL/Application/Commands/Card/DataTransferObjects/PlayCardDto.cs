@@ -4,7 +4,8 @@ namespace Bang.BLL.Application.Commands.DataTransferObjects
 {
     public class PlayCardDto
     {
-        public long PlayerId { get; set; }
-        public CardType CardType { get; set; }
+        public long PlayerCardId { get; set; }
+        public long? TargetPlayerId { get; set; }
+        public long? TargetPlayerCardId { get; set; }
     }
 }

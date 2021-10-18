@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { GameBoard, OtherPlayer, Player, PostGameBoard } from '../../models';
+import { Card, GameBoard, OtherPlayer, Player, PostGameBoard } from '../../models';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +36,10 @@ export class GameboardService {
 
   public postGameBoard(userIds: PostGameBoard): Observable<Object> {
     return this.client.post(`${environment.baseUrl}/api/bang/gameboard`, userIds)
+  }
+
+  public discardFromDrawable(): Observable<Card> {
+    return this.client.post<Card>(`${environment.baseUrl}/api/bang/gameboard/discard-card-from-drawable`, undefined)
   }
 
   constructor(private client: HttpClient) { }

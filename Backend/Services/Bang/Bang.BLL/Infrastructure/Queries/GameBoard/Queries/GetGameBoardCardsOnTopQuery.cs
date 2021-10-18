@@ -8,12 +8,10 @@ namespace Bang.BLL.Infrastructure.Queries.Queries
 {
     public class GetGameBoardCardsOnTopQuery : IRequest<IEnumerable<FrenchCardViewModel>>
     {
-        public long Id { get; set; }
         public int Count { get; set; }
 
-        public GetGameBoardCardsOnTopQuery(long id, int count)
+        public GetGameBoardCardsOnTopQuery(int count)
         {
-            Id = id;
             Count = count;
         }
     }

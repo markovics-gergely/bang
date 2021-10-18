@@ -9,8 +9,8 @@ using Bang.DAL.Domain.Constants.Enums;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Application.Commands.Commands;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using Bang.BLL.Application.Commands.DataTransferObjects;
 
 namespace Bang.API.Controllers
 {
@@ -42,10 +42,20 @@ namespace Bang.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
-        [HttpPut("play-card/{playerCardId}")]
-        public async Task<ActionResult> PlayCardAsync(long playerCardId, CancellationToken cancellationToken)
+        [HttpPut("play-card")]
+        public async Task<ActionResult> PlayCardAsync([FromBody] PlayCardDto playCardDto, CancellationToken cancellationToken)
         {
-            var command = new PlayCardCommand(playerCardId);
+            var command = new PlayCardCommand(playCardDto);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return new NoContentResult();
+        }
+
+        [HttpPut("discard-card/{playerCardId}")]
+        public async Task<ActionResult> DiscardCardAsync(long playerCardId, CancellationToken cancellationToken)
+        {
+            var command = new DiscardCardCommand(playerCardId);
 
             await _mediator.Send(command, cancellationToken);
 

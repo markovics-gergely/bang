@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Card, CardColorType, CardType } from '../../models';
+import { Card, CardColorType, CardType, TargetType } from '../../models';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export class CardService {
     return weapon;
   }
 
-  public isWeaponType(cardType: CardType) {
+  public isWeaponType(cardType: CardType): boolean {
     switch(cardType) {
       case CardType.Karabine:
       case CardType.Remingtion:
@@ -49,6 +49,17 @@ export class CardService {
       case CardType.Volcanic:
         return true;
       default: return false;
+    }
+  }
+
+  public needsTargetPlayerOrCard(cardType: CardType): TargetType {
+    switch(cardType) {
+      case CardType.Bang:
+      case CardType.Duel:
+      case CardType.Jail: return TargetType.TargetPlayer;
+      case CardType.Panic:
+      case CardType.CatBalou: return TargetType.TargetPlayerOrCard;
+      default: return TargetType.None;
     }
   }
 }

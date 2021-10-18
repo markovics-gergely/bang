@@ -5,6 +5,10 @@ namespace Bang.API.SignalR
 {
     public class GameHub : Hub<IGameHubClient>
     {
+        public GameHub()
+        {
+
+        }
 
         public Task JoinRoom(string roomName)
         {
@@ -15,5 +19,7 @@ namespace Bang.API.SignalR
         {
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
         }
+
+        public string GetConnectionId() => Context.ConnectionId;
     }
 }

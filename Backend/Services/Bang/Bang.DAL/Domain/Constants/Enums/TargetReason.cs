@@ -10,7 +10,9 @@ namespace Bang.DAL.Domain.Constants.Enums
     {
         Bang,
         Duel,
+        Gatling,
         GeneralStore,
-        Indians
+        Indians,
+        KitCarlsonDraw
     }
 }
