@@ -38,7 +38,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         {
             if (await _dbContext.Users.AnyAsync(u => u.UserName == account.UserName, cancellationToken))
             {
-                throw new InvalidParameterException("A felhasználónév már foglalt!");
+                throw new InvalidParameterException("Username is already used!");
             }
 
             var result = await _userManager.CreateAsync(account, password);

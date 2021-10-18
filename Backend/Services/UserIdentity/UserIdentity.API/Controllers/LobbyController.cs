@@ -27,6 +27,14 @@ namespace UserIdentity.API.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("actual-lobby")]
+        public async Task<ActionResult<long>> GetLobbyAccountsAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetActualLobbyIdQuery();
+
+            return await _mediator.Send(query, cancellationToken);
+        }
+
         [HttpGet("{id}/users")]
         public async Task<ActionResult<IEnumerable<LobbyAccountViewModel>>> GetLobbyAccountsAsync(long id, CancellationToken cancellationToken)
         {
@@ -36,7 +44,7 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateLobbyAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<long>> CreateLobbyAsync(CancellationToken cancellationToken)
         {
             var command = new CreateLobbyCommand();
 

@@ -17,7 +17,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
     public class LobbyCommandHandler : 
         IRequestHandler<CreateLobbyAccountCommand, Unit>,
         IRequestHandler<DeleteLobbyAccountCommand, Unit>,
-        IRequestHandler<CreateLobbyCommand, string>,
+        IRequestHandler<CreateLobbyCommand, long>,
         IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>,
@@ -35,7 +35,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             _lobbyStore = lobbyStore;
             _accountStore = accountStore;
             _friendStore = friendStore;
-            _httpClient = httpClientFactory.CreateClient("http://localhost:15200");
+            _httpClient = httpClientFactory.CreateClient("bang");
         }
 
         public async Task<Unit> Handle(CreateLobbyAccountCommand request, CancellationToken cancellationToken)
@@ -55,7 +55,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             return Unit.Value;
         }
 
-        public async Task<string> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
         {
             var ownId = _accountStore.GetActualAccountId();
 

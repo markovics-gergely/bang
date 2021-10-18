@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { RegistrationDto } from 'src/app/models';
@@ -6,6 +6,7 @@ import { AuthorizationService } from 'src/app/services/authorization/authorizati
 import { GameboardService } from 'src/app/services/game/gameboard.service';
 import { TokenService } from 'src/app/services/authorization/token.service';
 import { MenuService } from 'src/app/services/menu/menu.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-menu',
@@ -18,11 +19,13 @@ export class MenuComponent implements OnInit {
     private tokenService: TokenService, 
     private authService: AuthorizationService, 
     private gameBoardService: GameboardService, 
+    private snackbar: SnackbarService,
     private router: Router,
     private menuService: MenuService
   ) { }
 
   ngOnInit(): void {
+
   }
 
   createGameBoard() {
@@ -48,30 +51,34 @@ export class MenuComponent implements OnInit {
 
   createLobby(){
     this.menuService.createLobby().subscribe(
-      res => {
-        console.log(res);
+      response => {
+        console.log(response);
 
+        this.snackbar.open("Lobby created!");
         this.router.navigate(['lobby']);
       },
-      err => {
-        console.log(err);
+      error => {
+        console.log(error);
+
+        this.snackbar.open(error.error.title);
       }
     );
   }
 
-  joinLobby(){
+  joinLobby() {
 
   }
 
-  viewHistory(){
+  viewHistory() {
     this.router.navigateByUrl('/history');
   }
 
-  logout(){
-
+  logout() {
+    this.tokenService.deleteLocalStorage();
+    this.router.navigateByUrl('/login');
   }
 
-  deleteAccount(){
+  deleteAccount() {
 
   }
 }

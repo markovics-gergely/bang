@@ -7,10 +7,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SnackbarService {
 
   constructor(
-    private snackBar: MatSnackBar,
-  ) { }
+    private snackBar: MatSnackBar
+  ) {}
 
   open(message: string) {
-    this.snackBar.open(message, '', {duration: 2000});
+    this.snackBar.open(message, 'Close', {
+      duration: 3000, 
+      panelClass: ['snackbar']
+    });
   }
 }

@@ -18,7 +18,11 @@ export class RegistrationComponent implements OnInit {
     confirmedPassword: new FormControl('', Validators.required)
   });
 
-  constructor(private authorizationService: AuthorizationService, private router: Router/*, private snackbar: SnackbarService*/) { }
+  constructor(
+    private authorizationService: AuthorizationService, 
+    private snackbar: SnackbarService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
@@ -31,14 +35,16 @@ export class RegistrationComponent implements OnInit {
 
     
     this.authorizationService.registration(registrationDto).subscribe(
-      res => {
-        console.log(res)
+      response => {
+        console.log(response)
 
-        //this.snackbar.open("Registration is successful!")
+        this.snackbar.open("Registration is successful!")
         this.router.navigate(['login']);
       },
-      err => {
-        console.log(err)
+      error => {
+        console.log(error)
+
+        this.snackbar.open(error.error.title);
       } 
     );  
   }

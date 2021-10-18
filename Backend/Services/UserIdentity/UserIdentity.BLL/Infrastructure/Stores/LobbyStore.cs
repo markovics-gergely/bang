@@ -24,6 +24,14 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _accountStore = accountStore;
         }
 
+        public async Task<long> GetActualLobbyIdAsync(string accountId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.LobbyAccounts
+                .Where(la => la.AccountId == accountId)
+                .Select(l => l.LobbyId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
         {
             return await _dbContext.LobbyAccounts
@@ -89,7 +97,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             }
         }
 
-        public async Task<string> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
+        public async Task<long> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
         {
             if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
             {
@@ -109,7 +117,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             await CreateLobbyAccountAsync(accountId, password, cancellationToken);
 
-            return password;
+            return lobby.Id;
         }
 
         public async Task<string> GetPasswordByAccountIdAsync(string accountId, CancellationToken cancellationToken)

@@ -32,6 +32,18 @@ export class AuthorizationService {
     return this.client.post(`${environment.baseUrl}/api/identity/login`, body.toString(), {headers: headers})
   }
 
+  public refresh(refreshToken: string): Observable<Object> {
+    let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    let body = new URLSearchParams();
+
+    body.set('grant_type', AuthorizationService.grant_type);
+    body.set('refresh_token', refreshToken);
+    body.set('client_id', AuthorizationService.client_id);
+    body.set('client_secret', AuthorizationService.client_secret);
+
+    return this.client.post(`${environment.baseUrl}/api/identity/login`, body.toString(), {headers: headers})
+  }
+
   public getActualUserId(): Observable<string> {
     return this.client.get(`${environment.baseUrl}/api/identity/actual-account`, {responseType: 'text'});
   }

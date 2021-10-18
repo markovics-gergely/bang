@@ -16,7 +16,7 @@ namespace Bang.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class CardController
     {
         private readonly IMediator _mediator;
