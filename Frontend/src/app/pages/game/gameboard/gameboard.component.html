@@ -1,4 +1,4 @@
-<div class="container-fluid max-height" *ngIf="gameboard">
+<div class="container-fluid max-height" *ngIf="gameBoardService.gameboard">
     <div class="row upper-row justify-content-center">
         <div class="col-md-3 order-md-1 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
             <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"></app-otherboard>
@@ -23,10 +23,10 @@
             <div class="row board">
                 <div class="col-12 h-50 d-flex justify-content-center align-items-center">
                     <div class="card-on-board">
-                            <app-card [width]="91" [height]="151" (cardHoverEvent)="setOnlyCardHovered($event)" class="h-100" *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="gameboard.lastDiscardedGameBoardCard"></app-card>
+                            <app-card [width]="91" [height]="151" (cardHoverEvent)="setOnlyCardHovered($event)" class="h-100" *ngIf="gameBoardService.gameboard.lastDiscardedGameBoardCard" [card]="gameBoardService.gameboard.lastDiscardedGameBoardCard"></app-card>
                     </div>
                     <div class="card-on-board">
-                        <img class="h-100 img-fluid rounded" src="../../../assets/cards/Cards/Background.png" (click)="discardFromDrawable()"
+                        <img class="h-100 img-fluid rounded" src="../../../assets/cards/Cards/Background.png" (click)="cardPackAction()"
                             alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" />
                     </div>
                     
@@ -42,7 +42,7 @@
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
-        <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="setCardHovered($event)" [player]="gameboard.ownPlayer" [hoverActive]="hovered"></app-ownboard>
+        <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="setCardHovered($event)" [player]="gameBoardService.gameboard.ownPlayer" [hoverActive]="hovered"></app-ownboard>
     </div>
     <app-chat [fromBottom]="200" [animated]="true"></app-chat>
 </div>

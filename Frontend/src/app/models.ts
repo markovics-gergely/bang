@@ -108,6 +108,7 @@ export interface Player {
     placement: number;
     handPlayerCards: Card[];
     tablePlayerCards: Card[];
+    targetablePlayers: number[];
 }
 
 export interface OtherPlayer {

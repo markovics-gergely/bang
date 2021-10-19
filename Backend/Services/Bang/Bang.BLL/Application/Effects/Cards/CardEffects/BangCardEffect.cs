@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Bang.BLL.Application.Effects.Cards.CardEffects
 {
-    public class BangCardEffect : ActiveCardEffect
+    public class BangCardEffect : TargetPlayerCardEffect
     {
+        public BangCardEffect() : base(TargetReason.Bang) { }
+
         public override async Task Execute(CardEffectQuery query, CancellationToken cancellationToken)
         {
             var gameboard = await query.GameBoardStore.GetGameBoardAsync(query.PlayerCard.Player.GameBoardId, cancellationToken);
             if (query.PlayerCard.PlayerId == gameboard.ActualPlayerId)
             {
-                if (query.TargetPlayer == null) throw new ArgumentNullException(nameof(query), "Bang TargetPlayer not set");
-                await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(query.TargetPlayer.Id, cancellationToken);
-                await query.GameBoardStore.SetGameBoardTargetReasonAsync(TargetReason.Bang, cancellationToken);
+                await base.Execute(query, cancellationToken);
             }
             else if (query.PlayerCard.PlayerId == gameboard.TargetedPlayerId)
             {
@@ -38,8 +38,8 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                         await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(next.Id, cancellationToken);
                     }
                 }
+                await base.Execute(query, cancellationToken);
             }
-            await base.Execute(query, cancellationToken);
         }
     }
 }

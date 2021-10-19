@@ -39,5 +39,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<long> DrawGameBoardCardAsync(long gameBoardCardId, long playerId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, long playerId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, CancellationToken cancellationToken);
+        Task DrawGameBoardCardsToScatteredAsync(int count, CancellationToken cancellationToken);
+        Task DrawGameBoardCardsToScatteredByPlayersAliveAsync(CancellationToken cancellationToken);
     }
 }

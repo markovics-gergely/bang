@@ -33,9 +33,9 @@ namespace Bang.BLL.Application.Effects.Cards
                 { CardType.Panic, new PanicCardEffect() },
                 { CardType.Stagecoach, new DrawCardCardEffect(2) },
                 { CardType.WellsFargo, new DrawCardCardEffect(3) },
-                { CardType.Bang, new TargetPlayerCardEffect(TargetReason.Bang) },
+                { CardType.Bang, new BangCardEffect() },
                 { CardType.Duel, new TargetPlayerCardEffect(TargetReason.Duel) },
-                { CardType.GeneralStore, new TargetPlayerCardEffect(TargetReason.GeneralStore) },
+                { CardType.GeneralStore, new GeneralStoreCardEffect() },
                 { CardType.Gatling, new TargetNextPlayerCardEffect(TargetReason.Gatling) },
                 { CardType.Indians, new TargetNextPlayerCardEffect(TargetReason.Indians) }
             };

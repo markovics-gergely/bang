@@ -214,6 +214,7 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
         {
             Player player = await _dbContext.Players.Where(c => c.UserId == userId)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
             return await _dbContext.GameBoards.Where(g => g.Players.Contains(player))
@@ -221,10 +222,8 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
-                .Include(g => g.ActualPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
-                .Include(g => g.ActualPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
-                .Include(g => g.TargetedPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
-                .Include(g => g.TargetedPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(d => d.Card)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
@@ -436,6 +435,31 @@ namespace Bang.BLL.Infrastructure.Stores
             }
             await _playerStore.AddPlayedCardAsync(playerCard.Card.CardType, cancellationToken);
             await SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+        }
+
+        public async Task DrawGameBoardCardsToScatteredAsync(int count, CancellationToken cancellationToken)
+        {
+            var cardsOnTop = await GetGameBoardCardsOnTopAsync(count, cancellationToken);
+            foreach (var card in cardsOnTop)
+            {
+                ScatteredGameBoardCard newCard = new ScatteredGameBoardCard()
+                {
+                    GameBoardId = card.GameBoardId,
+                    CardId = card.CardId,
+                    CardColorType = card.CardColorType,
+                    FrenchNumber = card.FrenchNumber
+                };
+                await DeleteGameBoardCardAsync(card.Id, cancellationToken);
+                await _cardStore.CreateGameBoardCardAsync(newCard, cancellationToken);
+            }
+        }
+
+        public async Task DrawGameBoardCardsToScatteredByPlayersAliveAsync(CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameboard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            var aliveCount = await _playerStore.GetRemainingPlayerCountAsync(gameboard.Id, cancellationToken);
+            await DrawGameBoardCardsToScatteredAsync(aliveCount, cancellationToken);
         }
     }
 }

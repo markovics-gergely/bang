@@ -20,5 +20,6 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
 
         public ICollection<FrenchCardViewModel> HandPlayerCards { get; set; }
         public ICollection<FrenchCardViewModel> TablePlayerCards { get; set; }
+        public ICollection<long> TargetablePlayers { get; set; }
     }
 }

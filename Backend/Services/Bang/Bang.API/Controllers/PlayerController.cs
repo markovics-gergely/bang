@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Bang.API.SignalR;
 
 namespace Bang.API.Controllers
 {
@@ -19,10 +21,12 @@ namespace Bang.API.Controllers
     public class PlayerController
     {
         private readonly IMediator _mediator;
+        private readonly IHubContext<GameHub, IGameHubClient> _hub;
 
-        public PlayerController(IMediator mediator)
+        public PlayerController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hub)
         {
             _mediator = mediator;
+            _hub = hub;
         }
 
         [HttpGet("{id}")]
@@ -63,6 +67,13 @@ namespace Bang.API.Controllers
             var command = new DecrementPlayerHealthCommand();
 
             await _mediator.Send(command, cancellationToken);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
 
             return new NoContentResult();
         }

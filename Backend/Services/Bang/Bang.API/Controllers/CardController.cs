@@ -11,6 +11,9 @@ using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Application.Commands.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Bang.BLL.Application.Commands.DataTransferObjects;
+using Microsoft.AspNetCore.SignalR;
+using Bang.API.SignalR;
+using Bang.DAL.Domain.Constants;
 
 namespace Bang.API.Controllers
 {
@@ -20,10 +23,12 @@ namespace Bang.API.Controllers
     public class CardController
     {
         private readonly IMediator _mediator;
+        private readonly IHubContext<GameHub, IGameHubClient> _hub;
 
-        public CardController(IMediator mediator)
+        public CardController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hub)
         {
             _mediator = mediator;
+            _hub = hub;
         }
 
         [HttpGet("{type}")]
@@ -49,6 +54,13 @@ namespace Bang.API.Controllers
 
             await _mediator.Send(command, cancellationToken);
 
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
+
             return new NoContentResult();
         }
 
@@ -58,6 +70,30 @@ namespace Bang.API.Controllers
             var command = new DiscardCardCommand(playerCardId);
 
             await _mediator.Send(command, cancellationToken);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
+
+            return new NoContentResult();
+        }
+
+        [HttpPut("draw-card/{count}")]
+        public async Task<ActionResult> DrawCardAsync(int count, CancellationToken cancellationToken)
+        {
+            var command = new DrawCardCommand(count);
+
+            await _mediator.Send(command, cancellationToken);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
 
             return new NoContentResult();
         }
