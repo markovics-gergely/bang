@@ -102,7 +102,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
 
         public async Task<GameBoardByUserViewModel> Handle(GetGameBoardByUserIdQuery request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.GetGameBoardByUserAsync(request.UserId, cancellationToken);
+            var domain = await _gameBoardStore.GetGameBoardByUserIdAsync(request.UserId, cancellationToken);
             List<Player> players = new List<Player>(domain.Players);
             Player player = players.Find(p => p.UserId == request.UserId) ?? throw new EntityNotFoundException("Player not found");
             var targetables = (await _playerStore.GetTargetablePlayersAsync(player.Id, cancellationToken)).Select(p => p.Id);

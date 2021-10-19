@@ -214,6 +214,25 @@ namespace Bang.BLL.Infrastructure.Stores
         public async Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
         {
             Player player = await _dbContext.Players.Where(c => c.UserId == userId)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+            return await _dbContext.GameBoards.Where(g => g.Players.Contains(player))
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ActualPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.ActualPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.TargetedPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.TargetedPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoard not found!");
+        }
+
+        public async Task<GameBoard> GetGameBoardByUserIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            Player player = await _dbContext.Players.Where(c => c.UserId == userId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
