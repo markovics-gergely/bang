@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/models';
-import { MenuService } from 'src/app/services/menu/menu.service';
+import { LobbyService } from 'src/app/services/menu/lobby.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
@@ -10,32 +10,31 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
   styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent implements OnInit, OnDestroy {
-  private lobbyId: number = -1;
-  private players: Account[] = [];
+  private lobbyId: number | undefined;
+  private players: Account[] | undefined;
 
   constructor(    
     private snackbar: SnackbarService,
     private router: Router,
-    private menuService: MenuService
+    private lobbyService: LobbyService
   ) {}
 
   ngOnInit(): void {
-    this.menuService.getActualLobbyId().subscribe(
+    this.lobbyService.getActualLobbyId().subscribe(
       response => {
         console.log(response);
 
         this.lobbyId = response;
-      },
-      error => {
-        console.log(error);
-      }
-    );
-
-    this.menuService.getLobbyUsers(this.lobbyId).subscribe(
-      response => {
-        console.log(response);
-
-        this.players = response;
+        this.lobbyService.getLobbyUsers(response).subscribe(
+          response2 => {
+            console.log(response2);
+    
+            this.players = response2;
+          },
+          error2 => {
+            console.log(error2);
+          }
+        );
       },
       error => {
         console.log(error);
@@ -44,6 +43,6 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.menuService.leaveLobby(this.lobbyId)
+    this.lobbyService.leaveLobby(this.lobbyId)
   }
 }

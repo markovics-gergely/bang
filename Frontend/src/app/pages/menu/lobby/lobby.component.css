@@ -1,9 +1,9 @@
-.lobby {
+/*.lobby {
     background-image: url("../../../../assets/images/lobbyBackground.png");
     background-size: 100% ;  
     background-size: cover; 
     height: 100vh;
-}
+}*/
 
 .friend-list {
     width: 300px;

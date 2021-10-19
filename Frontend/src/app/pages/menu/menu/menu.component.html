@@ -6,9 +6,12 @@
     <div>
         <button type="button" class="lobby-button" (click)="createLobby()"> Create lobby </button>
     </div>
-    <div>
-        <button type="button" class="lobby-button" (click)="joinLobby()"> Join lobby </button>
-    </div>
+
+    <form [formGroup]="joinLobbyForm" (ngSubmit)="joinLobby()" class="join-lobby">
+        <input type="password" placeholder="Password" class="form-control" formControlName="password">
+        <button type="submit" class="btn btn-success"> Join lobby </button>
+    </form>
+
 
     <div>
         <button type="button" class="history-button" (click)="viewHistory()"> History </button>

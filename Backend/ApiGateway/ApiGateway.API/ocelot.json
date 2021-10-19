@@ -36,6 +36,8 @@
       "UpstreamPathTemplate": "/api/identity/actual-account",
       "UpstreamHttpMethod": [ "Get" ]
     },
+
+
     {
       "DownstreamPathTemplate": "/Lobby",
       "DownstreamScheme": "http",
@@ -48,6 +50,44 @@
       "UpstreamPathTemplate": "/api/lobby",
       "UpstreamHttpMethod": [ "Post" ]
     },
+    {
+      "DownstreamPathTemplate": "/Lobby/actual-lobby",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/actual-lobby",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Lobby/{id}/users",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/{id}/users",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Lobby/connect/{password}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/connect/{password}",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+
+
     {
       "DownstreamPathTemplate": "/Card",
       "DownstreamScheme": "http",
