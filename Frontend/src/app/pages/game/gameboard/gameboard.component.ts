@@ -16,7 +16,6 @@ export class GameboardComponent implements OnInit {
   @ViewChild(OwnboardComponent)
   private ownBoard: OwnboardComponent | undefined;
 
-  gameboard: GameBoard | undefined;
   permissions: Permissions | undefined;
   targetPermissions: TargetPermission | undefined;
   playTargetNeeded: TargetType | undefined;
@@ -30,21 +29,29 @@ export class GameboardComponent implements OnInit {
               public playerService: PlayerService) { }
 
   ngOnInit(): void {
+    this.gameBoardService.startConnection();
+
     this.gameBoardService.getGameBoard()
       .subscribe(resp => {
-        this.gameboard = resp; 
-        this.playerService.getPermissions()
-          .subscribe(resp => this.permissions = resp);
+        this.gameBoardService.gameboard = resp; 
+        /*this.playerService.getPermissions()
+          .subscribe(resp => this.permissions = resp);*/
       });
     
   }
 
   public getPlayerByPosition(pos: Position) {
-    return this.gameBoardService.getPlayerByPosition(pos, this.gameboard?.otherPlayers);
+    return this.gameBoardService.getPlayerByPosition(pos, this.gameBoardService.gameboard?.otherPlayers);
   }
 
-  public discardFromDrawable() {
-    this.gameBoardService.discardFromDrawable().subscribe(resp => console.log(resp));
+  public cardPackAction() {
+    this.cardService.drawCards(2).subscribe(resp => console.log(resp));
+    if(this.permissions?.canDiscardFromDrawCard) {
+      this.gameBoardService.discardFromDrawable();
+    }
+    else if (this.permissions?.canDrawCard) {
+      this.cardService.drawCards(2).subscribe(resp => console.log(resp));
+    }
   }
 
   public playCardSelected(target: TargetType) {

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
 using System.Threading.Tasks;
 
 namespace Bang.API.SignalR
 {
     public interface IGameHubClient
     {
-        Task GetGameBoard();
+        Task RefreshBoard(GameBoardByUserViewModel gameBoard);
         Task AddToGroup(string groupName);
         Task RemoveFromGroup(string groupName);
     }

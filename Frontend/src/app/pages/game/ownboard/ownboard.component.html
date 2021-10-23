@@ -41,9 +41,8 @@
                     </div>
                 </div>
                 <div class="col-4 gun">
-                    <p>Weapon</p>
                     <div class="card-container">
-                        <app-card [glowColor]="playMode ? '#11b314' : '#e6c612'" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+                        <app-card [glowColor]="playMode ? '#11b314' : '#e6c612'" [width]="82" [height]="127" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
                     </div>
                 </div>
             </div>

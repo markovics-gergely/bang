@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Card, CardColorType, CardType, TargetType } from '../../models';
 
 @Injectable({
@@ -7,6 +10,8 @@ import { Card, CardColorType, CardType, TargetType } from '../../models';
 export class CardService {
   private static assetPath: string = "../../assets/cards/";
 
+  constructor(private client: HttpClient) { }
+  
   public getCardBack(type: string) {
     return CardService.assetPath + "Cards/" + type + ".png";
   }
@@ -18,6 +23,10 @@ export class CardService {
   public getCardNumberFilter(number: string, cardColorType: CardColorType) {
     return CardService.assetPath + "French/numbers/" + 
                             (this.isRed(cardColorType) ? "red/" : "black/") + number + ".png";
+  }
+
+  public drawCards(count: number): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/card/draw-card/${count}`, undefined)
   }
 
   public isRed(cardColorType: CardColorType) {

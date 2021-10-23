@@ -14,6 +14,7 @@ namespace Bang.BLL.Application.Interfaces
     {
         Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken);
         Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken);
+        Task<GameBoard> GetGameBoardByUserIdAsync(string userId, CancellationToken cancellationToken);
         Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken);
 
         Task<IEnumerable<Card>> GetCardsOnTopAsync(int count, CancellationToken cancellationToken);
@@ -39,5 +40,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<long> DrawGameBoardCardAsync(long gameBoardCardId, long playerId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, long playerId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, CancellationToken cancellationToken);
+        Task DrawGameBoardCardsToScatteredAsync(int count, CancellationToken cancellationToken);
+        Task DrawGameBoardCardsToScatteredByPlayersAliveAsync(CancellationToken cancellationToken);
     }
 }

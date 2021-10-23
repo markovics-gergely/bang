@@ -17,7 +17,8 @@ namespace Bang.BLL.Application.Commands.Handlers
         IRequestHandler<CreateGameBoardCardCommand, long>,
         IRequestHandler<CreatePlayerCardCommand, long>,
         IRequestHandler<PlayCardCommand, Unit>,
-        IRequestHandler<DiscardCardCommand, Unit>
+        IRequestHandler<DiscardCardCommand, Unit>,
+        IRequestHandler<DrawCardCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ICardStore _cardStore;
@@ -65,6 +66,13 @@ namespace Bang.BLL.Application.Commands.Handlers
         {
             await _playerStore.DiscardCardAsync(request.PlayerCardId, cancellationToken);
             await _gameBoardStore.SetGameBoardPhaseAsync(PhaseEnum.Throwing, cancellationToken);
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(DrawCardCommand request, CancellationToken cancellationToken)
+        {
+            await _gameBoardStore.DrawGameBoardCardsFromTopAsync(request.Count, cancellationToken);
+            await _gameBoardStore.SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
             return Unit.Value;
         }
     }

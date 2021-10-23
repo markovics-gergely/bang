@@ -16,14 +16,5 @@ export class AppComponent {
    constructor(public gameboardService: GameboardService, private http: HttpClient) {}
 
    ngOnInit() {
-    this.gameboardService.startConnection();
-    this.gameboardService.addGetGameBoardListener();   
-    this.startHttpRequest();
-  }
-
-  private startHttpRequest = () => {
-    this.http.get('http://localhost:15300/character', httpOptions)
-      .subscribe(res => {
-      })
   }
 }

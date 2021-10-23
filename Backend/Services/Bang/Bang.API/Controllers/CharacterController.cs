@@ -10,6 +10,8 @@ using Bang.BLL.Infrastructure.Queries.Queries;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Bang.API.SignalR;
 
 namespace Bang.API.Controllers
 {
@@ -19,10 +21,12 @@ namespace Bang.API.Controllers
     public class CharacterController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IHubContext<GameHub, IGameHubClient> _hub;
 
-        public CharacterController(IMediator mediator)
+        public CharacterController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hub)
         {
             _mediator = mediator;
+            _hub = hub;
         }
 
         [HttpGet("{type}")]

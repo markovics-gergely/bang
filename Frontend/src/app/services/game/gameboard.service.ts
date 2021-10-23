@@ -4,6 +4,7 @@ import * as signalR from "@microsoft/signalr";
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Card, GameBoard, OtherPlayer, Player, PostGameBoard } from '../../models';
+import { AuthorizationService } from '../authorization/authorization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,35 +15,49 @@ export class GameboardService {
   private hubConnection: signalR.HubConnection | undefined;
   
   public startConnection = () => {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl(`${environment.bangBaseUrl}/game`)
-                            .build();
-    this.hubConnection
-      .start()
-      .then(() => console.log('Game connection started'))
-      .catch(err => console.log('Error while starting connection: ' + err))                        
+    this.auth.getActualUserId()
+      .subscribe(id => {
+        this.hubConnection = new signalR.HubConnectionBuilder()
+          .withUrl(`${environment.bangBaseUrl}/game?userid=${id}`)
+          .configureLogging(signalR.LogLevel.Information)
+          .build();
+
+        this.addrefreshBoardListener();
+        
+        this.hubConnection
+          .start()
+          .then(() => console.log('Game connection started'))
+          .catch(err => console.log('Error while starting connection: ' + err));
+      });                  
   }
 
-  public addGetGameBoardListener = () => {
-    this.hubConnection?.on('getGameBoard', (data) => {
+  public addrefreshBoardListener = () => {
+    this.hubConnection?.on('RefreshBoard', (data: GameBoard) => {
       this.gameboard = data;
-      console.log(data);
     })
   }
 
   public getGameBoard(): Observable<GameBoard> {
-    return this.client.get<GameBoard>(`${environment.baseUrl}/api/bang/gameboard/user`)
+    return this.client.get<GameBoard>(`${environment.baseUrl}/api/bang/gameboard/user`);
+  }
+
+  public getCardsOnTop(count: number): Observable<Card[]> {
+    return this.client.get<Card[]>(`${environment.baseUrl}/api/bang/gameboard/cards-on-top/${count}`);
   }
 
   public postGameBoard(userIds: PostGameBoard): Observable<Object> {
-    return this.client.post(`${environment.baseUrl}/api/bang/gameboard`, userIds)
+    return this.client.post(`${environment.baseUrl}/api/bang/gameboard`, userIds);
   }
 
   public discardFromDrawable(): Observable<Card> {
-    return this.client.post<Card>(`${environment.baseUrl}/api/bang/gameboard/discard-card-from-drawable`, undefined)
+    return this.client.post<Card>(`${environment.baseUrl}/api/bang/gameboard/discard-card-from-drawable`, undefined);
   }
 
-  constructor(private client: HttpClient) { }
+  public endTurn(): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined);
+  }
+
+  constructor(private client: HttpClient, private auth: AuthorizationService) { }
 
   public getPlayerByPosition(pos: Position, players: OtherPlayer[] | undefined): OtherPlayer | undefined {
     if(players) {

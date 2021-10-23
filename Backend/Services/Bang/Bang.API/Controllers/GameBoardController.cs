@@ -22,12 +22,12 @@ namespace Bang.API.Controllers
     public class GameBoardController
     {
         private readonly IMediator _mediator;
-        private readonly IHubContext<GameHub, IGameHubClient> _hubContext;
+        private readonly IHubContext<GameHub, IGameHubClient> _hub;
 
-        public GameBoardController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hubContext)
+        public GameBoardController(IMediator mediator, IHubContext<GameHub, IGameHubClient> hub)
         {
             _mediator = mediator;
-            _hubContext = hubContext;
+            _hub = hub;
         }
 
         [HttpGet("user")]
@@ -62,10 +62,25 @@ namespace Bang.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
+        [HttpGet("cards-on-top/{count}")]
+        public async Task<ActionResult<IEnumerable<FrenchCardViewModel>>> GetCardsOnTopAsync(int count, CancellationToken cancellationToken)
+        {
+            var query = new GetGameBoardCardsOnTopQuery(count);
+
+            return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
         [HttpPost]
         public async Task<ActionResult<long>> CreateGameBoardAsync([FromBody] GameBoardDto dto, CancellationToken cancellationToken)
         {
             var command = new CreateGameBoardCommand(dto);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
 
             return await _mediator.Send(command, cancellationToken);
         }
@@ -74,6 +89,13 @@ namespace Bang.API.Controllers
         public async Task ShuffleGameBoardCardsAsync(CancellationToken cancellationToken)
         {
             var command = new ShuffleGameBoardCardsCommand();
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
 
             await _mediator.Send(command, cancellationToken);
         }
@@ -84,6 +106,14 @@ namespace Bang.API.Controllers
             var command = new DiscardFromDrawableGameBoardCardCommand();
 
             var result = await _mediator.Send(command, cancellationToken);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
+
             return result;
         }
 
@@ -93,6 +123,14 @@ namespace Bang.API.Controllers
             var command = new EndGameBoardTurnCommand();
 
             await _mediator.Send(command, cancellationToken);
+
+            foreach (var users in GameHub.Connections)
+            {
+                var query = new GetGameBoardByUserIdQuery(users.Value);
+                var gameboard = await _mediator.Send(query, cancellationToken);
+                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+            }
+
             return new NoContentResult();
         }
     }
