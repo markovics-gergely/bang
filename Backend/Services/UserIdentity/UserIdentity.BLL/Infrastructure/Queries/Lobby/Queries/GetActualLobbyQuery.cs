@@ -6,7 +6,7 @@ using MediatR;
 
 namespace UserIdentity.BLL.Infrastructure.Queries.Queries
 {
-    public class GetActualLobbyIdQuery : IRequest<long>  
+    public class GetActualLobbyQuery : IRequest<LobbyViewModel>  
     {
     }
 }

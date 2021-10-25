@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using PasswordGenerator;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 
 namespace UserIdentity.BLL.Infrastructure.Stores
 {
@@ -24,11 +25,15 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             _accountStore = accountStore;
         }
 
-        public async Task<long> GetActualLobbyIdAsync(string accountId, CancellationToken cancellationToken)
+        public async Task<Lobby> GetActualLobbyAsync(string accountId, CancellationToken cancellationToken)
         {
-            return await _dbContext.LobbyAccounts
+            var lobbyId = await _dbContext.LobbyAccounts
                 .Where(la => la.AccountId == accountId)
                 .Select(l => l.LobbyId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return await _dbContext.Lobbies
+                .Where(l => l.Id == lobbyId)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

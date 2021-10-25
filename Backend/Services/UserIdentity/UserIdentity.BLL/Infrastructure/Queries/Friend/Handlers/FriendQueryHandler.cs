@@ -44,8 +44,8 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
                     if (acceptedFriends.Contains(acceptedFriend))
                     {
                         acceptedFriends.RemoveAll(f => 
-                            (f.SenderId == acceptedFriend.SenderId || f.SenderId == acceptedFriend.ReceiverId) && 
-                            f.ReceiverId == ownId);
+                            (f.ReceiverId == acceptedFriend.SenderId || f.ReceiverId == acceptedFriend.ReceiverId) && 
+                            f.SenderId == ownId);
                     }
                 }
             }
@@ -66,10 +66,6 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
                 if (!domain.Contains(unacceptedFriend))
                 {            
                     if(unacceptedFriend.ReceiverId == ownId)
-                    {
-                        unacceptedFriends.Add(unacceptedFriend.Switch());
-                    }
-                    else
                     {
                         unacceptedFriends.Add(unacceptedFriend);
                     }

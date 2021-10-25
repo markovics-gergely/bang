@@ -177,6 +177,17 @@ export interface Account {
     name: string;
 }
 
+export interface Friend {
+    id: string;
+    name: string;
+    isInvited: boolean;
+}
+
+export interface Lobby {
+    id: number;
+    password: string;
+}
+
 export interface Permissions {
     canDoAnything: boolean;
     canPlayCard: boolean;

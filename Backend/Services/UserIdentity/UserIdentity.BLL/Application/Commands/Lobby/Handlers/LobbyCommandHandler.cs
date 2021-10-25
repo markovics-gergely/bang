@@ -64,9 +64,11 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DeleteLobbyAccountByOwnerCommand request, CancellationToken cancellationToken)
         {
-            var accountId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
+            var ownId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
-            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, accountId, cancellationToken);
+            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, ownId, cancellationToken);
+
+            await _friendStore.UpdateIsInviteAsync(ownId, false, cancellationToken);
 
             return Unit.Value;
         }

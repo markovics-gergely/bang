@@ -8,7 +8,7 @@ namespace UserIdentity.BLL.Application.Interfaces
 {
     public interface ILobbyStore
     {
-        Task<long> GetActualLobbyIdAsync(string accountId, CancellationToken cancellationToken);
+        Task<Lobby> GetActualLobbyAsync(string accountId, CancellationToken cancellationToken);
         Task<Lobby> GetLobbyByIdAsync(long lobbyId, CancellationToken cancellationToken);
         Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken);
         Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken);

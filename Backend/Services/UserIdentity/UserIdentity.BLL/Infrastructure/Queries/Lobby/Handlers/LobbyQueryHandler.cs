@@ -12,7 +12,7 @@ using MediatR;
 namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 {
     public class LobbyQueryHandler :
-        IRequestHandler<GetActualLobbyIdQuery, long>,
+        IRequestHandler<GetActualLobbyQuery, LobbyViewModel>,
         IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>
     {
         private readonly IMapper _mapper;
@@ -26,11 +26,13 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
             _accountStore = accountStore;
         }
 
-        public async Task<long> Handle(GetActualLobbyIdQuery request, CancellationToken cancellationToken)
+        public async Task<LobbyViewModel> Handle(GetActualLobbyQuery request, CancellationToken cancellationToken)
         {
             var accountId = _accountStore.GetActualAccountId();
 
-            return await _lobbyStore.GetActualLobbyIdAsync(accountId, cancellationToken);
+            var domain = await _lobbyStore.GetActualLobbyAsync(accountId, cancellationToken);
+
+            return _mapper.Map<LobbyViewModel>(domain);
         }
 
         public async Task<IEnumerable<LobbyAccountViewModel>> Handle(GetLobbyAccountsQuery request, CancellationToken cancellationToken)

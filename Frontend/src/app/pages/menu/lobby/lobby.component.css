@@ -11,3 +11,21 @@
     right: 0;
     height: 100%;
 }
+
+.list-content {
+    color:black;
+    margin-left: 0px;
+    margin-top: 10px;
+    margin-right: 300px;
+}
+
+.list-element {
+    color:black;
+    border-width: 2px;
+    border-color: bisque;
+    border-style: solid;
+    height: 50px;
+    color:bisque;
+    font-size: 30px;
+    margin: 10px 0 10px 0;
+}

@@ -39,7 +39,7 @@ namespace UserIdentity.API.Extensions
             services.AddTransient<IRequestHandler<CreateFriendCommand, Unit>, FriendCommandHandler>();
             services.AddTransient<IRequestHandler<DeleteFriendCommand, Unit>, FriendCommandHandler>();
 
-            services.AddTransient<IRequestHandler<GetActualLobbyIdQuery, long>, LobbyQueryHandler>();
+            services.AddTransient<IRequestHandler<GetActualLobbyQuery, LobbyViewModel>, LobbyQueryHandler>();
             services.AddTransient<IRequestHandler<GetLobbyAccountsQuery, IEnumerable<LobbyAccountViewModel>>, LobbyQueryHandler>();
             services.AddTransient<IRequestHandler<CreateLobbyAccountCommand, Unit>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<DeleteLobbyAccountCommand, Unit>, LobbyCommandHandler>();

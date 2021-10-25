@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Account } from 'src/app/models';
+import { Account, Lobby } from 'src/app/models';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -10,8 +10,8 @@ import { environment } from 'src/environments/environment';
 export class LobbyService {
   constructor(private client: HttpClient) { }
 
-  public getActualLobbyId(): Observable<number> {
-    return this.client.get<number>(`${environment.baseUrl}/api/lobby/actual-lobby`);
+  public getActualLobby(): Observable<Lobby> {
+    return this.client.get<Lobby>(`${environment.baseUrl}/api/lobby/actual-lobby`);
   }
 
   public getLobbyUsers(id?: number): Observable<Account[]> {
@@ -26,7 +26,15 @@ export class LobbyService {
     return this.client.post(`${environment.baseUrl}/api/lobby/connect/${password}`, undefined, { responseType: 'text' });
   }
 
-  public leaveLobby(id?: number): Observable<Object> {
-    return this.client.post(`${environment.baseUrl}/api/lobby/${id}/disconnect`, undefined, { responseType: 'text' });
+  public leaveLobby(id?: number): Observable<Object>{
+    return this.client.delete(`${environment.baseUrl}/api/lobby/${id}/disconnect`);
+  }
+
+  public sendInvite(friendName: string){
+
+  }
+
+  public acceptInvite(friendName: string){
+
   }
 }

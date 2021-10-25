@@ -28,9 +28,9 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpGet("actual-lobby")]
-        public async Task<ActionResult<long>> GetLobbyAccountsAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<LobbyViewModel>> GetActualLobbyAsync(CancellationToken cancellationToken)
         {
-            var query = new GetActualLobbyIdQuery();
+            var query = new GetActualLobbyQuery();
 
             return await _mediator.Send(query, cancellationToken);
         }

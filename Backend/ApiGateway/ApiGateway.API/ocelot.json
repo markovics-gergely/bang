@@ -86,6 +86,67 @@
       "UpstreamPathTemplate": "/api/lobby/connect/{password}",
       "UpstreamHttpMethod": [ "Post" ]
     },
+    {
+      "DownstreamPathTemplate": "/Lobby/{id}/disconnect",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/{id}/disconnect",
+      "UpstreamHttpMethod": [ "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Friend",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friends",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Friend/unaccepted",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/unaccepted-friends",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Friend/{name}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friend/{name}",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Friend/{name}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friend/{name}",
+      "UpstreamHttpMethod": [ "Delete" ]
+    },
+
 
 
     {

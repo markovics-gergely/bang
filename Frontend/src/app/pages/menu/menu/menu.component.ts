@@ -29,28 +29,29 @@ export class MenuComponent implements OnInit {
     private lobbyService: LobbyService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.lobbyService.getActualLobby().subscribe(
+      response => {
+        console.log(response);
 
-  createGameBoard() {
-    var users: RegistrationDto[] = [{username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}];
-    users.forEach(async u => this.authService.registration(u));
-    var userData: {userName: string, userId: string}[] = [];
-    users.forEach(u => userData.push({userName: u.username, userId: "1"}));
-    this.authService.getActualUserId().subscribe(resp => {
-      console.log(userData);
-      userData.push({userName: this.tokenService.getUsername(), userId: resp});
-      
-      this.gameBoardService.postGameBoard({maxTurnTime: 5, userIds: userData})
-        .subscribe(r => {
-          console.log(r);
-          this.router.navigateByUrl('/gameboard');
-        });
-    });   
+        this.lobbyService.leaveLobby(response.id).subscribe(
+          response2 => {
+            console.log(response2);
+          }
+        );
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    this.lobbyService.leaveLobby().subscribe(
+      response => {
+        console.log(response);
+      }
+    );
   }
+
 
   createLobby(){
     this.lobbyService.createLobby().subscribe(

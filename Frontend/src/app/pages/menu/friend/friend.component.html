@@ -4,8 +4,10 @@
         <div class="title"> Friends </div>
         <div class="list">
             <div class="list-content">
-                <div class="list-element" *ngFor="let i of [0,0,0,0,0]"> Kriptius</div>
-
+                <div class="list-element" *ngFor="let friend of friends"> 
+                    {{friend.name}} 
+                    <button class="friend-button friend-remove" (click)="removeFriend(friend.name)"></button>
+                </div>
             </div>
         </div>
     </div> 
@@ -14,10 +16,17 @@
         <div class="title"> Pending requests </div>
         <div class="list">
             <div class="list-content">
-                <div class="list-element" *ngFor="let i of [0,0,0,0]"> Kriptius</div>
-
+                <div class="list-element" *ngFor="let unacceptedFriend of unacceptedFriends"> 
+                    {{unacceptedFriend.name}}
+                    <button class="friend-button friend-remove" (click)="removeFriend(unacceptedFriend.name)"></button>
+                    <button class="friend-button friend-accept" (click)="addFriendFromList(unacceptedFriend.name)"></button>        
+                </div>
             </div>
         </div>
-    </div>    
+    </div> 
+    <form [formGroup]="friendAddForm" (ngSubmit)="addFriend()">
+        <input type="text" placeholder="Friend name" class="form-control" formControlName="name">
+        <button type="submit" class="btn btn-success"> Add friend </button>
+    </form>    
 </div>
 
