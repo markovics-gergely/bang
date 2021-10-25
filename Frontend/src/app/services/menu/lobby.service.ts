@@ -30,11 +30,11 @@ export class LobbyService {
     return this.client.delete(`${environment.baseUrl}/api/lobby/${id}/disconnect`);
   }
 
-  public sendInvite(friendName: string){
-
+  public sendInvite(friendName: string): Observable<Object>{
+    return this.client.put(`${environment.baseUrl}/api/lobby/invite/${friendName}`, undefined);
   }
 
-  public acceptInvite(friendName: string){
-
+  public acceptInvite(friendName: string): Observable<Object>{
+    return this.client.put(`${environment.baseUrl}/api/lobby/accept-invite/${friendName}`, undefined);
   }
 }

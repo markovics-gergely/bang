@@ -7,6 +7,7 @@
                 <div class="list-element" *ngFor="let friend of friends"> 
                     {{friend.name}} 
                     <button class="friend-button friend-remove" (click)="removeFriend(friend.name)"></button>
+                    <button *ngIf="inLobby" class="friend-button" (click)="sendInvite(friend.name)"></button>   
                 </div>
             </div>
         </div>

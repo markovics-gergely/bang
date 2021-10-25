@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Friend } from 'src/app/models';
 import { FriendService } from 'src/app/services/menu/friend.service';
+import { LobbyService } from 'src/app/services/menu/lobby.service';
 
 @Component({
   selector: 'app-friend',
@@ -9,7 +10,7 @@ import { FriendService } from 'src/app/services/menu/friend.service';
   styleUrls: ['./friend.component.css']
 })
 export class FriendComponent implements OnInit {
-  @Input() inLobby = false;
+  @Input() inLobby: boolean | undefined;
   public friends: Friend[] | undefined;
   public unacceptedFriends: Friend[] | undefined;
 
@@ -18,7 +19,8 @@ export class FriendComponent implements OnInit {
   });
 
   constructor(
-    private friendService: FriendService
+    private friendService: FriendService,
+    private lobbyService: LobbyService
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +84,28 @@ export class FriendComponent implements OnInit {
       response => {
         console.log(response);
         this.getFriendList();
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  sendInvite(friendName: string){
+    this.lobbyService.sendInvite(friendName).subscribe(
+      response => {
+        console.log(response);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  acceptInvite(friendName: string){
+    this.lobbyService.acceptInvite(friendName).subscribe(
+      response => {
+        console.log(response);
       },
       error => {
         console.log(error);
