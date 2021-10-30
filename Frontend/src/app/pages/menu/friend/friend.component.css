@@ -8,14 +8,14 @@
 }
 
 .top-list {
-    height: 70%;
+    height: 65%;
     border-width: 0 0 2px 0;
     border-color: bisque;
     border-style: solid;
 }
 
 .bottom-list {
-    height: 30%;
+    height: 25%;
 }
 
 .title {
@@ -50,4 +50,18 @@
     color:bisque;
     font-size: 30px;
     margin: 10px 0 10px 0;
+}
+
+.friend-button {
+    border-radius: 15px;
+    width: 20%;
+    height: 80%;
+}
+
+.friend-accept {
+    background-color:green;
+}
+
+.friend-remove {
+    background-color:red;
 }

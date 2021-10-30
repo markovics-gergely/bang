@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using PasswordGenerator;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 
 namespace UserIdentity.BLL.Infrastructure.Stores
 {
@@ -22,6 +23,18 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         {
             _dbContext = dbContext;
             _accountStore = accountStore;
+        }
+
+        public async Task<Lobby> GetActualLobbyAsync(string accountId, CancellationToken cancellationToken)
+        {
+            var lobbyId = await _dbContext.LobbyAccounts
+                .Where(la => la.AccountId == accountId)
+                .Select(l => l.LobbyId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return await _dbContext.Lobbies
+                .Where(l => l.Id == lobbyId)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
@@ -89,7 +102,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             }
         }
 
-        public async Task<string> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
+        public async Task<long> CreateLobbyAsync(string accountId, CancellationToken cancellationToken)
         {
             if (await _dbContext.LobbyAccounts.AnyAsync(la => la.AccountId == accountId))
             {
@@ -109,7 +122,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             await CreateLobbyAccountAsync(accountId, password, cancellationToken);
 
-            return password;
+            return lobby.Id;
         }
 
         public async Task<string> GetPasswordByAccountIdAsync(string accountId, CancellationToken cancellationToken)

@@ -17,7 +17,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
     public class LobbyCommandHandler : 
         IRequestHandler<CreateLobbyAccountCommand, Unit>,
         IRequestHandler<DeleteLobbyAccountCommand, Unit>,
-        IRequestHandler<CreateLobbyCommand, string>,
+        IRequestHandler<CreateLobbyCommand, long>,
         IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>,
@@ -35,7 +35,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             _lobbyStore = lobbyStore;
             _accountStore = accountStore;
             _friendStore = friendStore;
-            _httpClient = httpClientFactory.CreateClient("http://localhost:15200");
+            _httpClient = httpClientFactory.CreateClient("bang");
         }
 
         public async Task<Unit> Handle(CreateLobbyAccountCommand request, CancellationToken cancellationToken)
@@ -55,7 +55,7 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             return Unit.Value;
         }
 
-        public async Task<string> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
         {
             var ownId = _accountStore.GetActualAccountId();
 
@@ -64,9 +64,11 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DeleteLobbyAccountByOwnerCommand request, CancellationToken cancellationToken)
         {
-            var accountId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
+            var ownId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
-            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, accountId, cancellationToken);
+            await _lobbyStore.DeleteLobbyAccountAsync(request.LobbyId, ownId, cancellationToken);
+
+            await _friendStore.UpdateIsInviteAsync(ownId, false, cancellationToken);
 
             return Unit.Value;
         }

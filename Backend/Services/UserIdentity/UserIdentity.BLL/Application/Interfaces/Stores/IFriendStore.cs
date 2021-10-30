@@ -12,5 +12,6 @@ namespace UserIdentity.BLL.Application.Interfaces
         Task CreateFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
         Task DeleteFriendAsync(string ownId, string friendId, CancellationToken cancellationToken);
         Task UpdateIsInviteAsync(string senderId, string receiverId, bool isInvite, CancellationToken cancellationToken);
+        Task UpdateIsInviteAsync(string senderId, bool isInvite, CancellationToken cancellationToken);
     }
 }

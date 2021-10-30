@@ -88,5 +88,16 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             var entry = _dbContext.Attach(friend);
             await _dbContext.SaveChangesAsync(cancellationToken);           
         }
+
+        public async Task UpdateIsInviteAsync(string senderId, bool isInvite, CancellationToken cancellationToken)
+        {
+            var ownInvites = await _dbContext.Friends.Where(f => f.SenderId == senderId).ToListAsync(cancellationToken);
+
+            foreach(var ownInvite in ownInvites)
+                ownInvite.IsInvitedToGame = isInvite;
+
+            var entry = _dbContext.Attach(ownInvites);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

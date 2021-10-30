@@ -166,6 +166,28 @@ export interface RegistrationDto {
     confirmedPassword: string;
 }
 
+export interface Message {
+    sendername: string;
+    text: string;
+    postedDate: Date;
+}
+
+export interface Account {
+    id: string;
+    name: string;
+}
+
+export interface Friend {
+    id: string;
+    name: string;
+    isInvited: boolean;
+}
+
+export interface Lobby {
+    id: number;
+    password: string;
+}
+
 export interface Permissions {
     canDoAnything: boolean;
     canPlayCard: boolean;
