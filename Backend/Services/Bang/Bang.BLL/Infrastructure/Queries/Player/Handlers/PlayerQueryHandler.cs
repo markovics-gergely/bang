@@ -18,7 +18,9 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         IRequestHandler<GetPlayersQuery, IEnumerable<PlayerViewModel>>,
         IRequestHandler<GetPlayersByGameBoardQuery, IEnumerable<PlayerViewModel>>,
         IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>,
-        IRequestHandler<GetPermissionsQuery, PermissionViewModel>
+        IRequestHandler<GetTargetablePlayersByRangeQuery, IEnumerable<PlayerViewModel>>,
+        IRequestHandler<GetPermissionsQuery, PermissionViewModel>,
+        IRequestHandler<GetPermissionsByUserQuery, PermissionViewModel>
     {
         private readonly IMapper _mapper;
         private readonly IPlayerStore _playerStore;
@@ -66,7 +68,67 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             var permission = new PermissionViewModel();
             var userId = _accountStore.GetActualAccountId();
             var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
-            if(userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer?.UserId)
+            if(board == null || (userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer?.UserId))
+            {
+                permission.CanDoAnything = false;
+                return permission;
+            }
+            else if (userId == board.TargetedPlayer?.UserId)
+            {
+                var targeted = board.TargetedPlayer;
+                var actual = board.ActualPlayer;
+                permission.SetByTargetReason(board.TargetReason, targeted, actual);
+            }
+            else if (userId == board.ActualPlayer.UserId)
+            {
+                var actual = board.ActualPlayer;
+                if (board.TargetedPlayerId == null)
+                {
+                    permission.CanEndTurn = true;
+                }
+                switch (board.TurnPhase)
+                {
+                    case PhaseEnum.Drawing:
+                        permission.CanDrawCard = true;
+                        if (actual.CharacterType == CharacterType.JesseJones)
+                        {
+                            permission.CanDrawFromOthersHands = true;
+                        }
+                        break;
+                    case PhaseEnum.Playing:
+                        permission.CanPlayCard = true;
+                        permission.CanPlayMissedCard = true;
+                        permission.CanDiscardCard = true;
+                        if (actual.PlayedCards.Contains(CardType.Bang) && 
+                            (actual.CharacterType == CharacterType.WillyTheKid || 
+                            actual.TablePlayerCards.Select(t => t.Card.CardType).Contains(CardType.Volcanic)))
+                        {
+                            permission.CanPlayBangCard = true;
+                        }
+                        else if (!actual.PlayedCards.Contains(CardType.Bang))
+                        {
+                            permission.CanPlayBangCard = true;
+                        }
+                        if (board.Players.Count(p => p.ActualHP > 0) > 2)
+                        {
+                            permission.CanPlayBeerCard = true;
+                        }
+                        break;
+                    case PhaseEnum.Throwing:
+                        permission.CanDiscardCard = true;
+                        break;
+                }
+            }
+
+            return permission;
+        }
+
+        public async Task<PermissionViewModel> Handle(GetPermissionsByUserQuery request, CancellationToken cancellationToken)
+        {
+            var permission = new PermissionViewModel();
+            var userId = request.UserId;
+            var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
+            if (board == null || (userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer?.UserId))
             {
                 permission.CanDoAnything = false;
                 return permission;
@@ -92,8 +154,8 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                     case PhaseEnum.Playing:
                         permission.CanPlayCard = true;
                         permission.CanPlayMissedCard = true;
-                        if (actual.PlayedCards.Contains(CardType.Bang) && 
-                            (actual.CharacterType == CharacterType.WillyTheKid || 
+                        if (actual.PlayedCards.Contains(CardType.Bang) &&
+                            (actual.CharacterType == CharacterType.WillyTheKid ||
                             actual.TablePlayerCards.Select(t => t.Card.CardType).Contains(CardType.Volcanic)))
                         {
                             permission.CanPlayBangCard = true;
@@ -114,6 +176,13 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
 
             return permission;
+        }
+
+        public async Task<IEnumerable<PlayerViewModel>> Handle(GetTargetablePlayersByRangeQuery request, CancellationToken cancellationToken)
+        {
+            var domain = await _playerStore.GetTargetablePlayersByRangeAsync(request.Id, request.Range, cancellationToken);
+
+            return _mapper.Map<IEnumerable<PlayerViewModel>>(domain);
         }
     }
 }

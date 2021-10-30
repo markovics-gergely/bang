@@ -21,6 +21,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public bool CanDrawFromOthersTable { get; set; } = false;
         public bool CanPlayBeerCard { get; set; } = false;
         public bool CanUseBarrelCard { get; set; } = false;
+        public bool CanEndTurn { get; set; } = false;
 
         public void SetByTargetReason(TargetReason? reason, Player targeted, Player actual)
         {

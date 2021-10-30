@@ -133,6 +133,30 @@ namespace Bang.BLL.Infrastructure.Stores
             return players.Where(p => ids.Contains(p.Id));
         }
 
+        public async Task<IEnumerable<Player>> GetTargetablePlayersByRangeAsync(long id, int range, CancellationToken cancellationToken)
+        {
+            Player player = await GetPlayerAsync(id, cancellationToken);
+            List<Player> players = (List<Player>)await GetPlayersAliveByGameBoardAsync(player.GameBoardId, cancellationToken);
+            List<long> ids = players.Select(p => p.Id).ToList();
+
+            int playerCount = players.Count;
+            int playerIndex = players.IndexOf(player);
+
+            ids.Remove(player.Id);
+            if (player.TablePlayerCards.Any(p => p.Card.CardType == CardType.Scope)) range++;
+            foreach (Player p in players)
+            {
+                int pIndex = players.IndexOf(p);
+                int distance = (new List<int>() { Math.Abs(pIndex - playerIndex),
+                                                  Math.Abs(pIndex + playerCount - playerIndex),
+                                                  Math.Abs(pIndex - playerCount - playerIndex) }).Min();
+                if (p.CharacterType == CharacterType.PaulRegret) distance++;
+                if (p.TablePlayerCards.Any(p => p.Card.CardType == CardType.Mustang)) distance++;
+                if (distance > range) ids.Remove(p.Id);
+            }
+            return players.Where(p => ids.Contains(p.Id));
+        }
+
         public async Task<int> GetRemainingPlayerCountAsync(long gameBoardId, CancellationToken cancellationToken)
         {
             return (await GetPlayersAliveByGameBoardAsync(gameBoardId, cancellationToken)).Count();

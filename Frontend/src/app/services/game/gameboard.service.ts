@@ -10,33 +10,7 @@ import { AuthorizationService } from '../authorization/authorization.service';
   providedIn: 'root'
 })
 export class GameboardService {
-  public gameboard: GameBoard | undefined;
   
-  private hubConnection: signalR.HubConnection | undefined;
-  
-  public startConnection = () => {
-    this.auth.getActualUserId()
-      .subscribe(id => {
-        this.hubConnection = new signalR.HubConnectionBuilder()
-          .withUrl(`${environment.bangBaseUrl}/game?userid=${id}`)
-          .configureLogging(signalR.LogLevel.Information)
-          .build();
-
-        this.addrefreshBoardListener();
-        
-        this.hubConnection
-          .start()
-          .then(() => console.log('Game connection started'))
-          .catch(err => console.log('Error while starting connection: ' + err));
-      });                  
-  }
-
-  public addrefreshBoardListener = () => {
-    this.hubConnection?.on('RefreshBoard', (data: GameBoard) => {
-      this.gameboard = data;
-    })
-  }
-
   public getGameBoard(): Observable<GameBoard> {
     return this.client.get<GameBoard>(`${environment.baseUrl}/api/bang/gameboard/user`);
   }

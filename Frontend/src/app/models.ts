@@ -183,6 +183,7 @@ export interface Permissions {
     canDrawFromOthersTable: boolean;
     canPlayBeerCard: boolean;
     canUseBarrelCard: boolean;
+    canEndTurn: boolean;
 }
 
 export interface TargetPermission {
@@ -196,4 +197,16 @@ export enum TargetType {
     TargetPlayer,
     TargetCard,
     TargetPlayerOrCard
+}
+
+export enum PlayerHighlightedType {
+    Actual,
+    Targeted,
+    None
+}
+
+export enum CardActionType {
+    Play,
+    Discard, 
+    None
 }

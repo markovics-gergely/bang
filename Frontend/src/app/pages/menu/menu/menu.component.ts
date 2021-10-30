@@ -28,8 +28,6 @@ export class MenuComponent implements OnInit {
   createGameBoard() {
     var users: RegistrationDto[] = [{username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
                                     {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
-                                    {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}, 
                                     {username: "user1", password: "@Abc1", confirmedPassword: "@Abc1"}];
     users.forEach(async u => this.authService.registration(u));
     var userData: {userName: string, userId: string}[] = [];

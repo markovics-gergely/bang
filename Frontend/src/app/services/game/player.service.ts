@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Permissions, PlayCardDto } from '../../models';
+import { OtherPlayer, Permissions, PlayCardDto } from '../../models';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,14 @@ export class PlayerService {
 
   getPermissions() : Observable<Permissions> {
     return this.client.get<Permissions>(`${environment.baseUrl}/api/bang/player/permissions`);
+  }
+
+  getTargetablesByRange(id: number, range: number) : Observable<OtherPlayer[]> {
+    return this.client.get<OtherPlayer[]>(`${environment.baseUrl}/api/bang/player/${id}/targetable/${range}`);
+  }
+
+  getTargetables(id: number) : Observable<OtherPlayer[]> {
+    return this.client.get<OtherPlayer[]>(`${environment.baseUrl}/api/bang/player/${id}/targetable`);
   }
 
   public discardFromHand(playerCardId: number): Observable<Object> {

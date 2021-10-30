@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Bang.BLL.Infrastructure.Queries.Queries
 {
-    public class GetGameBoardByUserIdQuery : IRequest<GameBoardByUserViewModel>
+    public class GetGameBoardByUserSimplifiedQuery : IRequest<GameBoardByUserViewModel>
     {
         public string UserId { get; set; }
 
-        public GetGameBoardByUserIdQuery(string userId)
+        public GetGameBoardByUserSimplifiedQuery(string userId)
         {
             UserId = userId;
         }

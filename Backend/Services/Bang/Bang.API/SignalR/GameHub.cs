@@ -12,7 +12,20 @@ namespace Bang.API.SignalR
 {
     public class GameHub : Hub<IGameHubClient>
     {
-        public static readonly ConcurrentDictionary<string, string> Connections = new ConcurrentDictionary<string, string>();
+        public static ConcurrentDictionary<string, string> Connections { get; } = new ConcurrentDictionary<string, string>();
+
+        public async static Task Refresh(IMediator mediator, IHubContext<GameHub, IGameHubClient> hub, CancellationToken cancellationToken)
+        {
+            foreach (var users in Connections)
+            {
+                var query = new GetGameBoardByUserSimplifiedQuery(users.Value);
+                var perQuery = new GetPermissionsByUserQuery(users.Value);
+                var gameboard = await mediator.Send(query, cancellationToken);
+                var permissions = await mediator.Send(perQuery, cancellationToken);
+                await hub.Clients.Client(users.Key).RefreshBoard(gameboard);
+                await hub.Clients.Client(users.Key).RefreshPermission(permissions);
+            }
+        }
 
         public GameHub()
         {

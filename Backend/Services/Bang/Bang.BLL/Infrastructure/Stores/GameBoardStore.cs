@@ -230,7 +230,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
 
-        public async Task<GameBoard> GetGameBoardByUserIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<GameBoard> GetGameBoardByUserSimplifiedAsync(string userId, CancellationToken cancellationToken)
         {
             Player player = await _dbContext.Players.Where(c => c.UserId == userId)
                 .AsNoTracking()

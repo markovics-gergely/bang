@@ -61,19 +61,21 @@ namespace Bang.API.Controllers
             return (await _mediator.Send(query, cancellationToken)).ToList();
         }
 
+        [HttpGet("{id}/targetable/{range}")]
+        public async Task<ActionResult<IEnumerable<PlayerViewModel>>> GetTargetablePlayersByRangeAsync(long id, int range, CancellationToken cancellationToken)
+        {
+            var query = new GetTargetablePlayersByRangeQuery(id, range);
+
+            return (await _mediator.Send(query, cancellationToken)).ToList();
+        }
+
         [HttpPut("decrement-health")]
         public async Task<ActionResult> DecrementPlayerHealthAsync(CancellationToken cancellationToken)
         {
             var command = new DecrementPlayerHealthCommand();
 
             await _mediator.Send(command, cancellationToken);
-
-            foreach (var users in GameHub.Connections)
-            {
-                var query = new GetGameBoardByUserIdQuery(users.Value);
-                var gameboard = await _mediator.Send(query, cancellationToken);
-                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
-            }
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
             return new NoContentResult();
         }

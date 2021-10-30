@@ -1,7 +1,7 @@
 import { style } from '@angular/animations';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { JsonHubProtocol } from '@microsoft/signalr';
-import { Card, CardColorType, CardType } from 'src/app/models';
+import { Card, CardActionType, CardColorType, CardType } from 'src/app/models';
 import { CardColorTypePipe } from 'src/app/pipes/card-color-type.pipe';
 import { CardNumberPipe } from 'src/app/pipes/card-number.pipe';
 import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
@@ -23,16 +23,13 @@ export class CardComponent implements OnInit {
 
   @Input() public width: number | undefined;
   @Input() public height: number | undefined;
-  @Input() public glowColor: string | undefined;
+  @Input() public actionType: CardActionType | undefined;
+  @Input() public isSelected: boolean = false;
   
   constructor(private cardService: CardService) { }
 
   ngOnInit(): void {
     
-  }
-
-  ngOnChanges() {
-    console.log(this.glowColor);
   }
 
   public getCardBack(type: string) {
@@ -63,6 +60,13 @@ export class CardComponent implements OnInit {
     } else {
       this.cardHoverEvent.emit(undefined);
     }
-    
+  }
+
+  getCardStyle(): string {
+    switch(this.actionType) {
+      case CardActionType.Discard: return 'discardable';
+      case CardActionType.Play: return 'card-targetable';
+      default: return '';
+    }
   }
 }

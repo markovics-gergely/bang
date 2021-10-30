@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 using Bang.BLL.Application.Commands.DataTransferObjects;
 using Microsoft.AspNetCore.SignalR;
 using Bang.API.SignalR;
-using Bang.DAL.Domain.Constants;
 
 namespace Bang.API.Controllers
 {
@@ -53,14 +52,7 @@ namespace Bang.API.Controllers
             var command = new PlayCardCommand(playCardDto);
 
             await _mediator.Send(command, cancellationToken);
-
-            foreach (var users in GameHub.Connections)
-            {
-                var query = new GetGameBoardByUserIdQuery(users.Value);
-                var gameboard = await _mediator.Send(query, cancellationToken);
-                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
-            }
-
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
             return new NoContentResult();
         }
 
@@ -70,13 +62,7 @@ namespace Bang.API.Controllers
             var command = new DiscardCardCommand(playerCardId);
 
             await _mediator.Send(command, cancellationToken);
-
-            foreach (var users in GameHub.Connections)
-            {
-                var query = new GetGameBoardByUserIdQuery(users.Value);
-                var gameboard = await _mediator.Send(query, cancellationToken);
-                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
-            }
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
             return new NoContentResult();
         }
@@ -87,13 +73,7 @@ namespace Bang.API.Controllers
             var command = new DrawCardCommand(count);
 
             await _mediator.Send(command, cancellationToken);
-
-            foreach (var users in GameHub.Connections)
-            {
-                var query = new GetGameBoardByUserIdQuery(users.Value);
-                var gameboard = await _mediator.Send(query, cancellationToken);
-                await _hub.Clients.Client(users.Key).RefreshBoard(gameboard);
-            }
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
             return new NoContentResult();
         }

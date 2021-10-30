@@ -1,6 +1,7 @@
-<div class="card-container" *ngIf="card" [style.--glowColor]="glowColor" [ngStyle]="{width: width + 'px', height: height + 'px'}">
-    <img class="card img-fluid rounded card-bg" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
-    <img class="card img-fluid rounded" [src]="getCardColorFilter(card.cardColorType | cardColorType)" alt="card-color"/>
-    <img class="card img-fluid rounded" [src]="getCardNumberFilter(card.frenchNumber | cardNumber)" 
-         alt="card-number" (mouseenter)="setCovered(true)" (mouseleave)="setCovered(false)"/>
+<div class="card-container" *ngIf="card" [ngStyle]="{width: width + 'px', height: height + 'px'}" style="border-radius: 20px;">
+    <img class="card img-fluid" [src]="getCardBack(card.cardType | cardType) || '../../../assets/cards/Cards/Background.png'" alt="card-back"/>
+    <img class="card img-fluid" [src]="getCardColorFilter(card.cardColorType | cardColorType)" alt="card-color"/>
+    <img class="card img-fluid" [src]="getCardNumberFilter(card.frenchNumber | cardNumber)" 
+         alt="card-number" (mouseenter)="setCovered(true)" (mouseleave)="setCovered(false)" [ngClass]="getCardStyle()"/>
+    <div *ngIf="isSelected" class="selected"></div>
 </div>

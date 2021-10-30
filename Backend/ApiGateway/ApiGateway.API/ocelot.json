@@ -97,7 +97,7 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
-      "DownstreamPathTemplate": "/GameBoard/user",
+      "DownstreamPathTemplate": "/GameBoard/user-sm",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -203,6 +203,30 @@
       ],
       "UpstreamPathTemplate": "/api/bang/card/draw-card/{count}",
       "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Player/{id}/targetable/{range}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/{id}/targetable/{range}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Player/{id}/targetable",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/{id}/targetable",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ]
 }

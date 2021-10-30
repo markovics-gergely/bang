@@ -71,4 +71,8 @@ export class CardService {
       default: return TargetType.None;
     }
   }
+
+  public getCanTargetEverywhere(): CardType[] {
+    return [CardType.CatBalou, CardType.Duel];
+  }
 }

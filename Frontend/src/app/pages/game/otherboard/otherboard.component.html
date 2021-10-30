@@ -1,7 +1,7 @@
-<div class="container-fluid other-table" *ngIf="player">
+<div class="container-fluid other-table" *ngIf="player" [ngClass]="getHighLightStyle()">
     <div class="row upper-row">
         <div class="col-3 px-0">
-            <div (click)="playerSelected()" class="name">{{player.userName}}</div>
+            <div (click)="playerSelected()" class="name" [ngClass]="playerTargetStyle()">{{player.userName}}</div>
         </div>
         <div class="col-9" style="padding-left: 0;">
             <div class="row health">
@@ -41,7 +41,7 @@
     <div class="row table-row">
         <p>Table cards</p>
         <div class="col-3" *ngFor="let card of player.tablePlayerCards">
-            <app-card (click)="getTableClickable() && cardSelected(card)" [ngClass]="getTableClickable() ? 'targetable' : ''" *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"></app-card>
+            <app-card (click)="getTableClickable() && cardSelected(card)" [ngClass]="cardsTargetStyle()" *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"></app-card>
         </div>
     </div>
 </div>

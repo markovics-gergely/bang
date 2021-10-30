@@ -13,6 +13,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<Player> GetOwnPlayerAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken);
+        Task<IEnumerable<Player>> GetTargetablePlayersByRangeAsync(long id, int range, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAliveByGameBoardAsync(CancellationToken cancellationToken);

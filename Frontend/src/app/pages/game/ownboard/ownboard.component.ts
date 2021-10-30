@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, HoverEnum, PlayCardDto, Player, TargetType } from 'src/app/models';
+import { Card, CardActionType, CardType, HoverEnum, Permissions, PlayCardDto, Player, PlayerHighlightedType, TargetPermission, TargetType } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 import { CharacterService } from 'src/app/services/game/character.service';
 import { PlayerService } from 'src/app/services/game/player.service';
@@ -12,9 +12,12 @@ import { RoleService } from 'src/app/services/game/role.service';
 })
 export class OwnboardComponent implements OnInit {
   @Input() player: Player | undefined;
+  @Input() permissions: Permissions | undefined;
+  @Input() targetPermissions: TargetPermission | undefined;
   @Input() hoverActive: boolean = false;
+  @Input() highlight: PlayerHighlightedType = PlayerHighlightedType.None;
   @Output() hoverItemEvent = new EventEmitter<{data: string, type: HoverEnum}>();
-  @Output() selectCardEvent = new EventEmitter<TargetType>();
+  @Output() selectCardEvent = new EventEmitter<{type: TargetType, card: Card}>();
 
   public playMode: boolean = true;
   public canChangePlayMode: boolean = true;
@@ -33,11 +36,16 @@ export class OwnboardComponent implements OnInit {
   }
 
   public cardAction(card: Card) {
-    if (this.playMode) {
-      this.playCard(card);
-    } else {
-      this.discardCard(card);
-      this.canChangePlayMode = false;
+    if (this.cardCanPlay(card) !== CardActionType.None) {
+      if (this.playMode) {
+        this.playCard(card);
+      } else {
+        this.discardCard(card);
+        this.canChangePlayMode = false;
+      }
+    } else if (card === this.selectedCard) {
+      this.selectedCard = undefined;
+      this.targetPermissions = undefined;
     }
   }
 
@@ -53,7 +61,7 @@ export class OwnboardComponent implements OnInit {
     }
     else {
       this.selectedCard = card;
-      this.selectCardEvent.emit(target);
+      this.selectCardEvent.emit({type: target, card: card});
     }
   }
 
@@ -107,6 +115,55 @@ export class OwnboardComponent implements OnInit {
   switchPlayMode() {
     if (this.canChangePlayMode) {
       this.playMode = !this.playMode;
+    }
+  }
+
+  cardCanPlay(card: Card): CardActionType {
+    if (this.selectedCard) {
+      return CardActionType.None;
+    }
+    else if (!this.playMode && this.permissions) {
+      return this.permissions.canDiscardCard ? CardActionType.Discard : CardActionType.None;
+    }
+    else if (this.playMode && this.permissions && this.permissions.canPlayCard) {
+      if (card.cardType === CardType.Bang) {
+        return this.permissions.canPlayBangCard ? CardActionType.Play : CardActionType.None;
+      }
+      else if (card.cardType === CardType.Missed) {
+        return this.permissions.canPlayMissedCard ? CardActionType.Play : CardActionType.None;
+      }
+      else if (card.cardType === CardType.Beer) {
+        return this.permissions.canPlayBeerCard ? CardActionType.Play : CardActionType.None;
+      }
+      else {
+        return CardActionType.Play;
+      }
+    }
+    return CardActionType.None;
+  }
+
+  canEndTurn(): boolean {
+    if (!this.targetPermissions && this.permissions) {
+      return this.permissions.canEndTurn;
+    }
+    return false;
+  }
+
+  canSwitchPlayMode(): boolean {
+    if (this.permissions) {
+      if (!this.permissions.canPlayCard) {
+        return this.permissions.canDiscardCard;
+      }
+    }
+    return false;
+  }
+
+  getHighLightStyle(): string {
+    switch(this.highlight) {
+      case PlayerHighlightedType.Actual: return 'actual';
+      case PlayerHighlightedType.Targeted: return 'targeted';
+      case PlayerHighlightedType.None:
+      default: return '';
     }
   }
 }

@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-4 gun">
                     <div class="card-container">
-                        <app-card [glowColor]="playMode ? '#11b314' : '#e6c612'" [width]="82" [height]="127" [card]="cardService.getWeapon(player.tablePlayerCards)"></app-card>
+                        <app-card [width]="82" [height]="127" [card]="cardService.getWeapon(player.tablePlayerCards)" (cardHoverEvent)="cardHovered($event)"></app-card>
                     </div>
                 </div>
             </div>
@@ -51,17 +51,17 @@
             <div class="row max-height mx-auto">
                 <div class="col-12 card-list p-0">
                     <div class="h-100 card-wrapper" *ngFor="let card of player.handPlayerCards">
-                        <app-card [width]="130" [height]="200" (cardHoverEvent)="cardHovered($event)" [card]="card" (click)="(playMode && playCard(card)) || (!playMode && discardCard(card))"></app-card>
+                        <app-card [isSelected]="selectedCard === card" [actionType]="cardCanPlay(card)" [width]="130" [height]="200" (cardHoverEvent)="cardHovered($event)" [card]="card" (click)="cardAction(card)"></app-card>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-12 col-md-4 order-md-4 order-4 max-height table-block">
+        <div class="col-12 col-md-4 order-md-4 order-4 max-height table-block" [ngClass]="getHighLightStyle()">
             <div class="row table-row">
                 <!--<p class="back-text">Table cards</p>-->
                 <div class="col-3 h-100 table-card-wrapper" *ngFor="let card of player.tablePlayerCards">
-                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [width]="110" [height]="170" [card]="card"></app-card>
+                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [width]="110" [height]="170" [card]="card" (cardHoverEvent)="cardHovered($event)"></app-card>
                 </div>
             </div>
         </div>

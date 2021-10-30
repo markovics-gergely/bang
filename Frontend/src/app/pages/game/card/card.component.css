@@ -8,7 +8,6 @@
     height: 100%;
     width: auto;
     min-width: 50px;
-    animation: glow 2s infinite alternate;
 }
 .card-container {
     position: relative;
@@ -23,23 +22,17 @@
     margin-left: auto;
 }
 
-:host {
-    --glow-color: #11b314;
-}
-
-.pick-animation {
-    animation: glow 2s infinite alternate;
-}
-
-.card-bg {
-    background-color: var(--glow-color);
-}
-
-@keyframes glow {
-    from {
-        box-shadow: 0 0 1px 1px var(--glow-color);
-    }
-    to {
-        box-shadow: 0 0 2px 2px var(--glow-color);
-    }
+.selected {
+    position: absolute;
+    top: 0;
+    left: 0;  
+    background-color: transparent;
+    border: none;
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+    min-width: 50px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
 }

@@ -15,8 +15,6 @@
     }
 }
 
-
-
 .player-data {
     background-image: url(../../../../assets/images/table.jpg);
     background-position: center;
@@ -140,6 +138,9 @@
     display: flex;
     align-content: center;
     justify-content: center;
+    overflow: hidden;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    box-sizing: border-box;
 }
 
 .card {
@@ -157,6 +158,10 @@
 
 .card-wrapper {
     overflow: hidden;
+}
+
+.card-list .card-wrapper:last-child {
+    flex-shrink: 0;
 }
 
 .transparent {

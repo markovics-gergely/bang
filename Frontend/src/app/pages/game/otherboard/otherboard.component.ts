@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, CharacterType, HoverEnum, OtherPlayer, Permissions, RoleType, TargetPermission } from 'src/app/models';
+import { Card, CharacterType, HoverEnum, OtherPlayer, Permissions, PlayerHighlightedType, RoleType, TargetPermission, TargetType } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 import { CharacterService } from 'src/app/services/game/character.service';
 import { RoleService } from 'src/app/services/game/role.service';
@@ -14,6 +14,8 @@ export class OtherboardComponent implements OnInit {
   @Input() player: OtherPlayer | undefined;
   @Input() permissions: Permissions | undefined;
   @Input() targetPermissions: TargetPermission | undefined;
+  @Input() isTargetable: TargetType = TargetType.None;
+  @Input() highlight: PlayerHighlightedType = PlayerHighlightedType.None;
   @Output() hoverItemEvent = new EventEmitter<{ data: string, type: HoverEnum }>();
   @Output() selectEvent = new EventEmitter<{ id: number | undefined, isCard: boolean }>();
 
@@ -24,6 +26,15 @@ export class OtherboardComponent implements OnInit {
 
   counter(i: number) {
     return new Array(i);
+  }
+
+  getHighLightStyle(): string {
+    switch(this.highlight) {
+      case PlayerHighlightedType.Actual: return 'actual';
+      case PlayerHighlightedType.Targeted: return 'targeted';
+      case PlayerHighlightedType.None:
+      default: return '';
+    }
   }
 
   getTableClickable(): boolean {
@@ -72,5 +83,23 @@ export class OtherboardComponent implements OnInit {
 
   cardSelected(card: Card) {
     this.selectEvent.emit({ id: card.id, isCard: true });
+  }
+
+  playerTargetStyle(): string {
+    if (this.isTargetable) {
+      if (this.isTargetable === TargetType.TargetPlayer || this.isTargetable === TargetType.TargetPlayerOrCard) {
+        return 'targetable';
+      }
+    }
+    return '';
+  }
+
+  cardsTargetStyle(): string {
+    if (this.isTargetable) {
+      if (this.isTargetable === TargetType.TargetCard || this.isTargetable === TargetType.TargetPlayerOrCard) {
+        return 'targetable';
+      }
+    }
+    return '';
   }
 }
