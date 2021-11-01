@@ -183,6 +183,19 @@ export interface Friend {
     isInvited: boolean;
 }
 
+export interface Room {
+    name: string;
+    creationDate: string;
+    requiresPasskey: boolean;
+}
+
+export interface Message {
+    text: string;
+    postedDate: Date;
+    senderId: string;
+    senderName: string;
+  }
+
 export interface Lobby {
     id: number;
     password: string;

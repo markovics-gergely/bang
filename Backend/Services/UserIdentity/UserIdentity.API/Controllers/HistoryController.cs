@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
-using UserIdentity.DAL.Domain.Bang;
 
 namespace UserIdentity.API.Controllers
 {

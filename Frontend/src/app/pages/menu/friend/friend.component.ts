@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Friend } from 'src/app/models';
+import { Account, Friend, Room } from 'src/app/models';
 import { FriendService } from 'src/app/services/menu/friend.service';
 import { LobbyService } from 'src/app/services/menu/lobby.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-friend',
@@ -20,6 +21,7 @@ export class FriendComponent implements OnInit {
 
   constructor(
     private friendService: FriendService,
+    private snackbar: SnackbarService,
     private lobbyService: LobbyService
   ) {}
 
@@ -55,10 +57,14 @@ export class FriendComponent implements OnInit {
     this.friendService.removeFriend(friendName).subscribe(
       response => {
         console.log(response);
+
+        this.snackbar.open("Removed succesfully!");
         this.getFriendList();
       },
       error => {
         console.log(error);
+
+        this.snackbar.open(error.error.title);
       }
     );
   }
@@ -69,10 +75,14 @@ export class FriendComponent implements OnInit {
     this.friendService.addFriend(friendName).subscribe(
       response => {
         console.log(response);
+
+        this.snackbar.open("Added succesfully!");
         this.getFriendList();
       },
       error => {
         console.log(error);
+
+        this.snackbar.open(error.error.title);
       }
     );
 
