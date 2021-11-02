@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserIdentity.BLL.Application.Interfaces;
 using UserIdentity.BLL.Application.Interfaces.Hubs;
 using UserIdentity.DAL.Domain;
 
@@ -13,25 +14,20 @@ namespace UserIdentity.BLL.Application.Hubs
     public class ChatHub : Hub<IChatHub>
     {
         public const string LobbyRoomName = "ChattRLobby";
+
+        public static Dictionary<string, HubRoom> Rooms { get; set; } = new();
         public static HubRoom Lobby { get; } = new HubRoom
         {
             Name = LobbyRoomName
         };
 
-        public static Dictionary<string, HubRoom> Rooms { get; set; } = new();
-
-        public class HubRoom
-        {
-            public string Name { get; set; }
-            public string CreatorId { get; set; }
-            public string Passkey { get; set; }
-            public List<Message> Messages { get; } = new List<Message>();
-            public List<Account> Accounts { get; } = new List<Account>();
-        }
-
         public async Task EnterLobby()
         {
-            var user = new Account { Id = Context.UserIdentifier, UserName = Context.User.Identity.Name };
+            var user = new Account 
+            { 
+                Id = Context.UserIdentifier, 
+                UserName = Context.User.Identity.Name 
+            };        
             Lobby.Accounts.Add(user);
 
             await Clients.Group(LobbyRoomName).UserEntered(user);
@@ -51,11 +47,13 @@ namespace UserIdentity.BLL.Application.Hubs
         public override Task OnDisconnectedAsync(Exception exception)
         {
             var user = Lobby.Accounts.FirstOrDefault(u => u.UserName == Context.User.Identity.Name);
+
             if (user != null)
             {
                 Lobby.Accounts.Remove(user);
                 Clients.Group(LobbyRoomName).UserLeft(Context.User.Identity.Name);
             }
+
             var room = Rooms.Values.FirstOrDefault(r => r.Accounts.Any(u => u.UserName == Context.User.Identity.Name));
             if (room != null)
             {
@@ -66,6 +64,7 @@ namespace UserIdentity.BLL.Application.Hubs
                     Clients.Group(LobbyRoomName).RoomAbandoned(room.Name);
                 }
             }
+
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -78,6 +77,7 @@ namespace UserIdentity.BLL.Application.Hubs
                 Text = message,
                 PostedDate = DateTimeOffset.Now
             };
+
             Lobby.Messages.Add(messageInstance);
             await Clients.Group(LobbyRoomName).RecieveMessage(messageInstance);
         }
@@ -91,6 +91,7 @@ namespace UserIdentity.BLL.Application.Hubs
                 Text = message,
                 PostedDate = DateTimeOffset.Now
             };
+
             Rooms[room].Messages.Add(messageInstance);
             await Clients.Group(room).RecieveMessage(messageInstance);
         }
@@ -107,11 +108,25 @@ namespace UserIdentity.BLL.Application.Hubs
 
         public async Task EnterRoom(string roomId)
         {
-            var user = new Account { Id = Context.UserIdentifier, UserName = Context.User.Identity.Name };
+            var user = new Account 
+            { 
+                Id = Context.UserIdentifier, 
+                UserName = Context.User.Identity.Name 
+            };
             var room = Rooms[roomId];
+
             room.Accounts.Add(user);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             await Clients.Caller.SetMessages(room.Messages);
         }
+    }
+
+    public class HubRoom
+    {
+        public string Name { get; set; }
+        public string CreatorId { get; set; }
+        public string Passkey { get; set; }
+        public List<Message> Messages { get; } = new List<Message>();
+        public List<Account> Accounts { get; } = new List<Account>();
     }
 }

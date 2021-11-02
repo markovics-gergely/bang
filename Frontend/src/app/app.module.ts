@@ -26,6 +26,7 @@ import { FriendComponent } from './pages/menu/friend/friend.component';
 import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ChatStreamComponent } from './pages/chat/chat-stream/chat-stream.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     CastPipe,
     MenuComponent,
     LobbyComponent,
-    ChatComponent
+    ChatComponent,
+    ChatStreamComponent
   ],
   imports: [
     BrowserModule,

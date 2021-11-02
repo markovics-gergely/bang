@@ -50,7 +50,7 @@
     <div class="row lower-row">
         <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="setCardHovered($event)" [highlight]="getTargetPlayerClass(gameboard.ownPlayer)" [player]="gameboard.ownPlayer" [permissions]="permissions" [targetPermissions]="targetPermissions" [hoverActive]="hoverService.hovered"></app-ownboard>
     </div>
-    <app-chat [fromBottom]="200" [animated]="true"></app-chat>
+    <app-chat></app-chat>
 </div>
 <div class="card-data mx-auto my-auto container-fluid" *ngIf="hoverService.hovered" ng-disabled="true">
     <div class="row card-row max-width">
