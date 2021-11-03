@@ -16,6 +16,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   private lobbyId: number | undefined;
   public lobbyPassword: string | undefined;
   public players: Account[] | undefined;
+  public isLobbyOwner: boolean | undefined;
 
   constructor(   
     private authService: AuthorizationService, 
@@ -33,6 +34,13 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
         this.lobbyId = response.id;
         this.lobbyPassword = response.password;
+        if(response.lobbyOwner == this.tokenService.getUsername()){
+          this.isLobbyOwner = true;
+        }
+        else{
+          this.isLobbyOwner = false;
+        }
+
         this.lobbyService.getLobbyUsers(response.id).subscribe(
           response2 => {
             console.log(response2);

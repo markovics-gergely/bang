@@ -11,11 +11,12 @@ namespace UserIdentity.BLL.Application.MappingProfiles
         {
             CreateMap<LobbyAccount, LobbyAccountViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AccountId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Account.UserName));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Account.UserName));
 
             CreateMap<Lobby, LobbyViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.LobbyOwner, opt => opt.MapFrom(src => src.Owner.UserName));
         }
     }
 }

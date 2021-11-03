@@ -174,7 +174,7 @@ export interface Message {
 
 export interface Account {
     id: string;
-    name: string;
+    userName: string;
 }
 
 export interface Friend {
@@ -199,6 +199,7 @@ export interface Message {
 export interface Lobby {
     id: number;
     password: string;
+    lobbyOwner: string;
 }
 
 export interface Permissions {

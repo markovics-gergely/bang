@@ -1,44 +1,18 @@
-<!--<div class="chat-container" [ngStyle]="{bottom: fromBottom + 'px'}" (mouseenter)="setHovered(true)"  (mouseleave)="setHovered(false)">
+<div class="chat-container" [ngStyle]="{bottom: fromBottom + 'px'}" (mouseenter)="setHovered(true)"  (mouseleave)="setHovered(false)">
     <div class="chat-table" [ngStyle]="{height: height + 'px'}">
         <ng-scrollbar #scrollable class="chat-list" *ngIf="hovered">
-            <p class="list-item" *ngFor="let message of messages">{{message}}</p>
+          <app-chat-stream [messages]="lobbyMessages"></app-chat-stream>
         </ng-scrollbar>
         <div class="chat">
-            <input type="text" placeholder="Write message..." class="chat-input" [(ngModel)]="messageValue">
-            <div class="btn send-button" (click)="sendMessage()">
+          <form class="form-group row" (ngSubmit)="sendMessage()" #sendMessageForm="ngForm">
+            <input type="text" placeholder="Write message..." [(ngModel)]="chatMessage" required class="form-control col-8" name="chatMessage" autocomplete="off" >
+            <button class="btn send-button" [disabled]="!sendMessageForm.valid" type="submit">
                 <span class="material-icons button-text">sendoutlined</span>
-            </div>
+            </button>
+          </form>
         </div>
     </div>
-</div>-->
-
-<div class="row">
-  <div class="col-md-8" style="height: calc(100vh - 72px); overflow-y: auto">
-    <form class="form-group row" (ngSubmit)="sendMessage()" #sendMessageForm="ngForm">
-      <input required class="form-control col-8" [(ngModel)]="chatMessage" name="chatMessage" autocomplete="off" />
-      <button [disabled]="!sendMessageForm.valid" class="btn btn-primary col-4" type="submit">Send</button>
-    </form>
-    <app-chat-stream [messages]="lobbyMessages"></app-chat-stream>
-  </div>
-  <div class="col-md-4">
-    <div class="row no-gutters">
-      <div class="col">
-        <a class="btn btn-primary w-100 rounded-0" [class.active]="activeTab === 'peeps'" (click)="activeTab='peeps'">Peeps ({{peeps === undefined ? '...' : peeps.length}})</a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <ul class="list-group list-group-flush">
-            <ng-container *ngIf="activeTab === 'peeps'">
-              <li *ngFor="let person of peeps" class="list-group-item">{{person.name}}</li>
-            </ng-container>
-          </ul> 
-        </div>
-      </div>
-    </div>
-
-  </div>
 </div>
+
 
 

@@ -4,5 +4,6 @@
     {
         public long Id { get; set; }
         public string Password { get; set; } 
+        public string LobbyOwner { get; set; }
     }
 }

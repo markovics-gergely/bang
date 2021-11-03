@@ -6,21 +6,25 @@ import { HubBuilderService } from 'src/app/services/hub-builder.service';
 import * as signalR from '@microsoft/signalr';
 import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
 import { environment } from 'src/environments/environment';
+import { IHttpConnectionOptions } from '@aspnet/signalr';
+import { TokenService } from 'src/app/services/authorization/token.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
+
+
 export class ChatComponent implements OnInit, OnDestroy {
-  /*@Input() fromBottom: number | undefined;
+ @Input() fromBottom: number | undefined;
   @Input() animated: boolean = true;
   @ViewChild('scrollable')
   scrollable: NgScrollbar | undefined; 
   messageValue: string = "";
   messages: string[] = [];
   hovered: boolean | undefined;
-  height: number = 50;*/
+  height: number = 50;
 
   activeTab: 'rooms' | 'peeps' = 'peeps';
 
@@ -36,34 +40,38 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   chatMessage: string | undefined;
 
-  connection: signalR.HubConnection | undefined;
-
-  /*setHovered(value: boolean) {
-    if (this.animated) {
-      this.hovered = value;
-      this.height = this.hovered ? 250 : 50;
-      setTimeout(() => this.scrollable?.scrollTo({bottom: 0, duration: 800}), 500);
-    }
-  }*/
+  private connection: signalR.HubConnection | undefined;
 
   ngOnInit(){
-    /*this.hovered = !this.animated;
+    this.hovered = !this.animated;
     this.height = this.hovered ? 250 : 50;
-    this.scrollable?.scrollTo({bottom: 0, duration: 800});*/
-  }
-  getConnection(){
-    this.auth.getActualUserId()
-      .subscribe(id => {
-        this.connection = new signalR.HubConnectionBuilder()
-          .withUrl(`${environment.userIdentityBaseUrl}/chathub?userid=${id}`)
-          .configureLogging(signalR.LogLevel.Information)
-          .build();
-      }
-    ); 
+    this.scrollable?.scrollTo({bottom: 0, duration: 800});
   }
 
-  constructor(hubBuilder: HubBuilderService, private router: Router, private auth: AuthorizationService) {
-    this.getConnection();
+  ngOnDestroy() {
+    this.connection?.off("SetUsers");
+    this.connection?.off("UserEntered");
+    this.connection?.off("UserLeft");
+    this.connection?.off("SetMessages");
+    this.connection?.off("SetRooms");
+    this.connection?.off("RecieveMessage");
+    this.connection?.off("JoinRoom");
+    this.connection?.off("RoomCreated");
+    this.connection?.off("RoomAbandoned");
+
+    this.connection?.stop();
+  }
+
+  constructor(
+    private hubBuilder: HubBuilderService, 
+    private router: Router, 
+    private auth: AuthorizationService,
+    private tokenService: TokenService
+  ) {
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${environment.userIdentityBaseUrl}/chathub?token=${this.tokenService.getAccessToken()}`) 
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
 
     this.connection?.on("SetUsers", users => this.setUsers(users));
     this.connection?.on("UserEntered", user => this.userEntered(user));
@@ -83,27 +91,13 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.connection?.invoke("EnterLobby");
     });
    }
-  
-   ngOnDestroy() {
-     this.connection?.off("SetUsers");
-     this.connection?.off("UserEntered");
-     this.connection?.off("UserLeft");
-     this.connection?.off("SetMessages");
-     this.connection?.off("SetRooms");
-     this.connection?.off("RecieveMessage");
-     this.connection?.off("JoinRoom");
-     this.connection?.off("RoomCreated");
-     this.connection?.off("RoomAbandoned");
-
-     this.connection?.stop();
-    }
 
     userEntered(user: Account) {
      this.peeps.push(user);
     }
 
     userLeft(userId: string) {
-      this.peeps = this.peeps.filter((peep) => peep.name != userId);
+      this.peeps = this.peeps.filter((peep) => peep.userName != userId);
     }
 
     setUsers(users: Account[]) {
@@ -126,11 +120,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.lobbyMessages.splice(0, 0, message);
     }
     sendMessage() {
-      /*if (this.messageValue) {
+      if (this.messageValue) {
         this.messages.push(this.messageValue);
         setTimeout(() => this.scrollable?.scrollTo({bottom: 0, duration: 200}), 200);
         this.messageValue = "";
-      }*/
+      }
+      
       this.connection?.invoke("SendMessageToLobby", this.chatMessage);
       this.chatMessage = "";
     }
@@ -151,4 +146,12 @@ export class ChatComponent implements OnInit, OnDestroy {
    enterRoom(room: Room) {
      this.router.navigate(['room', `${room.name}`]);
    }
+
+   setHovered(value: boolean) {
+    if (this.animated) {
+      this.hovered = value;
+      this.height = this.hovered ? 250 : 50;
+      setTimeout(() => this.scrollable?.scrollTo({bottom: 0, duration: 800}), 500);
+    }
+  }
 }

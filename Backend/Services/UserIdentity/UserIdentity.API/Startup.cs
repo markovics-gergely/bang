@@ -1,4 +1,5 @@
 using UserIdentity.API.Extensions;
+using UserIdentity.API.Hubs.Hubs;
 using UserIdentity.DAL;
 
 using System.Reflection;
@@ -11,7 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using UserIdentity.BLL.Application.Hubs;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace UserIdentity.API
 {
@@ -61,6 +65,7 @@ namespace UserIdentity.API
 
             app.UseRouting();
             app.UseCors("CorsPolicy");
+            app.Use(async (context, next) => await AuthQueryStringToHeader(context, next));
 
             app.UseAuthentication();
             app.UseIdentityServer();
@@ -73,6 +78,25 @@ namespace UserIdentity.API
                 /*endpoints.MapHub<FriendHub>("/friendhub");
                 endpoints.MapHub<LobbyHub>("/lobbyhub");*/
             });
+        }
+
+        private async Task AuthQueryStringToHeader(HttpContext context, Func<Task> next)
+        {
+            var qs = context.Request.QueryString;
+
+            if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"]) && qs.HasValue)
+            {
+                var token = (from pair in qs.Value.TrimStart('?').Split('&')
+                             where pair.StartsWith("token=")
+                             select pair.Substring(6)).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+                }
+            }
+
+            await next?.Invoke();
         }
     }
 }

@@ -82,6 +82,18 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return user.Id;
         }
 
+        public async Task<string> GetActualAccountName()
+        {
+            var user = await _userManager.FindByIdAsync(GetActualAccountId());
+
+            if (user == null)
+            {
+                throw new InvalidParameterException("User not found!");
+            }
+
+            return user.UserName;
+        }
+
         public string GetActualAccountId()
         {
             return _httpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;

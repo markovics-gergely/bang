@@ -34,6 +34,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
 
             return await _dbContext.Lobbies
                 .Where(l => l.Id == lobbyId)
+                .Include(owner => owner.Owner)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

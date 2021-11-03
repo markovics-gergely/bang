@@ -11,6 +11,7 @@ namespace UserIdentity.BLL.Application.Interfaces
         Task<bool> CreateAccountAsync(Account account, string password, CancellationToken cancellationToken);
         Task DeleteAccountAsync(Account account, CancellationToken cancellationToken);
         Task<string> GetAccountIdByName(string name, CancellationToken cancellationToken);
+        Task<string> GetActualAccountName();
         string GetActualAccountId();
     }
 }

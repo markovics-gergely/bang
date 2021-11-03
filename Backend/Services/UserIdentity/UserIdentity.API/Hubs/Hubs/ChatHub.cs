@@ -1,19 +1,23 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UserIdentity.BLL.Application.Interfaces;
 using UserIdentity.BLL.Application.Interfaces.Hubs;
 using UserIdentity.DAL.Domain;
 
-namespace UserIdentity.BLL.Application.Hubs
+namespace UserIdentity.API.Hubs.Hubs
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub<IChatHub>
     {
         public const string LobbyRoomName = "ChattRLobby";
+        private readonly IAccountStore _accountStore;
 
         public static Dictionary<string, HubRoom> Rooms { get; set; } = new();
         public static HubRoom Lobby { get; } = new HubRoom
@@ -21,13 +25,17 @@ namespace UserIdentity.BLL.Application.Hubs
             Name = LobbyRoomName
         };
 
+        public ChatHub(IAccountStore accountStore)
+        {
+            _accountStore = accountStore;
+        }
+
         public async Task EnterLobby()
         {
-            var user = new Account 
-            { 
-                Id = Context.UserIdentifier, 
-                UserName = Context.User.Identity.Name 
-            };        
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
+            var user = new Account { Id = actId, UserName = actName };
             Lobby.Accounts.Add(user);
 
             await Clients.Group(LobbyRoomName).UserEntered(user);
@@ -44,63 +52,70 @@ namespace UserIdentity.BLL.Application.Hubs
             await Clients.Caller.SetRooms(rooms);
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public async override Task<Task> OnDisconnectedAsync(Exception exception)
         {
-            var user = Lobby.Accounts.FirstOrDefault(u => u.UserName == Context.User.Identity.Name);
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
 
+            var user = Lobby.Accounts.FirstOrDefault(u => u.UserName == actName);
             if (user != null)
             {
                 Lobby.Accounts.Remove(user);
-                Clients.Group(LobbyRoomName).UserLeft(Context.User.Identity.Name);
+                Clients.Group(LobbyRoomName).UserLeft(actName);
             }
-
-            var room = Rooms.Values.FirstOrDefault(r => r.Accounts.Any(u => u.UserName == Context.User.Identity.Name));
+            var room = Rooms.Values.FirstOrDefault(r => r.Accounts.Any(u => u.UserName == actName));
             if (room != null)
             {
-                room.Accounts.Remove(room.Accounts.FirstOrDefault(u => u.UserName == Context.User.Identity.Name));
+                room.Accounts.Remove(room.Accounts.FirstOrDefault(u => u.UserName == actName));
                 if (room.Accounts.Count == 0)
                 {
                     Rooms.Remove(room.Name, out HubRoom value);
                     Clients.Group(LobbyRoomName).RoomAbandoned(room.Name);
                 }
             }
-
             return base.OnDisconnectedAsync(exception);
         }
 
         public async Task SendMessageToLobby(string message)
         {
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
             var messageInstance = new Message
             {
-                SenderId = Context.UserIdentifier,
-                SenderName = Context.User.Identity.Name,
+                SenderId = actId,
+                SenderName = actName,
                 Text = message,
                 PostedDate = DateTimeOffset.Now
             };
-
             Lobby.Messages.Add(messageInstance);
             await Clients.Group(LobbyRoomName).RecieveMessage(messageInstance);
         }
 
         public async Task SendMessageToRoom(string message, string room)
         {
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
             var messageInstance = new Message
             {
-                SenderId = Context.UserIdentifier,
-                SenderName = Context.User.Identity.Name,
+                SenderId = actId,
+                SenderName = actName,
                 Text = message,
                 PostedDate = DateTimeOffset.Now
             };
-
             Rooms[room].Messages.Add(messageInstance);
             await Clients.Group(room).RecieveMessage(messageInstance);
         }
 
         public async Task CreateRoom(string room)
         {
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
             if (!Rooms.ContainsKey(room))
             {
-                Rooms.Add(room, new HubRoom { Name = room, CreatorId = Context.User.Identity.Name });
+                Rooms.Add(room, new HubRoom { Name = room, CreatorId = actId });
                 await Clients.Group(LobbyRoomName).RoomCreated(new Room { Name = room });
                 await Clients.Caller.JoinRoom(new Room { Name = room });
             }
@@ -108,13 +123,11 @@ namespace UserIdentity.BLL.Application.Hubs
 
         public async Task EnterRoom(string roomId)
         {
-            var user = new Account 
-            { 
-                Id = Context.UserIdentifier, 
-                UserName = Context.User.Identity.Name 
-            };
-            var room = Rooms[roomId];
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
 
+            var user = new Account { Id = actId, UserName = actName };
+            var room = Rooms[roomId];
             room.Accounts.Add(user);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             await Clients.Caller.SetMessages(room.Messages);
