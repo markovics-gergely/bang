@@ -1,7 +1,7 @@
 <div *ngIf="messages != null; else loadingMessage" class="message-stream">
     <div *ngFor="let message of messages" class="message {{isOwnMessage(message) ? 'recieved text-right' : 'sent'}}">
         <div class="message-sender font-weight-light text-secondary" *ngIf="!isOwnMessage(message)">
-        {{message.senderName}}
+            {{message.userName}}
         </div>
         <div class="h4">
         <span class="rounded px-3 {{isOwnMessage(message) ? 'text-info bg-dark' : 'text-primary bg-light'}}">

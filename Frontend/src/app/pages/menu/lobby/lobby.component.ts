@@ -25,7 +25,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
     private snackbar: SnackbarService,
     private router: Router,
     private lobbyService: LobbyService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.lobbyService.getActualLobby().subscribe(
@@ -34,6 +34,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
         this.lobbyId = response.id;
         this.lobbyPassword = response.password;
+
         if(response.lobbyOwner == this.tokenService.getUsername()){
           this.isLobbyOwner = true;
         }
@@ -55,7 +56,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
       error => {
         console.log(error);
       }
-    );
+    ); 
   }
 
   createGameBoard() {

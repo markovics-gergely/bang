@@ -1,33 +1,71 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import * as signalR from '@microsoft/signalr';
 import { Account, Friend, Room } from 'src/app/models';
+import { TokenService } from 'src/app/services/authorization/token.service';
 import { FriendService } from 'src/app/services/menu/friend.service';
 import { LobbyService } from 'src/app/services/menu/lobby.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-friend',
   templateUrl: './friend.component.html',
   styleUrls: ['./friend.component.css']
 })
-export class FriendComponent implements OnInit {
+export class FriendComponent implements OnInit, OnDestroy {
   @Input() inLobby: boolean | undefined;
   public friends: Friend[] | undefined;
   public unacceptedFriends: Friend[] | undefined;
+
+  friend: Friend | undefined;
 
   friendAddForm = new FormGroup({
     name: new FormControl('', Validators.required),
   });
 
+  private connection: signalR.HubConnection | undefined;
+
+  ngOnInit() {
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${environment.userIdentityBaseUrl}/friendhub?token=${this.tokenService.getAccessToken()}`) 
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    this.connection?.on("SetFriendInvite", friend => this.setFriendInvite(friend));
+    this.connection?.on("SetFriendRequest", friend => this.setFriendRequest(friend));  
+    this.connection?.on("SetFriend", friend => this.setFriend(friend));  
+
+    this.connection.start();
+
+    this.getFriendList();
+  }
+
+  ngOnDestroy() {
+    this.connection?.off("SetFriendInvite");
+    this.connection?.off("SetFriendRequest");
+    this.connection?.off("SetFriend");
+
+    this.connection?.stop();
+  }
+
   constructor(
     private friendService: FriendService,
     private snackbar: SnackbarService,
-    private lobbyService: LobbyService
+    private lobbyService: LobbyService,
+    private tokenService: TokenService
   ) {}
 
-  ngOnInit(): void {
-    this.getFriendList();
+  setFriendInvite(friend: Friend){
+
   }
+  setFriendRequest(friend: Friend){
+    
+  }
+  setFriend(friend: Friend){
+    
+  }
+  
 
   getFriendList(){
     this.friendService.getAcceptedFriends().subscribe(

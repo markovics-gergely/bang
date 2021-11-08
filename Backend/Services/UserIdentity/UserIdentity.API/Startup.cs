@@ -75,8 +75,8 @@ namespace UserIdentity.API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chathub").RequireCors("CorsPolicy");
-                /*endpoints.MapHub<FriendHub>("/friendhub");
-                endpoints.MapHub<LobbyHub>("/lobbyhub");*/
+                endpoints.MapHub<FriendHub>("/friendhub").RequireCors("CorsPolicy");
+                //endpoints.MapHub<LobbyHub>("/lobbyhub");
             });
         }
 

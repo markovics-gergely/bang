@@ -9,14 +9,7 @@ namespace UserIdentity.BLL.Application.Interfaces.Hubs
 {
     public interface IChatHub
     {
-        Task RoomCreated(Room room);
-        Task RoomAbandoned(string roomName);
-        Task UserEntered(Account user);
-        Task UserLeft(string userId);
-        Task RecieveMessage(Message message);
-        Task SetUsers(List<Account> users);
+        Task SetMessage(Message message);
         Task SetMessages(List<Message> messages);
-        Task SetRooms(List<Room> rooms);
-        Task JoinRoom(Room room);
     }
 }

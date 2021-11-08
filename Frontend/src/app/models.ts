@@ -166,12 +166,6 @@ export interface RegistrationDto {
     confirmedPassword: string;
 }
 
-export interface Message {
-    sendername: string;
-    text: string;
-    postedDate: Date;
-}
-
 export interface Account {
     id: string;
     userName: string;
@@ -191,10 +185,8 @@ export interface Room {
 
 export interface Message {
     text: string;
-    postedDate: Date;
-    senderId: string;
-    senderName: string;
-  }
+    userName: string;
+}
 
 export interface Lobby {
     id: number;

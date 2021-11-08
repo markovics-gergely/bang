@@ -18,6 +18,8 @@ export class ChatStreamComponent implements OnInit {
   }
 
   isOwnMessage(message: Message) {
-    return message.senderName === this.userName;
+    console.log(message.userName + " " + this.userName);
+
+    return message.userName === this.userName;
   }
 }
