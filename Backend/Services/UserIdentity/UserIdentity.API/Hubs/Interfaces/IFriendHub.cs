@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 using UserIdentity.DAL.Domain;
 
 namespace UserIdentity.API.Hubs.Interfaces
 {
     public interface IFriendHub
     {
-        Task SetFriendInvite(Account account);
-        Task SetFriendRequest(Account account);
-        Task SetFriend(Account account);
+        Task SetFriendInvite(FriendViewModel account);
+        Task SetFriendRequest(FriendViewModel account);
+        Task SetFriend(FriendViewModel account);
     }
 }

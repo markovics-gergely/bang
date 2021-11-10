@@ -57,13 +57,13 @@ export class FriendComponent implements OnInit, OnDestroy {
   ) {}
 
   setFriendInvite(friend: Friend){
-
+    
   }
   setFriendRequest(friend: Friend){
-    
+    this.unacceptedFriends?.push(friend);
   }
   setFriend(friend: Friend){
-    
+    this.friends?.push(friend);
   }
   
 

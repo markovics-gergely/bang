@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UserIdentity.API.Hubs.Interfaces;
 using UserIdentity.BLL.Application.Interfaces;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 using UserIdentity.DAL.Domain;
 
 namespace UserIdentity.API.Hubs.Hubs
@@ -24,22 +27,50 @@ namespace UserIdentity.API.Hubs.Hubs
             _friendStore = friendStore;
         }
 
+        public async override Task<Task> OnConnectedAsync()
+        {
+            var actName = await _accountStore.GetActualAccountName();
+
+            Connections.TryAdd(Context.ConnectionId, actName);
+
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            Connections.TryRemove(Context.ConnectionId, out _);
+
+            return base.OnDisconnectedAsync(exception);
+        }
+
         public async Task AddFriend(string receiverName)
         {
+            var conId = Connections.FirstOrDefault(x => x.Value == receiverName).Key;
 
-            //SetFriendRequest a receiverName-nek
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
+            await Clients.Client(conId).SetFriendRequest(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = false });
         }
 
         public async Task AcceptFriendRequest(string receiverName)
         {
+            var conId = Connections.FirstOrDefault(x => x.Value == receiverName).Key;
 
-            //SetFriend a receiverName-nek
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
+            await Clients.Client(conId).SetFriend(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = false });
         }
 
         public async Task InviteFriend(string receiverName)
         {
+            var conId = Connections.FirstOrDefault(x => x.Value == receiverName).Key;
 
-            //SetFriendInvite a receiverName-nek
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
+            await Clients.Client(conId).SetFriendInvite(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = true });
         }
     }
 }
