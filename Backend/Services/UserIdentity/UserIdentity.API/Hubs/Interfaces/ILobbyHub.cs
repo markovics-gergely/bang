@@ -7,9 +7,10 @@ using UserIdentity.DAL.Domain;
 
 namespace UserIdentity.BLL.Application.Interfaces.Hubs
 {
-    public interface IChatHub
+    public interface ILobbyHub
     {
         Task SetMessage(Message message);
         Task SetMessages(List<Message> messages);
+        Task RefreshLobbyUsers(long lobbyId);
     }
 }

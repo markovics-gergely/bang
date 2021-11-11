@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as signalR from '@microsoft/signalr';
 import { Account, RegistrationDto } from 'src/app/models';
 import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
 import { TokenService } from 'src/app/services/authorization/token.service';
 import { GameboardService } from 'src/app/services/game/gameboard.service';
 import { LobbyService } from 'src/app/services/menu/lobby.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-lobby',
@@ -17,6 +19,8 @@ export class LobbyComponent implements OnInit, OnDestroy {
   public lobbyPassword: string | undefined;
   public players: Account[] | undefined;
   public isLobbyOwner: boolean | undefined;
+
+  private connection: signalR.HubConnection | undefined;
 
   constructor(   
     private authService: AuthorizationService, 
@@ -42,21 +46,23 @@ export class LobbyComponent implements OnInit, OnDestroy {
           this.isLobbyOwner = false;
         }
 
-        this.lobbyService.getLobbyUsers(response.id).subscribe(
-          response2 => {
-            console.log(response2);
-    
-            this.players = response2;
-          },
-          error2 => {
-            console.log(error2);
-          }
-        );
+        this.refreshLobbyUsers(response.id);
       },
       error => {
         console.log(error);
       }
     ); 
+
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${environment.userIdentityBaseUrl}/lobbyhub?token=${this.tokenService.getAccessToken()}`) 
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    this.connection?.on("RefreshLobbyUsers", lobbyId => this.refreshLobbyUsers(lobbyId));  
+
+    this.connection?.start().then(() => {
+      this.connection?.invoke("EnterRoom");
+    });
   }
 
   createGameBoard() {
@@ -80,16 +86,27 @@ export class LobbyComponent implements OnInit, OnDestroy {
     });   
   }
 
-  leaveLobby(){
-    this.lobbyService.leaveLobby(this.lobbyId).subscribe(
+  refreshLobbyUsers(lobbyId: number) {
+    this.lobbyService.getLobbyUsers(lobbyId).subscribe(
       response => {
         console.log(response);
-        this.router.navigateByUrl('/menu');
+
+        this.players = response;
+      },
+      error => {
+        console.log(error);
       }
     );
   }
 
+  leaveLobby(){
+    this.connection?.invoke("LeaveLobby");
+    this.router.navigateByUrl('/menu');
+  }
+
   ngOnDestroy(): void {
-    //this.lobbyService.leaveLobby(this.lobbyId);
+    this.connection?.off("RefreshLobbyUsers");  
+
+    this.connection?.stop();
   }
 }

@@ -174,7 +174,7 @@ export interface Account {
 export interface Friend {
     id: string;
     name: string;
-    isInvited: boolean;
+    invitedFrom: boolean;
 }
 
 export interface Room {

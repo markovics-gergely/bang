@@ -60,6 +60,17 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 throw new InvalidActionException("The game has started!");
             }
 
+            if (_dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).Any(user => user.AccountId == accountId))
+            {
+                throw new InvalidActionException("You are already in this lobby!");
+            }
+
+            var removableAcc = await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken);
+            if (removableAcc != null)
+            {
+                await DeleteLobbyAccountAsync(removableAcc.LobbyId, removableAcc.AccountId, cancellationToken);
+            }
+
             var lobbyAccount = new LobbyAccount
             {
                 AccountId = accountId,
@@ -75,7 +86,6 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         {
             var actualLobby = await _dbContext.Lobbies.Where(l => l.Id == lobbyId).FirstOrDefaultAsync(cancellationToken);
             var kickableAcc = await _dbContext.LobbyAccounts.Where(la => la.AccountId == accountId).FirstOrDefaultAsync(cancellationToken);
-            var actualAccId = _accountStore.GetActualAccountId();
 
             if (actualLobby == null || kickableAcc == null)
             {

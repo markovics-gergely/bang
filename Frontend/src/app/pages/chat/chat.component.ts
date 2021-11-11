@@ -31,7 +31,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.scrollable?.scrollTo({bottom: 0, duration: 800});
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.userIdentityBaseUrl}/chathub?token=${this.tokenService.getAccessToken()}`) 
+      .withUrl(`${environment.userIdentityBaseUrl}/lobbyhub?token=${this.tokenService.getAccessToken()}`) 
       .configureLogging(signalR.LogLevel.Information)
       .build();
 

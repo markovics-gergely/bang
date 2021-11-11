@@ -50,7 +50,7 @@ namespace UserIdentity.API.Hubs.Hubs
             var actId = _accountStore.GetActualAccountId();
             var actName = await _accountStore.GetActualAccountName();
 
-            await Clients.Client(conId).SetFriendRequest(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = false });
+            await Clients.Client(conId).RefreshFriendList();
         }
 
         public async Task AcceptFriendRequest(string receiverName)
@@ -60,7 +60,7 @@ namespace UserIdentity.API.Hubs.Hubs
             var actId = _accountStore.GetActualAccountId();
             var actName = await _accountStore.GetActualAccountName();
 
-            await Clients.Client(conId).SetFriend(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = false });
+            await Clients.Client(conId).RefreshFriendList();
         }
 
         public async Task InviteFriend(string receiverName)
@@ -70,7 +70,17 @@ namespace UserIdentity.API.Hubs.Hubs
             var actId = _accountStore.GetActualAccountId();
             var actName = await _accountStore.GetActualAccountName();
 
-            await Clients.Client(conId).SetFriendInvite(new FriendViewModel { Id = actId, Name = actName, InvitedFrom = true });
+            await Clients.Client(conId).RefreshFriendList();
+        }
+
+        public async Task RemoveFriend(string receiverName)
+        {
+            var conId = Connections.FirstOrDefault(x => x.Value == receiverName).Key;
+
+            var actId = _accountStore.GetActualAccountId();
+            var actName = await _accountStore.GetActualAccountName();
+
+            await Clients.Client(conId).RefreshFriendList();
         }
     }
 }

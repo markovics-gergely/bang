@@ -4,7 +4,7 @@
     </div>
 
     <div>
-        <button type="button" class="lobby-button" (click)="createLobby()"> Create lobby </button>
+        <button type="button" class="lobby-button btn btn-success" (click)="createLobby()"> Create lobby </button>
     </div>
 
     <form [formGroup]="joinLobbyForm" (ngSubmit)="joinLobby()" class="join-lobby">
@@ -14,13 +14,13 @@
 
 
     <div>
-        <button type="button" class="history-button" (click)="viewHistory()"> History </button>
+        <button type="button" class="history-button btn btn-success" (click)="viewHistory()"> History </button>
     </div>
 
     <div>
-        <button type="button" class="account-button" (click)="logout()"> Logout </button>
+        <button type="button" class="account-button btn btn-success" (click)="logout()"> Logout </button>
     </div>
     <div>
-        <button type="button" class="account-button" (click)="deleteAccount()"> Delete account </button>
+        <button type="button" class="account-button btn btn-success" (click)="deleteAccount()"> Delete account </button>
     </div>
 </div>

@@ -34,20 +34,16 @@ export class MenuComponent implements OnInit {
       response => {
         console.log(response);
 
-        this.lobbyService.leaveLobby(response.id).subscribe(
-          response2 => {
-            console.log(response2);
-          }
-        );
+        if(response != null){
+          this.lobbyService.leaveLobby(response.id).subscribe(
+            response2 => {
+              console.log(response2);
+            }
+          );
+        }
       },
       error => {
         console.log(error);
-      }
-    );
-
-    this.lobbyService.leaveLobby().subscribe(
-      response => {
-        console.log(response);
       }
     );
   }

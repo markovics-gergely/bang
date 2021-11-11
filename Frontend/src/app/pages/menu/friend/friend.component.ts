@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { Account, Friend, Room } from 'src/app/models';
 import { TokenService } from 'src/app/services/authorization/token.service';
@@ -32,9 +33,7 @@ export class FriendComponent implements OnInit, OnDestroy {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    this.connection?.on("SetFriendInvite", friend => this.setFriendInvite(friend));
-    this.connection?.on("SetFriendRequest", friend => this.setFriendRequest(friend));  
-    this.connection?.on("SetFriend", friend => this.setFriend(friend));  
+    this.connection?.on("RefreshFriendList", _ => this.refreshFriendList());
 
     this.connection.start();
 
@@ -42,9 +41,7 @@ export class FriendComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.connection?.off("SetFriendInvite");
-    this.connection?.off("SetFriendRequest");
-    this.connection?.off("SetFriend");
+    this.connection?.off("RefreshFriendList");
 
     this.connection?.stop();
   }
@@ -53,20 +50,14 @@ export class FriendComponent implements OnInit, OnDestroy {
     private friendService: FriendService,
     private snackbar: SnackbarService,
     private lobbyService: LobbyService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router
   ) {}
 
-  setFriendInvite(friend: Friend){
-    
-  }
-  setFriendRequest(friend: Friend){
-    this.unacceptedFriends?.push(friend);
-  }
-  setFriend(friend: Friend){
-    this.friends?.push(friend);
+  refreshFriendList(){
+    this.getFriendList();
   }
   
-
   getFriendList(){
     this.friendService.getAcceptedFriends().subscribe(
       response => {
@@ -97,6 +88,7 @@ export class FriendComponent implements OnInit, OnDestroy {
         console.log(response);
 
         this.snackbar.open("Removed succesfully!");
+        this.connection?.invoke("RemoveFriend", friendName);
         this.getFriendList();
       },
       error => {
@@ -115,7 +107,7 @@ export class FriendComponent implements OnInit, OnDestroy {
         console.log(response);
 
         this.snackbar.open("Added succesfully!");
-        this.getFriendList();
+        this.connection?.invoke("AddFriend", friendName);
       },
       error => {
         console.log(error);
@@ -131,6 +123,8 @@ export class FriendComponent implements OnInit, OnDestroy {
     this.friendService.addFriend(friendName).subscribe(
       response => {
         console.log(response);
+
+        this.connection?.invoke("AcceptFriendRequest", friendName);
         this.getFriendList();
       },
       error => {
@@ -143,6 +137,9 @@ export class FriendComponent implements OnInit, OnDestroy {
     this.lobbyService.sendInvite(friendName).subscribe(
       response => {
         console.log(response);
+
+        this.snackbar.open("Invited successfully!");
+        this.connection?.invoke("InviteFriend", friendName);
       },
       error => {
         console.log(error);
@@ -154,9 +151,13 @@ export class FriendComponent implements OnInit, OnDestroy {
     this.lobbyService.acceptInvite(friendName).subscribe(
       response => {
         console.log(response);
+
+        this.router.navigate(['lobby']);
       },
       error => {
         console.log(error);
+
+        this.snackbar.open(error.error.title);
       }
     );
   }

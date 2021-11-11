@@ -9,8 +9,6 @@ namespace UserIdentity.API.Hubs.Interfaces
 {
     public interface IFriendHub
     {
-        Task SetFriendInvite(FriendViewModel account);
-        Task SetFriendRequest(FriendViewModel account);
-        Task SetFriend(FriendViewModel account);
+        Task RefreshFriendList();
     }
 }

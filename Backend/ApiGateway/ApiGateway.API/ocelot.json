@@ -99,6 +99,30 @@
       "UpstreamHttpMethod": [ "Delete" ]
     },
     {
+      "DownstreamPathTemplate": "/Lobby/invite/{friendName}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/invite/{friendName}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Lobby/accept-invite/{friendName}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/accept-invite/{friendName}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
       "DownstreamPathTemplate": "/Friend",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

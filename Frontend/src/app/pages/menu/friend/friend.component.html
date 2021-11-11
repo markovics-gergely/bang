@@ -6,9 +6,9 @@
             <div class="list-content">
                 <div class="list-element" *ngFor="let friend of friends"> 
                     {{friend.name}} 
-                    <button class="friend-button friend-remove" (click)="removeFriend(friend.name)"></button>
-                    <button *ngIf="inLobby" class="friend-button" (click)="sendInvite(friend.name)"></button> 
-                    <button *ngIf="friend.isInvited" class="friend-button " (click)="acceptInvite(friend.name)"></button>    
+                    <button class="friend-button friend-remove" (click)="removeFriend(friend.name)" style="font-size:15px;">Rem</button>
+                    <button *ngIf="inLobby" class="friend-button" (click)="sendInvite(friend.name)" style="font-size:15px;">Inv</button> 
+                    <button *ngIf="friend.invitedFrom" class="friend-button" (click)="acceptInvite(friend.name)" style="font-size:15px; background-color:green;">AccI</button>    
                 </div>
             </div>
         </div>
@@ -19,10 +19,9 @@
         <div class="list">
             <div class="list-content">
                 <div class="list-element" *ngFor="let unacceptedFriend of unacceptedFriends"> 
-                    {{unacceptedFriend.name}}
-                    <button class="friend-button friend-remove" (click)="removeFriend(unacceptedFriend.name)"></button>
-                    <button class="friend-button friend-accept" (click)="addFriendFromList(unacceptedFriend.name)"></button>
-                    <button *ngIf="unacceptedFriend.isInvited" class="friend-button " (click)="acceptInvite(unacceptedFriend.name)"></button>         
+                    {{unacceptedFriend.name}}         
+                    <button class="friend-button friend-accept" (click)="addFriendFromList(unacceptedFriend.name)" style="font-size:15px;">Acc</button>
+                    <button class="friend-button friend-remove" (click)="removeFriend(unacceptedFriend.name)" style="font-size:15px;">Rem</button>       
                 </div>
             </div>
         </div>
