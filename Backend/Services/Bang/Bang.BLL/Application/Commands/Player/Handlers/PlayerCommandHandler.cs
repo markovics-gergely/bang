@@ -24,7 +24,8 @@ using Bang.DAL.Domain.Joins.PlayerCards;
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class PlayerCommandHandler :
-        IRequestHandler<DecrementPlayerHealthCommand, Unit>
+        IRequestHandler<DecrementPlayerHealthCommand, Unit>,
+        IRequestHandler<GainHealthForCardsCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -48,24 +49,26 @@ namespace Bang.BLL.Application.Commands.Handlers
         {
             Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
             long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
-            int remainingPlayersCount = await _playerStore.GetRemainingPlayerCountAsync(selectedPlayer.GameBoardId, cancellationToken);
+            await _gameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+            await _gameBoardStore.SetGameBoardTargetReasonAsync(null, cancellationToken);
+            if (selectedPlayer.CharacterType == CharacterType.BartCassidy)
+            {
+                await _gameBoardStore.DrawGameBoardCardsFromTopAsync(1, selectedPlayer.Id, cancellationToken);
+            }
             if (newHP == 0)
             {
-                if (selectedPlayer.RoleType == RoleType.Sheriff)
+                bool isOver = await _gameBoardStore.CalculatePlayerPlacementAsync(selectedPlayer.Id, cancellationToken);
+                if (isOver)
                 {
-                    var players = await _playerStore.GetPlayersAliveByGameBoardAsync(cancellationToken);
-                }
-                
-            }
-            if(remainingPlayersCount == 0)
-            {
-                await _gameBoardStore.DeleteAllGameBoardCardAsync(selectedPlayer.GameBoardId, cancellationToken);
-                List<Player> players = (List<Player>)await _playerStore.GetPlayersByGameBoardAsync(selectedPlayer.GameBoardId, cancellationToken);
-                foreach (Player player in players)
-                {
-                    await _cardStore.DeleteAllPlayerCardAsync(player.Id, cancellationToken);
+                    await _gameBoardStore.SetGameBoardEndAsync(cancellationToken);
                 }
             }
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(GainHealthForCardsCommand request, CancellationToken cancellationToken)
+        {
+            await _playerStore.GainHealthForCardsAsync(request.Cards, cancellationToken);
 
             return Unit.Value;
         }

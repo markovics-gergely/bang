@@ -1,10 +1,5 @@
-import { style } from '@angular/animations';
-import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
-import { JsonHubProtocol } from '@microsoft/signalr';
-import { Card, CardActionType, CardColorType, CardType } from 'src/app/models';
-import { CardColorTypePipe } from 'src/app/pipes/card-color-type.pipe';
-import { CardNumberPipe } from 'src/app/pipes/card-number.pipe';
-import { CardTypePipe } from 'src/app/pipes/card-type.pipe';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Card, CardActionType } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 
 @Component({

@@ -51,7 +51,7 @@
             <div class="row max-height mx-auto">
                 <div class="col-12 card-list p-0">
                     <div class="h-100 card-wrapper" *ngFor="let card of player.handPlayerCards">
-                        <app-card [isSelected]="selectedCard === card" [actionType]="cardCanPlay(card)" [width]="130" [height]="200" (cardHoverEvent)="cardHovered($event)" [card]="card" (click)="cardAction(card)"></app-card>
+                        <app-card [isSelected]="selectedCard === card" [actionType]="canPlayCard(card)" [width]="130" [height]="200" (cardHoverEvent)="cardHovered($event)" [card]="card" (click)="cardAction(card)"></app-card>
                     </div>
                 </div>
             </div>

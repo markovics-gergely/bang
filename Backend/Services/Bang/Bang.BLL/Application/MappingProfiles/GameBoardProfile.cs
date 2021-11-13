@@ -4,8 +4,6 @@ using Bang.DAL.Domain;
 
 using AutoMapper;
 using Bang.BLL.Application.Commands.DataTransferObjects;
-using System.Collections.Generic;
-using Bang.DAL.Domain.Joins.GameBoardCards;
 using System.Linq;
 
 namespace Bang.BLL.Application.MappingProfiles

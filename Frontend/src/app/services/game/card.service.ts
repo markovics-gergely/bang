@@ -29,6 +29,14 @@ export class CardService {
     return this.client.put(`${environment.baseUrl}/api/bang/card/draw-card/${count}`, undefined)
   }
 
+  public drawCardById(id: number): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/card/draw-a-card/${id}`, undefined)
+  }
+
+  public drawCardFromPlayer(playerId: number): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/card/draw-a-card-from-hand/${playerId}`, undefined)
+  }
+
   public isRed(cardColorType: CardColorType) {
     if(cardColorType == CardColorType.Hearts || cardColorType == CardColorType.Diamonds) {
       return true;

@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Bang.DAL.Domain.Constants.Enums;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Constants;
-using MediatR;
 using System;
 using Bang.DAL.Domain.Joins.PlayerCards;
 using Bang.BLL.Application.Effects.Cards;
@@ -37,9 +36,20 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken)
         {
-            await _dbContext.GameBoards.AddAsync(gameBoard, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            if (await _dbContext.GameBoards.FirstOrDefaultAsync(g => g.LobbyOwnerId == gameBoard.LobbyOwnerId, cancellationToken) != null)
+                throw new EntityAlreadyExistException("Lobby already has a gameboard!");
 
+            await _dbContext.GameBoards.AddAsync(gameBoard, cancellationToken);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards.FirstOrDefaultAsync(g => g.Id == gameBoard.Id, cancellationToken) == null)
+                    throw new EntityNotFoundException("GameBoard not found!");
+                else throw;
+            }
             return gameBoard.Id;
         }
 
@@ -139,6 +149,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(s => s.Card)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
@@ -205,10 +216,53 @@ namespace Bang.BLL.Infrastructure.Stores
         {
             var userId = _accountStore.GetActualAccountId();
             GameBoard gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
-            gameBoard.IsOver = true;
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
+            foreach (Player player in gameBoard.Players)
+            {
+                await _cardStore.DeleteAllPlayerCardAsync(player.Id, cancellationToken);
+            }
             await DeleteAllGameBoardCardAsync(gameBoard.Id, cancellationToken);
+
+            gameBoard.IsOver = true;
+            gameBoard.ActualPlayerId = null;
+            gameBoard.TargetedPlayerId = null;
+            gameBoard.TargetReason = null;
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
+        }
+
+        public async Task SetGameBoardEndAsync(long id, CancellationToken cancellationToken)
+        {
+            GameBoard gameBoard = await GetGameBoardAsync(id, cancellationToken);
+            foreach (Player player in gameBoard.Players)
+            {
+                await _cardStore.DeleteAllPlayerCardAsync(player.Id, cancellationToken);
+            }
+            await DeleteAllGameBoardCardAsync(gameBoard.Id, cancellationToken);
+
+            gameBoard.IsOver = true;
+            gameBoard.ActualPlayerId = null;
+            gameBoard.TargetedPlayerId = null;
+            gameBoard.TargetReason = null;
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
         }
 
         public async Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken)
@@ -226,6 +280,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(g => g.ActualPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
                 .Include(g => g.TargetedPlayer).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
                 .Include(g => g.TargetedPlayer).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(s => s.Card)
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
@@ -241,7 +296,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
-                .Include(g => g.ScatteredGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(s => s.Card)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
@@ -344,6 +399,32 @@ namespace Bang.BLL.Infrastructure.Stores
 
             var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameBoard.ActualPlayerId, cancellationToken);
             gameBoard.ActualPlayer = nextPlayer;
+
+            var needsDiscard = nextPlayer.TablePlayerCards.Select(t => t.Card.CardType)
+                .Where(c => c == CardType.Dynamite || c == CardType.Jail);
+            if (needsDiscard.Count() == 2)
+            {
+                if (needsDiscard.ElementAtOrDefault(0) == CardType.Jail && needsDiscard.ElementAtOrDefault(1) == CardType.Dynamite)
+                {
+                    gameBoard.TargetReason = TargetReason.JailAndDynamite;
+                } 
+                 else if (needsDiscard.ElementAtOrDefault(0) == CardType.Dynamite && needsDiscard.ElementAtOrDefault(1) == CardType.Jail) {
+                    gameBoard.TargetReason = TargetReason.DynamiteAndJail;
+                }
+                gameBoard.TurnPhase = PhaseEnum.Discarding;
+            }
+            if (needsDiscard.Count() == 1)
+            {
+                if (needsDiscard.ElementAtOrDefault(0) == CardType.Jail)
+                {
+                    gameBoard.TargetReason = TargetReason.Jail;
+                }
+                else if (needsDiscard.ElementAtOrDefault(0) == CardType.Dynamite)
+                {
+                    gameBoard.TargetReason = TargetReason.Dynamite;
+                }
+                gameBoard.TurnPhase = PhaseEnum.Discarding;
+            }
             try
             {
                 await _dbContext.SaveChangesAsync(cancellationToken);
@@ -363,6 +444,22 @@ namespace Bang.BLL.Infrastructure.Stores
             HandPlayerCard drawnCard = new HandPlayerCard()
             {
                 PlayerId = playerId,
+                CardId = gameBoardCard.CardId,
+                CardColorType = gameBoardCard.CardColorType,
+                FrenchNumber = gameBoardCard.FrenchNumber
+            };
+            await DeleteGameBoardCardAsync(gameBoardCardId, cancellationToken);
+            return await _cardStore.CreatePlayerCardAsync(drawnCard, cancellationToken);
+        }
+
+        public async Task<long> DrawGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var player = await _playerStore.GetPlayerByUserIdAsync(userId, cancellationToken);
+            var gameBoardCard = await GetGameBoardCardAsync(gameBoardCardId, cancellationToken);
+            HandPlayerCard drawnCard = new HandPlayerCard()
+            {
+                PlayerId = player.Id,
                 CardId = gameBoardCard.CardId,
                 CardColorType = gameBoardCard.CardColorType,
                 FrenchNumber = gameBoardCard.FrenchNumber
@@ -479,6 +576,324 @@ namespace Bang.BLL.Infrastructure.Stores
             var gameboard = await GetGameBoardByUserAsync(userId, cancellationToken);
             var aliveCount = await _playerStore.GetRemainingPlayerCountAsync(gameboard.Id, cancellationToken);
             await DrawGameBoardCardsToScatteredAsync(aliveCount, cancellationToken);
+        }
+
+        public async Task<bool> CalculatePlayerPlacementAsync(long deadPlayerId, CancellationToken cancellationToken)
+        {
+            var deadPlayer = await _playerStore.GetPlayerAsync(deadPlayerId, cancellationToken);
+            var players = await _playerStore.GetPlayersByGameBoardAsync(deadPlayer.GameBoardId, cancellationToken);
+            players = players.Where(p => p.Id != deadPlayerId);
+            var alivePlayers = players.Where(p => p.ActualHP > 0);
+            var deadPlayers = players.Where(p => p.ActualHP == 0);
+
+            var outlaws = players.Where(p => p.RoleType == RoleType.Outlaw);
+            var vices = players.Where(p => p.RoleType == RoleType.Vice);
+            var renegade = players.FirstOrDefault(d => d.RoleType == RoleType.Renegade);
+            var sheriff = players.FirstOrDefault(d => d.RoleType == RoleType.Sheriff);
+
+            bool isCalculated = false;
+
+            switch (deadPlayer.RoleType)
+            {
+                case RoleType.Outlaw:
+                    if (alivePlayers.FirstOrDefault(d => d.RoleType == RoleType.Outlaw) == null && deadPlayers.Contains(renegade))
+                    {
+                        renegade.Placement = 3;
+                        deadPlayer.Placement = 2;
+                        foreach (var outlaw in outlaws)
+                        {
+                            outlaw.Placement = 2;
+                        }
+                        foreach (var vice in vices)
+                        {
+                            vice.Placement = 1;
+                        }
+                        sheriff.Placement = 1;
+                        isCalculated = true;
+                    }
+                    break;
+                case RoleType.Renegade:
+                    if (alivePlayers.FirstOrDefault(d => d.RoleType == RoleType.Outlaw) == null)
+                    {
+                        deadPlayer.Placement = 2;
+                        foreach (var outlaw in outlaws)
+                        {
+                            outlaw.Placement = 3;
+                        }
+                        foreach (var vice in vices)
+                        {
+                            vice.Placement = 1;
+                        }
+                        sheriff.Placement = 1;
+                        isCalculated = true;
+                    }
+                    break;
+                case RoleType.Sheriff:
+                    if (alivePlayers.FirstOrDefault(p => p.RoleType == RoleType.Outlaw) != null)
+                    {
+                        foreach (var outlaw in outlaws)
+                        {
+                            outlaw.Placement = 1;
+                        }
+                        if (deadPlayers.Contains(renegade))
+                        {
+                            foreach (var vice in vices)
+                            {
+                                vice.Placement = 2;
+                            }
+                            deadPlayer.Placement = 2;
+                            renegade.Placement = 3;
+                        }
+                        else
+                        {
+                            foreach (var vice in vices)
+                            {
+                                vice.Placement = 3;
+                            }
+                            deadPlayer.Placement = 3;
+                            renegade.Placement = 2;
+                        }
+                    }
+                    else
+                    {
+                        renegade.Placement = 1;
+                        foreach (var outlaw in outlaws)
+                        {
+                            outlaw.Placement = 2;
+                        }
+                        deadPlayer.Placement = 3;
+                        foreach (var vice in vices)
+                        {
+                            vice.Placement = 3;
+                        }
+                    }
+                    isCalculated = true;
+                    break;
+                case RoleType.Vice:
+                    break;
+            }
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                isCalculated = false;
+                if (await _dbContext.PlayerCards
+                    .SingleOrDefaultAsync(p => p.Id == deadPlayerId) == null)
+                    throw new EntityNotFoundException("Nem található a playercard");
+                else throw;
+            }
+            return isCalculated;
+        }
+
+        public async Task DeleteGameBoardAsync(long gameBoardId, CancellationToken cancellationToken)
+        {
+            await SetGameBoardEndAsync(gameBoardId, cancellationToken);
+            var gameboard = await GetGameBoardAsync(gameBoardId, cancellationToken);
+            var players = gameboard.Players;
+            foreach (var player in players)
+            {
+                _dbContext.Players.Remove(player);
+            }
+            _dbContext.GameBoards.Remove(gameboard);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoardId) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
+        }
+
+        public async Task SetDiscardInDiscardingPhaseResultAsync(DiscardedGameBoardCard gameBoardCard, GameBoard gameBoard, CancellationToken cancellationToken)
+        {
+            if (gameBoard.TargetReason == TargetReason.Dynamite || gameBoard.TargetReason == TargetReason.DynamiteAndJail)
+            {
+                if (gameBoard.TargetReason == TargetReason.DynamiteAndJail)
+                {
+                    gameBoard.TargetReason = TargetReason.Jail;
+                }
+                else
+                {
+                    gameBoard.TargetReason = null;
+                    gameBoard.TurnPhase = PhaseEnum.Drawing;
+                }
+                if (gameBoardCard.CardColorType == CardColorType.Spades && gameBoardCard.FrenchNumber >= 2 && gameBoardCard.FrenchNumber <= 9)
+                {
+                    bool isOver = false;
+                    for (int i = 0; i < 3 && !isOver; i++)
+                    {
+                        Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
+                        long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
+                        if (selectedPlayer.CharacterType == CharacterType.BartCassidy)
+                        {
+                            await DrawGameBoardCardsFromTopAsync(1, selectedPlayer.Id, cancellationToken);
+                        }
+                        if (newHP == 0)
+                        {
+                            isOver = await CalculatePlayerPlacementAsync(selectedPlayer.Id, cancellationToken);
+                            if (isOver)
+                            {
+                                await SetGameBoardEndAsync(cancellationToken);
+                            }
+                            else
+                            {
+                                await EndGameBoardTurnAsync(cancellationToken);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameBoard.ActualPlayerId, cancellationToken);
+                    var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
+                    await _cardStore.PlacePlayerCardToAnotherTableAsync(dynamite, nextPlayer, cancellationToken);
+                }
+            }
+            else if (gameBoard.TargetReason == TargetReason.Jail || gameBoard.TargetReason == TargetReason.JailAndDynamite)
+            {
+                if (gameBoardCard.CardColorType == CardColorType.Hearts)
+                {
+                    if (gameBoard.TargetReason == TargetReason.JailAndDynamite)
+                    {
+                        gameBoard.TargetReason = TargetReason.Dynamite;
+                    }
+                    else
+                    {
+                        gameBoard.TargetReason = null;
+                        gameBoard.TurnPhase = PhaseEnum.Drawing;
+                    }
+                }
+                else
+                {
+                    gameBoard.TargetReason = null;
+                    gameBoard.TurnPhase = PhaseEnum.Discarding;
+                }
+                var jail = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
+                await _cardStore.PlacePlayerCardToDiscardedAsync(jail, cancellationToken);
+            }
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else if (await _dbContext.GameBoardCards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoardCard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboardcard");
+                else throw;
+            }
+        }
+
+        public async Task SetDiscardInDiscardingPhaseResultAsync(IEnumerable<DiscardedGameBoardCard> gameBoardCards, GameBoard gameBoard, CancellationToken cancellationToken)
+        {
+            if (gameBoard.TargetReason == TargetReason.Dynamite || gameBoard.TargetReason == TargetReason.DynamiteAndJail)
+            {
+                if (gameBoard.TargetReason == TargetReason.DynamiteAndJail)
+                {
+                    gameBoard.TargetReason = TargetReason.Jail;
+                }
+                else
+                {
+                    gameBoard.TargetReason = null;
+                    gameBoard.TurnPhase = PhaseEnum.Drawing;
+                }
+                bool goodResult = false;
+                foreach (var gameBoardCard in gameBoardCards)
+                {
+                    if (!(gameBoardCard.CardColorType == CardColorType.Spades && gameBoardCard.FrenchNumber >= 2 && 
+                          gameBoardCard.FrenchNumber <= 9))
+                    {
+                        goodResult = true;
+                    }
+                }
+                if (!goodResult)
+                {
+                    bool isOver = false;
+                    for (int i = 0; i < 3 && !isOver; i++)
+                    {
+                        Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
+                        long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
+                        if (selectedPlayer.CharacterType == CharacterType.BartCassidy)
+                        {
+                            await DrawGameBoardCardsFromTopAsync(1, selectedPlayer.Id, cancellationToken);
+                        }
+                        if (newHP == 0)
+                        {
+                            isOver = await CalculatePlayerPlacementAsync(selectedPlayer.Id, cancellationToken);
+                            if (isOver)
+                            {
+                                await SetGameBoardEndAsync(cancellationToken);
+                            }
+                            else
+                            {
+                                await EndGameBoardTurnAsync(cancellationToken);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameBoard.ActualPlayerId, cancellationToken);
+                    var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
+                    await _cardStore.PlacePlayerCardToAnotherTableAsync(dynamite, nextPlayer, cancellationToken);
+                }
+            }
+            else if (gameBoard.TargetReason == TargetReason.Jail || gameBoard.TargetReason == TargetReason.JailAndDynamite)
+            {
+                bool goodResult = false;
+                foreach (var gameBoardCard in gameBoardCards)
+                {
+                    if (gameBoardCard.CardColorType == CardColorType.Hearts)
+                    {
+                        goodResult = true;
+                    }
+                }
+                if (goodResult)
+                {
+                    if (gameBoard.TargetReason == TargetReason.JailAndDynamite)
+                    {
+                        gameBoard.TargetReason = TargetReason.Dynamite;
+                    }
+                    else
+                    {
+                        gameBoard.TargetReason = null;
+                        gameBoard.TurnPhase = PhaseEnum.Drawing;
+                    }
+                }
+                else
+                {
+                    gameBoard.TargetReason = null;
+                    gameBoard.TurnPhase = PhaseEnum.Discarding;
+                }
+                var jail = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
+                await _cardStore.PlacePlayerCardToDiscardedAsync(jail, cancellationToken);
+            }
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
+        }
+
+        public async Task UseBarrelAsync(long playerId, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameboard = await GetGameBoardByUserAsync(userId, cancellationToken);
         }
     }
 }

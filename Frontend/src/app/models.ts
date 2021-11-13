@@ -1,3 +1,5 @@
+import { OwnboardComponent } from "./pages/game/ownboard/ownboard.component";
+
 export enum CharacterType {
     BartCassidy,
     BlackJack,
@@ -128,6 +130,7 @@ export interface OtherPlayer {
 
 export interface GameBoard {
     id: number;
+    lobbyOwnerId: string;
     actualPlayerId: number;
     targetedPlayerId: number;
     maxTurnTime: number;
@@ -137,10 +140,12 @@ export interface GameBoard {
     otherPlayers: OtherPlayer[];
 
     lastDiscardedGameBoardCard: Card;
+    scatteredGameBoardCards: Card[];
 }
 
 export interface PostGameBoard {
     maxTurnTime: number;
+    lobbyPassword: string;
     userIds: {userId: string, userName: string}[];
 }
 
@@ -211,7 +216,8 @@ export interface Permissions {
 export interface TargetPermission {
     canTargetPlayers?: boolean;
     canTargetCards?: boolean;
-    canDrawFromMiddle?: boolean;
+    canDrawTargetScattered?: boolean;
+    canTargetOwnCards?: boolean;
 }
 
 export enum TargetType {
@@ -231,4 +237,44 @@ export enum CardActionType {
     Play,
     Discard, 
     None
+}
+
+export enum TargetReason {
+    Bang,
+    Duel,
+    Gatling,
+    GeneralStore,
+    Indians,
+    KitCarlsonDraw
+}
+
+export enum PhaseEnum {
+    Discarding,
+    Drawing,
+    Playing,
+    Throwing
+}
+
+export interface ServiceDataTransfer {
+    gameboard?: GameBoard;
+    player?: Player;
+    targetPermission?: TargetPermission;
+    permissions?: Permissions;
+    ownboard?: OwnboardComponent;
+}
+
+export enum PermissionQueryType {
+    CanSwitchPlayMode,
+    CanEndTurn,
+    CanDecrementHealth,
+    CanUseCardPack,
+    CanUseDiscardedPack,
+    CanUseBarrel,
+    CanUseBang,
+    CanUseMissed,
+    CanUseBeer,
+    CanTargetOthers,
+    CanTargetOthersHand,
+    CanTargetOthersTable,
+    CanDiscardCard
 }

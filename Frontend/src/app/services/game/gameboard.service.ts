@@ -31,6 +31,10 @@ export class GameboardService {
     return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined);
   }
 
+  public deleteGameBoard(id: number) {
+    return this.client.delete(`${environment.baseUrl}/api/bang/gameboard/${id}`);
+  }
+
   constructor(private client: HttpClient, private auth: AuthorizationService) { }
 
   public getPlayerByPosition(pos: Position, players: OtherPlayer[] | undefined): OtherPlayer | undefined {

@@ -19,7 +19,7 @@ namespace Bang.API.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class GameBoardController
+    public class GameBoardController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IHubContext<GameHub, IGameHubClient> _hub;
@@ -115,7 +115,17 @@ namespace Bang.API.Controllers
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
-            return new NoContentResult();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGameboardAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteGameBoardCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
         }
     }
 }

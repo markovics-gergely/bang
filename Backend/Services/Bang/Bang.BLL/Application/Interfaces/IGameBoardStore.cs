@@ -2,6 +2,7 @@
 using Bang.DAL.Domain;
 using Bang.DAL.Domain.Catalog.Cards;
 using Bang.DAL.Domain.Constants.Enums;
+using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 
 using System.Collections.Generic;
@@ -26,10 +27,13 @@ namespace Bang.BLL.Application.Interfaces
         Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken);
         Task ShuffleCardsAsync(GameBoard gameBoard, CancellationToken cancellationToken);
         Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(CancellationToken cancellationToken);
+        Task SetDiscardInDiscardingPhaseResultAsync(DiscardedGameBoardCard gameBoardCard, GameBoard gameBoard, CancellationToken cancellationToken);
+        Task SetDiscardInDiscardingPhaseResultAsync(IEnumerable<DiscardedGameBoardCard> gameBoardCards, GameBoard gameBoard, CancellationToken cancellationToken);
         Task DeleteGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task DeleteAllGameBoardCardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken);
         Task SetGameBoardEndAsync(CancellationToken cancellationToken);
+        Task SetGameBoardEndAsync(long id, CancellationToken cancellationToken);
         Task SetGameBoardActualPlayerAsync(long playerId, CancellationToken cancellationToken);
         Task SetGameBoardTargetedPlayerAsync(long? playerId, CancellationToken cancellationToken);
         Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken);
@@ -38,9 +42,13 @@ namespace Bang.BLL.Application.Interfaces
         Task PlayCardAsync(long playerCardId, CancellationToken cancellationToken);
         Task PlayCardAsync(long playerCardId, long targetPlayerCardId, bool isTargetPlayer, CancellationToken cancellationToken);
         Task<long> DrawGameBoardCardAsync(long gameBoardCardId, long playerId, CancellationToken cancellationToken);
+        Task<long> DrawGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, long playerId, CancellationToken cancellationToken);
         Task DrawGameBoardCardsFromTopAsync(int count, CancellationToken cancellationToken);
         Task DrawGameBoardCardsToScatteredAsync(int count, CancellationToken cancellationToken);
         Task DrawGameBoardCardsToScatteredByPlayersAliveAsync(CancellationToken cancellationToken);
+        Task<bool> CalculatePlayerPlacementAsync(long deadPlayerId, CancellationToken cancellationToken);
+        Task DeleteGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
+        Task UseBarrelAsync(long playerId, CancellationToken cancellationToken);
     }
 }

@@ -18,7 +18,7 @@ namespace Bang.API.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class PlayerController
+    public class PlayerController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IHubContext<GameHub, IGameHubClient> _hub;
@@ -77,7 +77,18 @@ namespace Bang.API.Controllers
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
-            return new NoContentResult();
+            return NoContent();
+        }
+
+        [HttpPut("gain-health-for-cards")]
+        public async Task<ActionResult> GainHealthForCardsAsync([FromBody] IEnumerable<long> cards, CancellationToken cancellationToken)
+        {
+            var command = new GainHealthForCardsCommand(cards);
+
+            await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
+            return NoContent();
         }
 
         [HttpGet("permissions")]

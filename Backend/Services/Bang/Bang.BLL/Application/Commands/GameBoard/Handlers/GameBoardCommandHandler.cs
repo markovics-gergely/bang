@@ -27,7 +27,8 @@ namespace Bang.BLL.Application.Commands.Handlers
         IRequestHandler<CreateGameBoardCommand, long>,
         IRequestHandler<ShuffleGameBoardCardsCommand>,
         IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>,
-        IRequestHandler<EndGameBoardTurnCommand, Unit>
+        IRequestHandler<EndGameBoardTurnCommand, Unit>,
+        IRequestHandler<DeleteGameBoardCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -134,7 +135,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
                 if(playerDomain.RoleType == RoleType.Sheriff)
                 {
-                    await _gameBoardStore.SetGameBoardActualPlayerAsync(playerId, cancellationToken);
+                    domain.ActualPlayerId = playerId;
                 }
 
                 List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
@@ -187,14 +188,42 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<FrenchCardViewModel> Handle(DiscardFromDrawableGameBoardCardCommand request, CancellationToken cancellationToken)
         {
-            var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            var gameboard = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
 
-            return _mapper.Map<FrenchCardViewModel>(domain);
+            if (gameboard.ActualPlayer.CharacterType == CharacterType.LuckyDuke)
+            {
+                var firstDomain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
+                var secondDomain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
+                if (gameboard.TurnPhase == PhaseEnum.Discarding)
+                {
+                    await _gameBoardStore.SetDiscardInDiscardingPhaseResultAsync(new DiscardedGameBoardCard[] { firstDomain, secondDomain}, gameboard, cancellationToken);
+                }
+
+                return _mapper.Map<FrenchCardViewModel>(secondDomain);
+            }
+            else
+            {
+                var domain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
+                if (gameboard.TurnPhase == PhaseEnum.Discarding)
+                {
+                    await _gameBoardStore.SetDiscardInDiscardingPhaseResultAsync(domain, gameboard, cancellationToken);
+                }
+
+                return _mapper.Map<FrenchCardViewModel>(domain);
+            }
+            
         }
 
         public async Task<Unit> Handle(EndGameBoardTurnCommand request, CancellationToken cancellationToken)
         {
             await _gameBoardStore.EndGameBoardTurnAsync(cancellationToken);
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(DeleteGameBoardCommand request, CancellationToken cancellationToken)
+        {
+            await _gameBoardStore.DeleteGameBoardAsync(request.Id, cancellationToken);
             return Unit.Value;
         }
     }

@@ -42,9 +42,12 @@ namespace Bang.API.Extensions
             services.AddTransient<IRequestHandler<GetTargetablePlayersQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddTransient<IRequestHandler<GetTargetablePlayersByRangeQuery, IEnumerable<PlayerViewModel>>, PlayerQueryHandler>();
             services.AddTransient<IRequestHandler<DecrementPlayerHealthCommand, Unit>, PlayerCommandHandler>();
+            services.AddTransient<IRequestHandler<GainHealthForCardsCommand, Unit>, PlayerCommandHandler>();
             services.AddTransient<IRequestHandler<PlayCardCommand, Unit>, CardCommandHandler>();
             services.AddTransient<IRequestHandler<DiscardCardCommand, Unit>, CardCommandHandler>();
             services.AddTransient<IRequestHandler<DrawCardCommand, Unit>, CardCommandHandler>();
+            services.AddTransient<IRequestHandler<DrawCardByIdCommand, Unit>, CardCommandHandler>();
+            services.AddTransient<IRequestHandler<DrawCardFromPlayerCommand, Unit>, CardCommandHandler>();
             services.AddTransient<IRequestHandler<GetPermissionsQuery, PermissionViewModel>, PlayerQueryHandler>();
             services.AddTransient<IRequestHandler<GetPermissionsByUserQuery, PermissionViewModel>, PlayerQueryHandler>();
 
@@ -58,6 +61,7 @@ namespace Bang.API.Extensions
             services.AddTransient<IRequestHandler<CreateGameBoardCommand, long>, GameBoardCommandHandler>();
             services.AddTransient<IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>, GameBoardCommandHandler>();
             services.AddTransient<IRequestHandler<EndGameBoardTurnCommand, Unit>, GameBoardCommandHandler>();
+            services.AddTransient<IRequestHandler<DeleteGameBoardCommand, Unit>, GameBoardCommandHandler>();
         }
     }
 }
