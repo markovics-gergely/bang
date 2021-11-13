@@ -3,12 +3,14 @@
     <div class="top-list">
         <div class="title"> Friends </div>
         <div class="list">
-            <div class="list-content">
-                <div class="list-element" *ngFor="let friend of friends"> 
-                    {{friend.name}} 
-                    <button class="friend-button friend-remove" (click)="removeFriend(friend.name)" style="font-size:15px;">Rem</button>
-                    <button *ngIf="inLobby" class="friend-button" (click)="sendInvite(friend.name)" style="font-size:15px;">Inv</button> 
-                    <button *ngIf="friend.invitedFrom" class="friend-button" (click)="acceptInvite(friend.name)" style="font-size:15px; background-color:green;">AccI</button>    
+            <div class="list-element" *ngFor="let friend of friends"> 
+                <div class="name-content">    
+                    <p class="text-wrap" style="font-size: 17px; margin-right: 5px; font-weight: 500;">{{friend.name}}</p>  
+                </div>
+                <div class="button-content">
+                    <button class="friend-button" *ngIf="inLobby" style="font-size:15px; background-color:blue;" (click)="sendInvite(friend.name)">Inv</button> 
+                    <button class="friend-button" *ngIf="friend.invitedFrom" style="font-size:15px; background-color:green;" (click)="acceptInvite(friend.name)" >Acc</button>
+                    <button class="friend-button" style="font-size:15px; background-color:red;" (click)="removeFriend(friend.name)">Rem</button>
                 </div>
             </div>
         </div>
@@ -17,18 +19,20 @@
     <div class="bottom-list">   
         <div class="title"> Pending requests </div>
         <div class="list">
-            <div class="list-content">
-                <div class="list-element" *ngFor="let unacceptedFriend of unacceptedFriends"> 
-                    {{unacceptedFriend.name}}         
-                    <button class="friend-button friend-accept" (click)="addFriendFromList(unacceptedFriend.name)" style="font-size:15px;">Acc</button>
-                    <button class="friend-button friend-remove" (click)="removeFriend(unacceptedFriend.name)" style="font-size:15px;">Rem</button>       
+            <div class="list-element" *ngFor="let unacceptedFriend of unacceptedFriends"> 
+                <div class="name-content">    
+                    <p class="text-wrap" style="font-size: 17px; margin-right: 5px; font-weight: 500;">{{unacceptedFriend.name}}</p>  
+                </div>
+                <div class="button-content">
+                    <button class="friend-button" style="font-size:15px; background-color:green;" (click)="addFriendFromList(unacceptedFriend.name)" >Acc</button>
+                    <button class="friend-button" style="font-size:15px; background-color:red;" (click)="removeFriend(unacceptedFriend.name)">Rem</button>
                 </div>
             </div>
         </div>
     </div> 
-    <form [formGroup]="friendAddForm" (ngSubmit)="addFriend()">
+    <form class="form-content" [formGroup]="friendAddForm" (ngSubmit)="addFriend()">
         <input type="text" placeholder="Friend name" class="form-control" formControlName="name">
-        <button type="submit" class="btn btn-success"> Add friend </button>
+        <button class="submit-button" type="submit" class="btn btn-success"> Add </button>
     </form>    
 </div>
 

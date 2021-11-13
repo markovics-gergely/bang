@@ -1,8 +1,8 @@
 .base {
     border-width: 2px 0 2px 2px;
-    border-color: bisque;
+    border-color: #FFFDDD;
     border-style: solid;
-    background-color: brown; 
+    background-color: #9C6137; 
     height: 100%; 
     border-radius: 20px 0px 0px 20px;
 }
@@ -10,12 +10,15 @@
 .top-list {
     height: 65%;
     border-width: 0 0 2px 0;
-    border-color: bisque;
+    border-color: #FFFDDD;
     border-style: solid;
 }
 
 .bottom-list {
-    height: 25%;
+    height: 30%;
+    border-width: 0 0 2px 0;
+    border-color: #FFFDDD;
+    border-style: solid;
 }
 
 .title {
@@ -24,37 +27,68 @@
     font-size: 35px;
     font-weight: bold;
     border-width: 0 0 2px 0;
-    border-color: bisque;
+    border-color: #FFFDDD;
     border-style: solid;
 }
 
 .list {
     overflow-y: scroll;
     overflow-x: hidden;
-    height: calc(100% - 52px);
+    height: calc(100% - 55px);
 }
 
-.list-content {
-    color:black;
+.form-content {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+    height: 50px;
     margin-left: 20px;
-    margin-top: 10px;
-    margin-right: 20px;
+}
+
+.submit-button {
+    margin-top: 20px;
+}
+
+.name-content {
+    color:black;
+    margin-left: 9px;
+    margin-top: 12px;
+    width: 100px;
+}
+
+.text-wrap {
+    width: 110px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.button-content {
+    color:black;
+    margin-right: 35px;
+    margin-top: 9px;
+    position: absolute;
+    right: 0;
+    
 }
 
 .list-element {
-    color:black;
-    border-width: 2px;
-    border-color: bisque;
-    border-style: solid;
+    background-color: #c0906d; 
+    display: flex;
+    margin: 10px;
     height: 50px;
-    color:bisque;
-    font-size: 30px;
-    margin: 10px 0 10px 0;
+    border-width: 2px;
+    border-color: #FFFDDD;
+    border-style: solid;  
+    color:#FFFDDD;
+    border-radius: 10px;
 }
 
 .friend-button {
-    border-radius: 15px;
-    width: 20%;
+    border-radius: 8px;
     height: 80%;
 }
 

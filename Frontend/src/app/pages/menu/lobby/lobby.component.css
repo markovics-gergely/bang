@@ -12,20 +12,37 @@
     height: 100%;
 }
 
+.password{
+    text-align: center;
+    margin-right: 300px;
+    font-size: 60px;
+    font-family: Cambria;
+    color: #4e2e17; 
+    font-weight: bold;
+}
+
 .list-content {
     color:black;
-    margin-left: 0px;
-    margin-top: 10px;
     margin-right: 300px;
 }
 
+.button {
+    text-align: center;
+    margin-right: 300px;
+    margin-bottom: 10px;
+}
+
 .list-element {
-    color:black;
-    border-width: 2px;
-    border-color: bisque;
-    border-style: solid;
+    background-color: #c0906d;     
+    margin: 10px;
     height: 50px;
-    color:bisque;
-    font-size: 30px;
-    margin: 10px 0 10px 0;
+    border-width: 2px;
+    border-color: #FFFDDD;
+    border-style: solid;  
+    color:black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    font-size: 40px;
 }

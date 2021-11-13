@@ -54,17 +54,17 @@ namespace UserIdentity.API.Hubs.Hubs
             var dbLobby = await _lobbyStore.GetActualLobbyAsync(actId, new CancellationToken());
 
             var lobby = Lobbies.Values.FirstOrDefault(r => r.Accounts.Any(u => u.UserName == actName));
-            if (lobby != null)
+            if (lobby != null && dbLobby != null)
             {
                 lobby.Accounts.Remove(lobby.Accounts.FirstOrDefault(u => u.UserName == actName));
                 if (lobby.Accounts.Count == 0)
                 {
                     Lobbies.Remove(lobby.Name, out HubLobby value);
-                }     
-            }
+                }
 
-            await Clients.Group(dbLobby.Password).RefreshLobbyUsers(dbLobby.Id);
-        }
+                await Clients.Group(dbLobby.Password).RefreshLobbyUsers(dbLobby.Id);
+            }
+        }       
 
         public async Task SendMessageToRoom(string message)
         {
@@ -72,14 +72,17 @@ namespace UserIdentity.API.Hubs.Hubs
             var actName = await _accountStore.GetActualAccountName();
             var lobby = await _lobbyStore.GetActualLobbyAsync(actId, new CancellationToken());
 
-            var messageInstance = new Message
+            if (lobby != null)
             {
-                UserName = actName,
-                Text = message,
-            };
+                var messageInstance = new Message
+                {
+                    UserName = actName,
+                    Text = message,
+                };
 
-            Lobbies[lobby.Password].Messages.Add(messageInstance);
-            await Clients.Group(lobby.Password).SetMessage(messageInstance);
+                Lobbies[lobby.Password].Messages.Add(messageInstance);
+                await Clients.Group(lobby.Password).SetMessage(messageInstance);
+            }
         }
 
         public async Task EnterRoom()
@@ -88,19 +91,22 @@ namespace UserIdentity.API.Hubs.Hubs
             var actName = await _accountStore.GetActualAccountName();
             var lobby = await _lobbyStore.GetActualLobbyAsync(actId, new CancellationToken());
 
-            if (!Lobbies.ContainsKey(lobby.Password))
+            if(lobby != null)
             {
-                Lobbies.TryAdd(lobby.Password, new HubLobby { Name = lobby.Password, OwnerId = lobby.OwnerId });
+                if (!Lobbies.ContainsKey(lobby.Password))
+                {
+                    Lobbies.TryAdd(lobby.Password, new HubLobby { Name = lobby.Password, OwnerId = lobby.OwnerId });
+                }
+
+                var user = new Account { Id = actId, UserName = actName };
+                var room = Lobbies[lobby.Password];
+
+                room.Accounts.Add(user);
+
+                await Groups.AddToGroupAsync(Context.ConnectionId, lobby.Password);
+                await Clients.Caller.SetMessages(room.Messages);
+                await Clients.Group(lobby.Password).RefreshLobbyUsers(lobby.Id);
             }
-
-            var user = new Account { Id = actId, UserName = actName };
-            var room = Lobbies[lobby.Password];
-
-            room.Accounts.Add(user);
-
-            await Groups.AddToGroupAsync(Context.ConnectionId, lobby.Password);
-            await Clients.Caller.SetMessages(room.Messages);
-            await Clients.Group(lobby.Password).RefreshLobbyUsers(lobby.Id);
         }
     }
 

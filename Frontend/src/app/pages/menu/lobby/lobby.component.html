@@ -1,21 +1,21 @@
-<div class="container lobby">
+<div class="container">
     <div class="friend-list">
         <app-friend [inLobby]=true></app-friend>
     </div>
-    <div *ngIf="isLobbyOwner">
-        <button type="button" class="account-button" (click)="createGameBoard()"> Create game board </button>
-    </div>
 
-    <div class="list">
+    <p class="password">Password: {{lobbyPassword}}</p>
+
+    <div>
         <div class="list-content">
             <div class="list-element" *ngFor="let player of players"> {{player.userName}} </div>
         </div>
     </div>
 
-    <h1>Password: {{lobbyPassword}}</h1>
-
-    <div>
-        <button type="button" (click)="leaveLobby()"> Leave lobby </button>
+    <div *ngIf="isLobbyOwner" class="button">
+        <button type="button" class="btn btn-success" (click)="createGameBoard()"> Create game board </button>
+    </div>
+    <div class="button">
+        <button type="button" class="btn btn-success" (click)="leaveLobby()"> Leave lobby </button>
     </div>
 
     <app-chat [fromBottom]="0" [animated]="false"></app-chat>

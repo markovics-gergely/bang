@@ -9,9 +9,8 @@
 
     <form [formGroup]="joinLobbyForm" (ngSubmit)="joinLobby()" class="join-lobby">
         <input type="password" placeholder="Password" class="form-control" formControlName="password">
-        <button type="submit" class="btn btn-success"> Join lobby </button>
+        <button type="submit" class="btn btn-success"> Join </button>
     </form>
-
 
     <div>
         <button type="button" class="history-button btn btn-success" (click)="viewHistory()"> History </button>
