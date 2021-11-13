@@ -77,7 +77,7 @@
 .list-element {
     background-color: #c0906d; 
     display: flex;
-    margin: 10px;
+    margin: 10px 18px 10px 10px;
     height: 50px;
     border-width: 2px;
     border-color: #FFFDDD;

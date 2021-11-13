@@ -1,9 +1,9 @@
-/*.lobby {
-    background-image: url("../../../../assets/images/lobbyBackground.png");
+.lobby {
+    background-image: url("../../../../assets/images/lobbyBackground.png") !important;
     background-size: 100% ;  
     background-size: cover; 
     height: 100vh;
-}*/
+}
 
 .friend-list {
     width: 300px;
@@ -17,13 +17,17 @@
     margin-right: 300px;
     font-size: 60px;
     font-family: Cambria;
-    color: #4e2e17; 
+    color: #FFFDDD; 
     font-weight: bold;
 }
 
 .list-content {
     color:black;
     margin-right: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
 }
 
 .button {
@@ -36,6 +40,7 @@
     background-color: #c0906d;     
     margin: 10px;
     height: 50px;
+    width: calc(60% - 20px);
     border-width: 2px;
     border-color: #FFFDDD;
     border-style: solid;  
