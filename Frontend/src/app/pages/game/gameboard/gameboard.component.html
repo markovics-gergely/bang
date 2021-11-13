@@ -1,54 +1,68 @@
 <div class="container-fluid max-height" *ngIf="gameboard">
     <div class="row upper-row justify-content-center">
         <div class="col-md-3 order-md-1 col-6 order-3" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftTop)">
-            <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"
-                            [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.LeftTop))" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+            <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                            (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftTop)"
+                            [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.LeftTop))" 
+                            [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.LeftTop))"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-2 col-6 order-1 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopLeft)">
-            <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"
-                            [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.TopLeft))" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+            <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                            (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopLeft)"
+                            [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.TopLeft))" 
+                            [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.TopLeft))"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.TopRight)">
-            <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"
-                            [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.TopRight))" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+            <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                            (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.TopRight)"
+                            [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.TopRight))" 
+                            [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.TopRight))"></app-otherboard>
         </div>
         <div class="col-md-3 order-md-4 col-6 order-4 p-0" *ngIf="getPlayerByPosition(gameBoardService.Position.RightTop)">
-            <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"
-                            [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.RightTop))" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+            <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                            (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightTop)"
+                            [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.RightTop))" 
+                            [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.RightTop))"></app-otherboard>
         </div>
     </div>
     <div class="row body-row">
         <div class="col-md-3 order-md-1 col-6 order-1 my-auto max-height">
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.LeftBottom)">
-                <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"
-                                [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.LeftBottom))" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                                (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.LeftBottom)"
+                                [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.LeftBottom))" 
+                                [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.LeftBottom))"></app-otherboard>
             </div>
         </div>
         <div class="col-md-6 order-md-2 col-12 order-3">
             <div class="row board">
                 <div class="col-12 h-50 d-flex justify-content-center align-items-center">
                     <div class="card-on-board">
-                            <app-card [width]="91" [height]="151" (cardHoverEvent)="setOnlyCardHovered($event)" class="h-100" *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="gameboard.lastDiscardedGameBoardCard"></app-card>
+                            <app-card [width]="91" [height]="151" (cardHoverEvent)="hoverService.setOnlyCardHovered($event)" class="h-100" 
+                            *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="gameboard.lastDiscardedGameBoardCard"
+                            [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"></app-card>
                     </div>
                     <div class="card-on-board">
-                        <img class="h-100 img-fluid rounded" src="../../../assets/cards/Cards/Background.png" (click)="cardPackAction()"
-                            alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" />
+                        <img class="h-100 img-fluid" src="../../../assets/cards/Cards/Background.png" (click)="cardPackAction()"
+                            alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" [ngClass]="permissionService.getStyle(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"/>
                     </div>
-                    
                 </div>
             </div>
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
             <div class="row" *ngIf="getPlayerByPosition(gameBoardService.Position.RightBottom)">
-                <app-otherboard class="p-0 m-0" (selectEvent)="getCardTarget($event)" (hoverItemEvent)="setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"
-                                [permissions]="permissions" [targetPermissions]="targetPermissions" [isTargetable]="getTargetableType(getPlayerByPosition(gameBoardService.Position.RightBottom))"
-                                [highlight]="getTargetPlayerClass(getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
+                <app-otherboard class="p-0 m-0" (selectEvent)="targetService.getCardTarget(createServiceDataTransfer(), $event)" 
+                                (hoverItemEvent)="hoverService.setCardHovered($event)" [player]="getPlayerByPosition(gameBoardService.Position.RightBottom)"
+                                [permissions]="permissions" [targetPermissions]="targetPermission" 
+                                [isTargetable]="targetService.getTargetableType(gameboard.ownPlayer, getPlayerByPosition(gameBoardService.Position.RightBottom))"
+                                [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), getPlayerByPosition(gameBoardService.Position.RightBottom))"></app-otherboard>
             </div>
         </div>
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
-        <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="setCardHovered($event)" [highlight]="getTargetPlayerClass(gameboard.ownPlayer)" [player]="gameboard.ownPlayer" [permissions]="permissions" [targetPermissions]="targetPermissions" [hoverActive]="hoverService.hovered"></app-ownboard>
+        <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="hoverService.setCardHovered($event)" 
+                      [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), gameboard.ownPlayer)" [player]="gameboard.ownPlayer" [permissions]="permissions" [targetPermissions]="targetPermission" [hoverActive]="hoverService.hovered"></app-ownboard>
     </div>
     <app-chat></app-chat>
 </div>
@@ -76,3 +90,16 @@
         </div>
     </div>
 </div>
+
+  
+<ng-template #content let-modal>
+    <div class="modal-header mx-auto h-100">
+      <h4 class="modal-title h-100" id="modal-basic-title">Game Over!</h4>
+    </div>
+    <div class="modal-body h-100">
+      
+    </div>
+    <div class="modal-footer" *ngIf="gameboard?.lobbyOwnerId === gameboard?.ownPlayer?.id">
+      
+    </div>
+</ng-template>

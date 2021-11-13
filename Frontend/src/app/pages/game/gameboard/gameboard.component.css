@@ -179,3 +179,13 @@
 .chat-table:hover {
     height: 250px;
 }
+
+.game-back {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: -10;
+    background-color: black;
+}

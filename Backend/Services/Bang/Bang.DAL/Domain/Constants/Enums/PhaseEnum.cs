@@ -2,6 +2,7 @@
 {
     public enum PhaseEnum
     {
+        Discarding,
         Drawing,
         Playing,
         Throwing

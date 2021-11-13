@@ -197,7 +197,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 ?? throw new EntityNotFoundException("PlayerCard not found!");
         }
 
-        public async Task<long> PlaceHandPlayerCardToAnotherTableAsync(HandPlayerCard playerCard, Player targetPlayer, CancellationToken cancellationToken)
+        public async Task<long> PlacePlayerCardToAnotherTableAsync(PlayerCard playerCard, Player targetPlayer, CancellationToken cancellationToken)
         {
             TablePlayerCard tablePlayerCard = new TablePlayerCard()
             {

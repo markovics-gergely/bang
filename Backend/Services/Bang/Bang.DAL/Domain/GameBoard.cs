@@ -8,6 +8,7 @@ namespace Bang.DAL.Domain
     public class GameBoard
     {
         public long Id { get; set; }
+        public string LobbyOwnerId { get; set; }
 
         public long? ActualPlayerId { get; set; }
         public Player ActualPlayer { get; set; }

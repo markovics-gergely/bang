@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, CardActionType, CardType, HoverEnum, Permissions, PlayCardDto, Player, PlayerHighlightedType, TargetPermission, TargetType } from 'src/app/models';
+import { Card, CardActionType, CardType, HoverEnum, Permissions, PlayCardDto, Player, PlayerHighlightedType, ServiceDataTransfer, TargetPermission, TargetType } from 'src/app/models';
 import { CardService } from 'src/app/services/game/card.service';
 import { CharacterService } from 'src/app/services/game/character.service';
+import { PermissionService } from 'src/app/services/game/permission.service';
 import { PlayerService } from 'src/app/services/game/player.service';
 import { RoleService } from 'src/app/services/game/role.service';
 
@@ -17,7 +18,7 @@ export class OwnboardComponent implements OnInit {
   @Input() hoverActive: boolean = false;
   @Input() highlight: PlayerHighlightedType = PlayerHighlightedType.None;
   @Output() hoverItemEvent = new EventEmitter<{data: string, type: HoverEnum}>();
-  @Output() selectCardEvent = new EventEmitter<{type: TargetType, card: Card}>();
+  @Output() selectCardEvent = new EventEmitter<{type: TargetType | undefined, card: Card | undefined}>();
 
   public playMode: boolean = true;
   public canChangePlayMode: boolean = true;
@@ -26,7 +27,7 @@ export class OwnboardComponent implements OnInit {
   private targetPlayerCardId: number | undefined;
 
   constructor(public cardService: CardService, public characterService: CharacterService, public roleService: RoleService,
-              public playerService: PlayerService) { }
+              public playerService: PlayerService, private permissionService: PermissionService) { }
 
   ngOnInit(): void {
   }
@@ -36,7 +37,7 @@ export class OwnboardComponent implements OnInit {
   }
 
   public cardAction(card: Card) {
-    if (this.cardCanPlay(card) !== CardActionType.None) {
+    if (this.canPlayCard(card) !== CardActionType.None) {
       if (this.playMode) {
         this.playCard(card);
       } else {
@@ -46,6 +47,7 @@ export class OwnboardComponent implements OnInit {
     } else if (card === this.selectedCard) {
       this.selectedCard = undefined;
       this.targetPermissions = undefined;
+      this.selectCardEvent.emit({type: undefined, card: undefined});
     }
   }
 
@@ -118,28 +120,8 @@ export class OwnboardComponent implements OnInit {
     }
   }
 
-  cardCanPlay(card: Card): CardActionType {
-    if (this.selectedCard) {
-      return CardActionType.None;
-    }
-    else if (!this.playMode && this.permissions) {
-      return this.permissions.canDiscardCard ? CardActionType.Discard : CardActionType.None;
-    }
-    else if (this.playMode && this.permissions && this.permissions.canPlayCard) {
-      if (card.cardType === CardType.Bang) {
-        return this.permissions.canPlayBangCard ? CardActionType.Play : CardActionType.None;
-      }
-      else if (card.cardType === CardType.Missed) {
-        return this.permissions.canPlayMissedCard ? CardActionType.Play : CardActionType.None;
-      }
-      else if (card.cardType === CardType.Beer) {
-        return this.permissions.canPlayBeerCard ? CardActionType.Play : CardActionType.None;
-      }
-      else {
-        return CardActionType.Play;
-      }
-    }
-    return CardActionType.None;
+  canPlayCard(card: Card): CardActionType {
+    return this.permissionService.canPlayCardType(this.createServiceDataTransfer(), card.cardType, this.playMode)
   }
 
   canEndTurn(): boolean {
@@ -165,5 +147,10 @@ export class OwnboardComponent implements OnInit {
       case PlayerHighlightedType.None:
       default: return '';
     }
+  }
+
+  public createServiceDataTransfer(): ServiceDataTransfer {
+    let transfer: ServiceDataTransfer = {player: this.player, targetPermission: this.targetPermissions, permissions: this.permissions, ownboard: this};
+    return transfer;
   }
 }

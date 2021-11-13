@@ -246,6 +246,18 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
+      "DownstreamPathTemplate": "/Player/gain-health-for-cards",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/gain-health-for-cards",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
       "DownstreamPathTemplate": "/Card/play-card",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -330,6 +342,30 @@
       "UpstreamHttpMethod": [ "PUT" ]
     },
     {
+      "DownstreamPathTemplate": "/Card/draw-a-card/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/card/draw-a-card/{id}",
+      "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Card/draw-a-card-from-hand/{playerId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/card/draw-a-card-from-hand/{playerId}",
+      "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
       "DownstreamPathTemplate": "/Player/{id}/targetable/{range}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -352,6 +388,18 @@
       ],
       "UpstreamPathTemplate": "/api/bang/player/{id}/targetable",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Gameboard/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/gameboard/{id}",
+      "UpstreamHttpMethod": [ "Delete" ]
     }
   ]
 }

@@ -19,7 +19,7 @@ namespace Bang.API.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class CardController
+    public class CardController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IHubContext<GameHub, IGameHubClient> _hub;
@@ -53,7 +53,7 @@ namespace Bang.API.Controllers
 
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
-            return new NoContentResult();
+            return NoContent();
         }
 
         [HttpPut("discard-card/{playerCardId}")]
@@ -64,7 +64,7 @@ namespace Bang.API.Controllers
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
-            return new NoContentResult();
+            return NoContent();
         }
 
         [HttpPut("draw-card/{count}")]
@@ -75,7 +75,29 @@ namespace Bang.API.Controllers
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
-            return new NoContentResult();
+            return NoContent();
+        }
+
+        [HttpPut("draw-a-card/{id}")]
+        public async Task<ActionResult> DrawCardByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            var command = new DrawCardByIdCommand(id);
+
+            await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPut("draw-a-card-from-hand/{playerId}")]
+        public async Task<ActionResult> DrawCardFromHandAsync(long playerId, CancellationToken cancellationToken)
+        {
+            var command = new DrawCardFromPlayerCommand(playerId);
+
+            await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
+            return NoContent();
         }
     }
 }

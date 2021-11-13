@@ -13,6 +13,10 @@ namespace Bang.DAL.Domain.Constants.Enums
         Gatling,
         GeneralStore,
         Indians,
+        Dynamite,
+        Jail,
+        DynamiteAndJail,
+        JailAndDynamite,
         KitCarlsonDraw
     }
 }

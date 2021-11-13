@@ -28,5 +28,6 @@ namespace Bang.BLL.Application.Interfaces
         Task DiscardCardAsync(long playerCardId, CancellationToken cancellationToken);
         Task AddPlayedCardAsync(CardType cardType, long playerId, CancellationToken cancellationToken);
         Task AddPlayedCardAsync(CardType cardType, CancellationToken cancellationToken);
+        Task GainHealthForCardsAsync(IEnumerable<long> cards, CancellationToken cancellationToken);
     }
 }

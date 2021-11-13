@@ -4,14 +4,16 @@ using Bang.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    partial class BangDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211030133930_lobbyId")]
+    partial class lobbyId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,7 +269,7 @@ namespace Bang.DAL.Migrations
                     b.Property<bool>("IsOver")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LobbyOwnerId")
+                    b.Property<string>("LobbyPassword")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxTurnTime")
@@ -285,7 +287,7 @@ namespace Bang.DAL.Migrations
                     b.Property<int>("TurnPhase")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 

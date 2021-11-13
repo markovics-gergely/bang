@@ -38,4 +38,8 @@ export class PlayerService {
   public endTurn(): Observable<Object> {
     return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined)
   }
+
+  public gainHealthForCards(cards: number[]): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/player/gain-health-for-cards`, cards);
+  }
 }

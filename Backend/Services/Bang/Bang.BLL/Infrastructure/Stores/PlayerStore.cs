@@ -244,5 +244,18 @@ namespace Bang.BLL.Infrastructure.Stores
             int actualId = players.FindIndex(p => p.Id == playerId);
             return actualId == players.Count - 1 ? players[0] : players[actualId + 1];
         }
+
+        public async Task GainHealthForCardsAsync(IEnumerable<long> cards, CancellationToken cancellationToken)
+        {
+            if (cards.Count() != 2)
+            {
+                throw new NotEnoughCardException("Nem kettő lap eldobva!");
+            }
+            foreach (var cardid in cards)
+            {
+                await DiscardCardAsync(cardid, cancellationToken);
+            }
+            await IncrementPlayerHealthAsync(cancellationToken);
+        }
     }
 }

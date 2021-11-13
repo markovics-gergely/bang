@@ -11,7 +11,7 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
         {
             if (query.TargetPlayer == null) throw new ArgumentNullException("Jail TargetPlayer not set");
             if (query.TargetPlayer.RoleType == RoleType.Sheriff) throw new ArgumentException("Sheriff cannot be in jail");
-            await query.CardStore.PlaceHandPlayerCardToAnotherTableAsync(query.PlayerCard, query.TargetPlayer, cancellationToken);
+            await query.CardStore.PlacePlayerCardToAnotherTableAsync(query.PlayerCard, query.TargetPlayer, cancellationToken);
         }
     }
 }

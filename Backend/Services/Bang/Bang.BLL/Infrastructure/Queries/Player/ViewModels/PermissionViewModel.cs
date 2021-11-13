@@ -51,6 +51,12 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
                 case TargetReason.Indians:
                     CanPlayBangCard = true;
                     break;
+                case TargetReason.Dynamite:
+                case TargetReason.DynamiteAndJail:
+                case TargetReason.Jail:
+                case TargetReason.JailAndDynamite:
+                    CanDiscardFromDrawCard = true;
+                    break;
             }
         }
     }

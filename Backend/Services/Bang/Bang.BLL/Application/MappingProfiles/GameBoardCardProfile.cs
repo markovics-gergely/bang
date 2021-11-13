@@ -1,6 +1,5 @@
 ﻿using Bang.BLL.Application.Commands.DataTransferObjects;
 using Bang.DAL.Domain.Joins.GameBoardCards;
-using Bang.BLL.Application.Commands.ViewModels;
 
 using AutoMapper;
 using Bang.BLL.Infrastructure.Queries.ViewModels;

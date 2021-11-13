@@ -88,6 +88,9 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                 }
                 switch (board.TurnPhase)
                 {
+                    case PhaseEnum.Discarding:
+                        permission.CanDiscardFromDrawCard = true;
+                        break;
                     case PhaseEnum.Drawing:
                         permission.CanDrawCard = true;
                         if (actual.CharacterType == CharacterType.JesseJones)
