@@ -1,17 +1,18 @@
 <div class="chat-container" [ngStyle]="{bottom: fromBottom + 'px'}" (mouseenter)="setHovered(true)"  (mouseleave)="setHovered(false)">
-    <div class="chat-table" [ngStyle]="{height: height + 'px'}">
-        <ng-scrollbar #scrollable class="chat-list" *ngIf="hovered">
-          <app-chat-stream [messages]="messages"></app-chat-stream>
-        </ng-scrollbar>
-        <div class="chat">
-          <form class="form-group row" (ngSubmit)="sendMessage()" #sendMessageForm="ngForm">
-            <input type="text" placeholder="Write message..." [(ngModel)]="message" required class="form-control col-8" name="message" autocomplete="off" >
-            <button class="btn send-button" [disabled]="!sendMessageForm.valid" type="submit">
-                <span class="material-icons button-text">sendoutlined</span>
-            </button>
-          </form>
-        </div>
-    </div>
+  <div class="chat-table" [ngStyle]="{height: height + 'px'}">
+      <ng-scrollbar #scrollable class="chat-list" *ngIf="hovered">
+          <div class="list-item" *ngFor="let message of messages">
+            <p style="font-style: italic;">{{message.userName}}: </p> 
+            <p style="color: rgb(9, 6, 216); margin-left: 8px; font-weight: bold;">{{message.text}}</p>
+          </div>
+      </ng-scrollbar>
+      <div class="chat">
+          <input type="text" placeholder="Write message..." class="chat-input" [(ngModel)]="message">
+          <div class="btn send-button" (click)="sendMessage()">
+              <span class="material-icons button-text">sendoutlined</span>
+          </div>
+      </div>
+  </div>
 </div>
 
 
