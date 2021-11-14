@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { Observable, Subject } from 'rxjs';
-import { Account, LoginDto, RegistrationDto } from 'src/app/models';
+import { Account, LoginDto, RegistrationDto, UserId } from 'src/app/models';
 import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
 import { TokenService } from 'src/app/services/authorization/token.service';
 import { GameboardService } from 'src/app/services/game/gameboard.service';
@@ -35,8 +35,6 @@ export class LobbyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.lobbyService.getActualLobby().subscribe(
       response => {
-        console.log(response);
-
         this.lobbyId = response.id;
         this.lobbyPassword = response.password;
 
@@ -109,14 +107,20 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   createGameBoard() {
-      
+    var userIds: UserId[] | undefined;
+
+    this.players?.forEach(element => {
+      userIds?.push({userId: element.id, userName: element.userName})
+    });
+
+    var ownerId = this.players?.find(element => element.userName == this.tokenService.getUsername())?.id;
+
+    this.lobbyService.startGame(ownerId, userIds, this.lobbyId);
   }
 
   refreshLobbyUsers(lobbyId: number) {
     this.lobbyService.getLobbyUsers(lobbyId).subscribe(
       response => {
-        console.log(response);
-
         this.players = response;
       },
       error => {
@@ -125,9 +129,19 @@ export class LobbyComponent implements OnInit, OnDestroy {
     );
   }
 
+  @HostListener("window:beforeunload")
+  leaveLobbyPopup(){
+    
+  }
+
   leaveLobby(){
     this.connection?.invoke("LeaveLobby");
-    this.router.navigateByUrl('/menu');
+
+    this.lobbyService.leaveLobby(this.lobbyId).subscribe(
+      response => {
+        this.router.navigateByUrl('/menu');
+      }
+    );
   }
 
   ngOnDestroy(): void {

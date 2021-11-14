@@ -145,8 +145,13 @@ export interface GameBoard {
 
 export interface PostGameBoard {
     maxTurnTime: number;
-    lobbyPassword: string;
-    userIds: {userId: string, userName: string}[];
+    lobbyOwnerId?: string;
+    userIds?: UserId[];
+}
+
+export interface UserId {
+    userId: string; 
+    userName: string;
 }
 
 export interface LoginDto {
@@ -197,6 +202,18 @@ export interface Lobby {
     id: number;
     password: string;
     lobbyOwner: string;
+}
+
+export interface StatusViewModel {
+    lobbyId: number;
+    gameBoardId: number;
+}
+
+export interface HistoryViewModel {
+    id: number;
+    placement: number;
+    createdAt: Date;
+    roleType: RoleType;
 }
 
 export interface Permissions {

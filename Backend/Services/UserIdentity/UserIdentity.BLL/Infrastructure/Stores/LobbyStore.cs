@@ -32,6 +32,11 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 .Select(l => l.LobbyId)
                 .FirstOrDefaultAsync(cancellationToken);
 
+            if(lobbyId == null)
+            {
+                return null;  
+            }
+
             return await _dbContext.Lobbies
                 .Where(l => l.Id == lobbyId)
                 .Include(owner => owner.Owner)
@@ -50,7 +55,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         {
             var lobbyId = await GetLobbyIdByPasswordAsync(password, cancellationToken);
 
-            if (_dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).Count() == 7)
+            if (_dbContext.LobbyAccounts.Where(la => la.LobbyId == lobbyId).Count() >= 7)
             {
                 throw new InvalidActionException("Lobby is full!");
             }
@@ -157,12 +162,17 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 ?? throw new EntityNotFoundException("Lobby not found");
         }
 
+        public async Task<Lobby> GetLobbyByOwnerIdAsync(string ownerId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Lobbies.Where(l => l.OwnerId == ownerId).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Lobby not found");
+        }
+
         public async Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken)
         {
             _dbContext.Attach(lobby);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
 
         private async Task DeleteLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken)
         {

@@ -29,6 +29,7 @@
     border-width: 0 0 2px 0;
     border-color: #FFFDDD;
     border-style: solid;
+    font-family: Cambria;
 }
 
 .list {
@@ -70,8 +71,7 @@
     margin-right: 35px;
     margin-top: 9px;
     position: absolute;
-    right: 0;
-    
+    right: 0;   
 }
 
 .list-element {

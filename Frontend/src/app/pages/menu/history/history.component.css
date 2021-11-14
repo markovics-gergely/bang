@@ -1,0 +1,41 @@
+.friend-list {
+    width: 300px;
+    position: absolute;
+    right: 0;
+    height: 100%;
+}
+
+.main-text {
+    text-align: center;
+    margin-right: 300px;
+    font-size: 60px;
+    font-family: Cambria;
+    color: #FFFDDD; 
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.list-content {
+    color:black;
+    margin-right: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+}
+
+.list-element {
+    background-color: #c0906d;     
+    margin: 10px;
+    height: 50px;
+    width: calc(60% - 20px);
+    border-width: 2px;
+    border-color: #FFFDDD;
+    border-style: solid;  
+    color:black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    font-size: 40px;
+}

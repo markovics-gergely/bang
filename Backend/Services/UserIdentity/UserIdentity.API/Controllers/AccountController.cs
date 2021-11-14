@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using UserIdentity.BLL.Application.Commands.User.DataTransferObject;
 using UserIdentity.BLL.Infrastructure.Queries.Queries;
+using UserIdentity.BLL.Infrastructure.Queries.ViewModels;
 
 namespace UserIdentity.API.Controllers
 {
@@ -25,11 +26,20 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpGet("actual-account")]
-        public async Task<string> GetActualAccountIdAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<string>> GetActualAccountIdAsync(CancellationToken cancellationToken)
         {
             var query = new GetActualAccountIdQuery();
 
             return await _mediator.Send(query, cancellationToken);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("actual-status")]
+        public async Task<ActionResult<StatusViewModel>> GetActualAccountStatusAsync(CancellationToken cancellationToken)
+        {
+            var command = new GetActualAccountStatusQuery();
+
+            return await _mediator.Send(command, cancellationToken);
         }
 
         [AllowAnonymous]

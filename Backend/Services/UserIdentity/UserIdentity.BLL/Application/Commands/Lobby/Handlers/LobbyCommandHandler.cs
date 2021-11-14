@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using System.Text;
 using UserIdentity.DAL.Domain;
 using System;
+using UserIdentity.BLL.Application.Exceptions;
+using System.Linq;
 
 namespace UserIdentity.BLL.Application.Commands.Handlers
 {
@@ -21,7 +23,8 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>,
         IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>,
-        IRequestHandler<CreateGameBoardCommand, Unit>
+        IRequestHandler<CreateGameBoardCommand, Unit>,
+        IRequestHandler<UpdateLobbyGameBoardIdCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly ILobbyStore _lobbyStore;
@@ -98,14 +101,32 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
         {
-            var json = JsonConvert.SerializeObject(request.Dto);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var accounts = (await _lobbyStore.GetLobbyAccountsAsync(request.LobbyId, cancellationToken)).ToList();
+            if(accounts.Count < 4)
+            {
+                throw new InvalidActionException("There must be at least 4 people!");
+            }
+
+            await _friendStore.UpdateIsInviteForAccountsAsync(accounts, false, cancellationToken);
+
+            var data = new StringContent(JsonConvert.SerializeObject(request.Dto), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync($"gameboard", data);
             var gameBoardId = Int64.Parse(await response.Content.ReadAsStringAsync());
 
             var lobby = await _lobbyStore.GetLobbyByIdAsync(request.LobbyId, cancellationToken);
             lobby.GameBoardId = gameBoardId;
+
+            await _lobbyStore.UpdateLobbyAsync(lobby, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(UpdateLobbyGameBoardIdCommand request, CancellationToken cancellationToken)
+        {
+            var lobby = await _lobbyStore.GetLobbyByOwnerIdAsync(request.OwnerId, cancellationToken);
+
+            lobby.GameBoardId = 0;
 
             await _lobbyStore.UpdateLobbyAsync(lobby, cancellationToken);
 

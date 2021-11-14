@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using MediatR;
+using UserIdentity.BLL.Application.Exceptions;
 
 namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
 {
@@ -29,8 +30,13 @@ namespace UserIdentity.BLL.Infrastructure.Queries.Handlers
         public async Task<LobbyViewModel> Handle(GetActualLobbyQuery request, CancellationToken cancellationToken)
         {
             var accountId = _accountStore.GetActualAccountId();
-
+            
             var domain = await _lobbyStore.GetActualLobbyAsync(accountId, cancellationToken);
+
+            if(domain == null)
+            {
+                throw new EntityNotFoundException("Lobby not found");
+            }
 
             return _mapper.Map<LobbyViewModel>(domain);
         }

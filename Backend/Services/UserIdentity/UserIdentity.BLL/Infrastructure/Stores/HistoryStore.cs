@@ -30,6 +30,7 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             return await _dbContext.Histories
                 .Where(history => history.AccountId == ownId)
                 .OrderBy(history => history.CreatedAt)
+                .Take(10)
                 .ToListAsync(cancellationToken);
         }
 

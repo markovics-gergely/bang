@@ -36,6 +36,18 @@
       "UpstreamPathTemplate": "/api/identity/actual-account",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    {
+      "DownstreamPathTemplate": "/Account/actual-status",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/identity/actual-status",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
 
 
     {
@@ -123,6 +135,33 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
+      "DownstreamPathTemplate": "/Lobby/{id}/start-game",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/{id}/start-game",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Lobby/{id}/end-game",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/lobby/{id}/end-game",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+
+
+
+    {
       "DownstreamPathTemplate": "/Friend",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -169,6 +208,33 @@
       ],
       "UpstreamPathTemplate": "/api/friend/{name}",
       "UpstreamHttpMethod": [ "Delete" ]
+    },
+
+
+
+    {
+      "DownstreamPathTemplate": "/History",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/history",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/History",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "useridentity.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/history",
+      "UpstreamHttpMethod": [ "Post" ]
     },
 
 

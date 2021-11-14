@@ -26,7 +26,7 @@ import { FriendComponent } from './pages/menu/friend/friend.component';
 import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { ChatStreamComponent } from './pages/chat/chat-stream/chat-stream.component';
+import { JwtModule } from "@auth0/angular-jwt";
 
 @NgModule({
   declarations: [
@@ -46,8 +46,7 @@ import { ChatStreamComponent } from './pages/chat/chat-stream/chat-stream.compon
     CastPipe,
     MenuComponent,
     LobbyComponent,
-    ChatComponent,
-    ChatStreamComponent
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -59,12 +58,15 @@ import { ChatStreamComponent } from './pages/chat/chat-stream/chat-stream.compon
     ReactiveFormsModule,
     BrowserAnimationsModule,
     NgScrollbarModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    JwtModule.forRoot({
+      config: { },
+    }),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
+      useClass: AuthInterceptor, 
       multi: true
     }
   ],

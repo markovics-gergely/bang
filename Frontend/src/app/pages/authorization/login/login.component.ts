@@ -56,7 +56,10 @@ export class LoginComponent implements OnInit {
     this.tokenService.token = res.access_token;
     this.tokenService.setLocalStorage(res.access_token, res.refresh_token, loginDto.username);
 
-    const refreshTimer = timer((res.expires_in*1000)-5000, (res.expires_in*1000)-5000);    
+    console.log(res.expires_in);
+    const refreshTimer = timer((res.expires_in*1000)-5000, (res.expires_in*1000)-5000); 
+    console.log(refreshTimer);   
+    
     refreshTimer.subscribe(() => {
       this.authService.refresh(this.tokenService.getRefreshToken()).subscribe(
         res => {

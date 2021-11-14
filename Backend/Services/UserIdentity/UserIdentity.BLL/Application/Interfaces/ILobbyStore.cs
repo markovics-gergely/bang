@@ -10,6 +10,7 @@ namespace UserIdentity.BLL.Application.Interfaces
     {
         Task<Lobby> GetActualLobbyAsync(string accountId, CancellationToken cancellationToken);
         Task<Lobby> GetLobbyByIdAsync(long lobbyId, CancellationToken cancellationToken);
+        Task<Lobby> GetLobbyByOwnerIdAsync(string ownerId, CancellationToken cancellationToken);
         Task UpdateLobbyAsync(Lobby lobby, CancellationToken cancellationToken);
         Task<IEnumerable<LobbyAccount>> GetLobbyAccountsAsync(long lobbyId, CancellationToken cancellationToken);
         Task CreateLobbyAccountAsync(string accountId, string password, CancellationToken cancellationToken);

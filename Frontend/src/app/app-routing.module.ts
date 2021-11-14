@@ -7,6 +7,7 @@ import { RegistrationComponent } from './pages/authorization/registration/regist
 import { MenuComponent } from './pages/menu/menu/menu.component';
 import { HistoryComponent } from './pages/menu/history/history.component';
 import { LobbyComponent } from './pages/menu/lobby/lobby.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -20,18 +21,22 @@ const routes: Routes = [
   {
     path: 'menu',
     component: MenuComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'history',
     component: HistoryComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'lobby',
     component: LobbyComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'gameboard',
     component: GameboardComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '**',
@@ -41,6 +46,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule { }
