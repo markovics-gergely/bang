@@ -19,8 +19,8 @@ export class GameboardService {
     return this.client.get<Card[]>(`${environment.baseUrl}/api/bang/gameboard/cards-on-top/${count}`);
   }
 
-  public postGameBoard(userIds: PostGameBoard): Observable<Object> {
-    return this.client.post(`${environment.baseUrl}/api/bang/gameboard`, userIds);
+  public postGameBoard(userIds: PostGameBoard): Observable<number> {
+    return this.client.post<number>(`${environment.baseUrl}/api/bang/gameboard`, userIds);
   }
 
   public discardFromDrawable(): Observable<Card> {

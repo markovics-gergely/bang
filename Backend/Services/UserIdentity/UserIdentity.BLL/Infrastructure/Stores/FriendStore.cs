@@ -106,6 +106,8 @@ namespace UserIdentity.BLL.Infrastructure.Stores
                 .Where(f => accounts.Select(s => s.AccountId).Contains(f.SenderId) || accounts.Select(s => s.AccountId).Contains(f.ReceiverId))
                 .ToListAsync(cancellationToken);
 
+            if (invites.Count == 0) return;
+
             foreach (var invite in invites)
                 invite.IsInvitedToGame = isInvite;
 

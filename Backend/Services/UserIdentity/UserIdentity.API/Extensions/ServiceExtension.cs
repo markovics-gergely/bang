@@ -48,6 +48,8 @@ namespace UserIdentity.API.Extensions
             services.AddTransient<IRequestHandler<DeleteLobbyAccountByOwnerCommand, Unit>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<UpdateLobbyInviteFalseCommand, Unit>, LobbyCommandHandler>();
             services.AddTransient<IRequestHandler<UpdateLobbyInviteTrueCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateGameBoardCommand, Unit>, LobbyCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateLobbyGameBoardIdCommand, Unit>, LobbyCommandHandler>();
 
             services.AddTransient<IRequestHandler<GetHistoriesQuery, IEnumerable<HistoryViewModel>>, HistoryQueryHandler>();
             services.AddTransient<IRequestHandler<CreateHistoryCommand, Unit>, HistoryCommandHandler>();  

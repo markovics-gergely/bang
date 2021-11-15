@@ -53,9 +53,9 @@ namespace UserIdentity.API.Controllers
         }
 
         [HttpPost("{id}/start-game")]
-        public async Task<IActionResult> CreateGameBoardAsync(int id, [FromBody] GameBoardDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateGameBoardAsync(long id, long gameBoardId, CancellationToken cancellationToken)
         {
-            var command = new CreateGameBoardCommand(id, dto);
+            var command = new CreateGameBoardCommand(id, gameBoardId);
 
             await _mediator.Send(command, cancellationToken);
 

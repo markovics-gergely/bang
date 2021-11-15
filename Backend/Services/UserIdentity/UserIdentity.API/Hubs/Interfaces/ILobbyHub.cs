@@ -12,5 +12,6 @@ namespace UserIdentity.BLL.Application.Interfaces.Hubs
         Task SetMessage(Message message);
         Task SetMessages(List<Message> messages);
         Task RefreshLobbyUsers(long lobbyId);
+        Task NavigateToGameboard();
     }
 }
