@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Joins.PlayerCards;
-using Bang.BLL.Application.Effects.Cards;
 using Bang.DAL.Domain;
 
 namespace Bang.BLL.Infrastructure.Stores
@@ -21,7 +20,6 @@ namespace Bang.BLL.Infrastructure.Stores
     public class CardStore : ICardStore
     {
         private readonly BangDbContext _dbContext;
-        private readonly IAccountStore _accountStore;
 
         public CardStore(BangDbContext dbContext, IAccountStore accountStore)
         {
@@ -50,7 +48,7 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<IEnumerable<long>> CreatePlayerCardsAsync(IEnumerable<PlayerCard> playerCards, CancellationToken cancellationToken)
         {
-            List<long> playerCardIds = new List<long>();
+            var playerCardIds = new List<long>();
 
             foreach (PlayerCard playerCard in playerCards)
             { 
