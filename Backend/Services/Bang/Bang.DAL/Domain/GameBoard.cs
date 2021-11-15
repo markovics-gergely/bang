@@ -13,6 +13,7 @@ namespace Bang.DAL.Domain
         public long? ActualPlayerId { get; set; }
         public Player ActualPlayer { get; set; }
 
+        public long? LastTargetedPlayerId { get; set; }
         public long? TargetedPlayerId { get; set; }
         public Player TargetedPlayer { get; set; }
         public TargetReason? TargetReason { get; set; }

@@ -76,23 +76,28 @@ export class PermissionService {
   }
 
   public canPlayCardType(transferData: ServiceDataTransfer, cardType: CardType, playMode: boolean): CardActionType {
-    if (!playMode) {
-      return this.getPermissionByType(PermissionQueryType.CanDiscardCard, transferData);
+    if (!playMode && this.canDiscardCard(transferData)) {
+      return CardActionType.Discard;
     }
-    else if (playMode && this.canPlayCard(transferData)) {
+    else if (playMode) {
       if (cardType === CardType.Bang) {
         return this.getPermissionByType(PermissionQueryType.CanUseBang, transferData);
       } else if (cardType === CardType.Missed) {
         return this.getPermissionByType(PermissionQueryType.CanUseMissed, transferData);
       } else if (cardType === CardType.Beer) {
         return this.getPermissionByType(PermissionQueryType.CanUseBeer, transferData);
-      } else if (cardType === CardType.Barrel) {
-        return this.getPermissionByType(PermissionQueryType.CanUseBarrel, transferData);
-      } else {
+      } else if (this.canPlayCard(transferData)){
         return CardActionType.Play;
       }
     }
     return CardActionType.None;
+  }
+
+  public canDiscardCard(transferData: ServiceDataTransfer): boolean {
+    if (transferData.targetPermission === undefined && transferData.permissions) {
+      return transferData.permissions.canDiscardCard;
+    }
+    return false;
   }
 
   public canUseCardPack(transferData: ServiceDataTransfer): boolean {
@@ -183,6 +188,14 @@ export class PermissionService {
       if (!transferData.permissions.canPlayCard) {
         return transferData.permissions.canDiscardCard;
       }
+      return true;
+    }
+    return false;
+  }
+
+  public canLoseHealth(transferData: ServiceDataTransfer): boolean {
+    if (transferData.targetPermission === undefined && transferData.permissions) {
+      return transferData.permissions.canLoseHealth;
     }
     return false;
   }

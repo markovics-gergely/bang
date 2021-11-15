@@ -10,7 +10,7 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
 {
     public class TargetPlayerCardEffect : ActiveCardEffect
     {
-        public TargetReason TargetReason { get; set; }
+        public TargetReason? TargetReason { get; set; }
 
         public TargetPlayerCardEffect(TargetReason reason)
         {

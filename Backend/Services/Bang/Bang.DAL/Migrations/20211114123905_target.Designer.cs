@@ -4,14 +4,16 @@ using Bang.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bang.DAL.Migrations
 {
     [DbContext(typeof(BangDbContext))]
-    partial class BangDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211114123905_target")]
+    partial class target
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,9 +268,6 @@ namespace Bang.DAL.Migrations
 
                     b.Property<bool>("IsOver")
                         .HasColumnType("bit");
-
-                    b.Property<long?>("LastTargetedPlayerId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("LobbyOwnerId")
                         .HasColumnType("nvarchar(max)");

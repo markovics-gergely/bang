@@ -145,7 +145,7 @@ export interface GameBoard {
 
 export interface PostGameBoard {
     maxTurnTime: number;
-    lobbyPassword: string;
+    lobbyOwnerId: string;
     userIds: {userId: string, userName: string}[];
 }
 

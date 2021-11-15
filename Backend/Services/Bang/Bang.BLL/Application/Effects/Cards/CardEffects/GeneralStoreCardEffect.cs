@@ -8,7 +8,7 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
 {
     public class GeneralStoreCardEffect : TargetPlayerCardEffect
     {
-        public GeneralStoreCardEffect() : base(TargetReason.GeneralStore) { }
+        public GeneralStoreCardEffect() : base(DAL.Domain.Constants.Enums.TargetReason.GeneralStore) { }
 
         public override async Task Execute(CardEffectQuery query, CancellationToken cancellationToken)
         {

@@ -49,11 +49,11 @@ export class TargetService {
   }
 
   public getTargetPlayerClass(transferData: ServiceDataTransfer, player: Player | OtherPlayer | undefined): PlayerHighlightedType {
-    if (player?.id === transferData.gameboard?.actualPlayerId) {
-      return PlayerHighlightedType.Actual;
-    }
-    else if (player?.id === transferData.gameboard?.targetedPlayerId) {
+    if (player?.id === transferData.gameboard?.targetedPlayerId) {
       return PlayerHighlightedType.Targeted;
+    }
+    else if (player?.id === transferData.gameboard?.actualPlayerId) {
+      return PlayerHighlightedType.Actual;
     }
     return PlayerHighlightedType.None;
   }

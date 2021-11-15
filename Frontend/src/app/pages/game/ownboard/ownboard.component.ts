@@ -27,17 +27,17 @@ export class OwnboardComponent implements OnInit {
   private targetPlayerCardId: number | undefined;
 
   constructor(public cardService: CardService, public characterService: CharacterService, public roleService: RoleService,
-              public playerService: PlayerService, private permissionService: PermissionService) { }
+              public playerService: PlayerService, public permissionService: PermissionService) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public cardHovered(card: string) {
     this.hoverItemEvent.emit({data: card, type: HoverEnum.Card});
   }
 
   public cardAction(card: Card) {
-    if (this.canPlayCard(card) !== CardActionType.None) {
+    if (this.permissionService.canPlayCardType(this.createServiceDataTransfer(), card.cardType, this.playMode) !== CardActionType.None) {
+      this.targetPermissions = {};
       if (this.playMode) {
         this.playCard(card);
       } else {
@@ -52,14 +52,15 @@ export class OwnboardComponent implements OnInit {
   }
 
   public discardCard(card: Card) {
-    this.playerService.discardFromHand(card.id).subscribe(resp => console.log(resp));
+    this.playerService.discardFromHand(card.id).subscribe(resp => {console.log(resp); this.targetPermissions = undefined}, _ => this.targetPermissions = undefined);
   }
 
   public playCard(card: Card) {
-    let target: TargetType = this.cardService.needsTargetPlayerOrCard(card.cardType);
+    let target: TargetType = this.cardService.needsTargetPlayerOrCard(card.cardType, this.highlight);
     if (target == TargetType.None) {
       let playCardDto: PlayCardDto = {playerCardId: card.id, targetPlayerCardId: this.targetPlayerCardId, targetPlayerId: this.targetPlayerId}; 
-      this.playerService.playFromHand(playCardDto).subscribe(resp => console.log(resp));
+      this.targetPermissions = {};
+      this.playerService.playFromHand(playCardDto).subscribe(resp => {console.log(resp); this.targetPermissions = undefined});
     }
     else {
       this.selectedCard = card;
@@ -73,13 +74,13 @@ export class OwnboardComponent implements OnInit {
       playCardDto = {playerCardId: this.selectedCard?.id as number, targetPlayerCardId: id};
     } else {
       playCardDto = {playerCardId: this.selectedCard?.id as number, targetPlayerId: id}; 
-      
     }
-    this.playerService.playFromHand(playCardDto).subscribe(resp => console.log(resp));
+    this.targetPermissions = {};
+    this.playerService.playFromHand(playCardDto).subscribe(resp => {console.log(resp); this.targetPermissions = undefined}, _ => this.targetPermissions = undefined);
   }
 
   public endTurn() {
-    this.playerService.endTurn().subscribe(resp => console.log(resp));
+    this.playerService.endTurn().subscribe(resp => {console.log(resp); this.targetPermissions = undefined}, _ => this.targetPermissions = undefined);
   }
 
   counter(i: number) {
@@ -127,15 +128,6 @@ export class OwnboardComponent implements OnInit {
   canEndTurn(): boolean {
     if (!this.targetPermissions && this.permissions) {
       return this.permissions.canEndTurn;
-    }
-    return false;
-  }
-
-  canSwitchPlayMode(): boolean {
-    if (this.permissions) {
-      if (!this.permissions.canPlayCard) {
-        return this.permissions.canDiscardCard;
-      }
     }
     return false;
   }

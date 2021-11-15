@@ -34,6 +34,8 @@ namespace Bang.BLL.Application.Effects.Cards
                 { CardType.Stagecoach, new DrawCardCardEffect(2) },
                 { CardType.WellsFargo, new DrawCardCardEffect(3) },
                 { CardType.Bang, new BangCardEffect() },
+                { CardType.Saloon, new SaloonCardEffect() },
+                { CardType.Beer, new BeerCardEffect() },
                 { CardType.Duel, new TargetPlayerCardEffect(TargetReason.Duel) },
                 { CardType.GeneralStore, new GeneralStoreCardEffect() },
                 { CardType.Gatling, new TargetNextPlayerCardEffect(TargetReason.Gatling) },

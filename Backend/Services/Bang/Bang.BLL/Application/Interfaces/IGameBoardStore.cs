@@ -39,6 +39,8 @@ namespace Bang.BLL.Application.Interfaces
         Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken);
         Task SetGameBoardTargetReasonAsync(TargetReason? targetReason, CancellationToken cancellationToken);
         Task EndGameBoardTurnAsync(CancellationToken cancellationToken);
+        Task SetGameBoardLastTargetedPlayerAsync(long? lastTargetedPlayerId, CancellationToken cancellationToken);
+        Task SetGameBoardLobbyOwnerIdAsync(string? lobbyOwnerId, CancellationToken cancellationToken);
         Task PlayCardAsync(long playerCardId, CancellationToken cancellationToken);
         Task PlayCardAsync(long playerCardId, long targetPlayerCardId, bool isTargetPlayer, CancellationToken cancellationToken);
         Task<long> DrawGameBoardCardAsync(long gameBoardCardId, long playerId, CancellationToken cancellationToken);

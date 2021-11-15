@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Card, CardColorType, CardType, TargetType } from '../../models';
+import { Card, CardColorType, CardType, PlayerHighlightedType, TargetType } from '../../models';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +69,10 @@ export class CardService {
     }
   }
 
-  public needsTargetPlayerOrCard(cardType: CardType): TargetType {
+  public needsTargetPlayerOrCard(cardType: CardType, targetType: PlayerHighlightedType): TargetType {
+    if (targetType === PlayerHighlightedType.Targeted) {
+      return TargetType.None;
+    }
     switch(cardType) {
       case CardType.Bang:
       case CardType.Duel:

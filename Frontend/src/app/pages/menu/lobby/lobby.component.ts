@@ -66,50 +66,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
     });
   }
 
-  registerAndGet(username: string, password: string): Observable<{userName: string, userId: string}> {
-    var subject = new Subject<{userName: string, userId: string}>();
-    let req: RegistrationDto = {username: username, password: password, confirmedPassword: password};
-    this.tokenService.deleteLocalStorage();
-    this.authService.registration(req).subscribe(_ => {
-      console.log(_);
-      let log: LoginDto = {username: username, password: password};
-      this.authService.login(log).subscribe(__ => {
-        console.log(__);
-        this.authService.getActualUserId().subscribe(id => subject.next({userId: id, userName: username}));
-      })
-    }, _ => {
-      console.log(_);
-      let log: LoginDto = {username: username, password: password};
-      this.authService.login(log).subscribe(__ => {
-        console.log(__);
-        this.authService.getActualUserId().subscribe(id => subject.next({userId: id, userName: username}));
-      })
-    });
-    return subject.asObservable();
-  }
-
-  createDummyUsers(): Observable<{userName: string, userId: string}[]> {
-    let newUsers: {userName: string, userId: string}[] = [];
-    var subject = new Subject<{userName: string, userId: string}[]>();
-    var actualUser = this.tokenService.getUsername();
-    this.registerAndGet("Dummy1", "@Asd123").subscribe(user1 => {
-      newUsers.push(user1);
-      this.registerAndGet("Dummy2", "@Asd123").subscribe(user2 => {
-        newUsers.push(user2);
-        this.registerAndGet("Dummy3", "@Asd123").subscribe(user3 => {
-          newUsers.push(user3);
-          this.registerAndGet(actualUser, "@Asd123").subscribe(act => {
-            newUsers.push(act);
-            subject.next(newUsers);
-          });
-        });
-      });
-    });
-    return subject.asObservable();
-  }
-
   createGameBoard() {
-      
+    this.gameBoardService.postGameBoard({maxTurnTime: 5, lobbyOwnerId: '', userIds: [{userId: 'adc14af4-2de0-4ea1-90b3-4ee3714448d3', userName: 'abc'},
+    {userId: '712fcfd7-ff83-475c-8d70-e0669fcb953c', userName: 'dummy1'},
+    {userId: '31d1f037-9071-49cb-bafb-c6e8cd56f294', userName: 'dummy2'},
+    {userId: '31bb9ea3-c3f2-4b1a-a7a7-ba63fa29209f', userName: 'dummy3'}]})
+        .subscribe(r => {
+          console.log(r);
+          this.router.navigateByUrl('/gameboard');
+        });
   }
 
   refreshLobbyUsers(lobbyId: number) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Card, CharacterType, GameBoard, Permissions, Player, TargetPermission } from 'src/app/models';
+import { Card, CharacterType, GameBoard, Permissions, Player, ServiceDataTransfer, TargetPermission } from 'src/app/models';
 import { GameboardComponent } from 'src/app/pages/game/gameboard/gameboard.component';
 import { CardService } from '../card.service';
 import { GameboardService } from '../gameboard.service';
@@ -31,12 +31,11 @@ export class CharacterManagerService {
     this.player = gameboardComponent.gameboard?.ownPlayer;
   }
 
-  public cardPackAction(gameboardComponent: GameboardComponent) {
-    this.update(gameboardComponent);
-    if(this.permissions?.canDiscardFromDrawCard) {
-      this.gameBoardService.discardFromDrawable();
+  public cardPackAction(transferData: ServiceDataTransfer) {
+    if(transferData.permissions?.canDiscardFromDrawCard) {
+      this.gameBoardService.discardFromDrawable().subscribe(resp => console.log(resp));
     }
-    else if (this.permissions?.canDrawCard) {
+    else if (transferData.permissions?.canDrawCard) {
       this.cardService.drawCards(2).subscribe(resp => console.log(resp));
     }
   }

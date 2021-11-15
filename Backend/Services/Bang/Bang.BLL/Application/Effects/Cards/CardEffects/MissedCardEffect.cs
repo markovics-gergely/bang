@@ -32,15 +32,18 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                     if (next.Id == actualPlayer.Id)
                     {
                         await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                        await query.GameBoardStore.SetGameBoardTargetReasonAsync(null, cancellationToken);
                     }
                     else
                     {
                         await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(next.Id, cancellationToken);
+                        await query.GameBoardStore.SetGameBoardTargetReasonAsync(TargetReason.Gatling, cancellationToken);
                     }
                 }
                 else if (lastPlayed == CardType.Bang)
                 {
                     await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                    await query.GameBoardStore.SetGameBoardTargetReasonAsync(null, cancellationToken);
                 }
             }
             await base.Execute(query, cancellationToken);

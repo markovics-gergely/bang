@@ -38,16 +38,13 @@ export class GameboardComponent implements OnInit {
 
   constructor(public gameBoardService: GameboardService, public cardService: CardService, private modalService: NgbModal,
               public roleService: RoleService, public characterService: CharacterService,
-              public playerService: PlayerService, public hoverService: HoverService, private auth: AuthorizationService, 
+              public playerService: PlayerService, public hoverService: HoverService, 
               public characterManagerService: CharacterManagerService, public targetService: TargetService, public permissionService: PermissionService,
               private signalService: SignalServiceService) { }
 
   ngOnInit(): void {
     //this.gameBoardService.deleteGameBoard(2).subscribe(r => console.log(r));
     this.signalService.startConnection(this);
-  }
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(this.gameboard);
   }
 
   public addrefreshListeners(hubConnection: signalR.HubConnection | undefined) {
@@ -66,6 +63,7 @@ export class GameboardComponent implements OnInit {
     this.gameBoardService.getGameBoard()
       .subscribe(resp => {
         this.gameboard = resp; 
+        console.log(this.gameboard);
         if (this.gameboard.isOver) {
           this.modalService.open(this.content, this.ngbModalOptions);
         }
@@ -92,7 +90,7 @@ export class GameboardComponent implements OnInit {
           }
         });
     } else {
-      this.targetPermission = {};
+      this.targetPermission = undefined;
     }
   }
 

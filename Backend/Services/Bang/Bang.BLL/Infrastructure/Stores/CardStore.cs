@@ -102,6 +102,14 @@ namespace Bang.BLL.Infrastructure.Stores
             {
                 deletable = playerCard.Player.TablePlayerCards.FirstOrDefault(c => c.Card.CardType.IsRangeModifier());
             }
+            if (playerCard.Card.CardType == CardType.Dynamite)
+            {
+                deletable = playerCard.Player.TablePlayerCards.FirstOrDefault(c => c.Card.CardType == CardType.Dynamite);
+            }
+            if (playerCard.Card.CardType == CardType.Jail)
+            {
+                deletable = playerCard.Player.TablePlayerCards.FirstOrDefault(c => c.Card.CardType == CardType.Jail);
+            }
             if (deletable != null)
             {
                 DiscardedGameBoardCard discarded = new DiscardedGameBoardCard()

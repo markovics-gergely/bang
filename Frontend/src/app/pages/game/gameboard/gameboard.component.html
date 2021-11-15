@@ -43,7 +43,7 @@
                             [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"></app-card>
                     </div>
                     <div class="card-on-board">
-                        <img class="h-100 img-fluid" src="../../../assets/cards/Cards/Background.png" (click)="cardPackAction()"
+                        <img class="h-100 img-fluid" src="../../../assets/cards/Cards/Background.png" (click)="characterManagerService.cardPackAction(createServiceDataTransfer())"
                             alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" [ngClass]="permissionService.getStyle(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"/>
                     </div>
                 </div>

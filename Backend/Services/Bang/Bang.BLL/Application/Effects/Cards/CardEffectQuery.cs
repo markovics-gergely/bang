@@ -9,7 +9,7 @@ namespace Bang.BLL.Application.Effects.Cards
     public class CardEffectQuery
     {
         public HandPlayerCard PlayerCard { get; init; }
-        public Player TargetPlayer { get; init; }
+        public Player TargetPlayer { get; set; }
         public PlayerCard TargetCard { get; init; }
         public IGameBoardStore GameBoardStore { get; init; }
         public ICardStore CardStore { get; init; }

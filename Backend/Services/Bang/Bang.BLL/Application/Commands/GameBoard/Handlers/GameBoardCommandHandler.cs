@@ -139,7 +139,6 @@ namespace Bang.BLL.Application.Commands.Handlers
                 }
 
                 List<HandPlayerCard> playerCards = new List<HandPlayerCard>();
-                var cardDataList = frenchCards.Zip(cardTypes, (f, c) => new { french = f, type = c });
                 
                 foreach (var cardTuple in frenchCardDataList.GetRange(0, playerDomain.MaxHP))
                 {

@@ -3,17 +3,21 @@
         <div class="col-3 col-md-1 order-md-1 order-2 h-100 buttons">
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn health-button menu-button" placement="top" ngbTooltip="Lose health" [openDelay]="500" (click)="decrementHealth()"></button>
+                    <button type="button" class="btn health-button menu-button" placement="top" ngbTooltip="Lose health" [openDelay]="500" (click)="decrementHealth()"
+                            [disabled]="!permissionService.canLoseHealth(createServiceDataTransfer())"></button>
                 </div>
             </div>
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn discard-card-button menu-button" placement="top" [ngbTooltip]="playMode ? 'Discard mode' : 'Play mode'" [openDelay]="500" [ngClass]="playMode ? 'discard-card-button' : 'play-card-button'" (click)="switchPlayMode()"></button>
+                    <button type="button" class="btn discard-card-button menu-button" placement="top" [ngbTooltip]="playMode ? 'Discard mode' : 'Play mode'" 
+                            [openDelay]="500" [ngClass]="playMode ? 'discard-card-button' : 'play-card-button'" (click)="switchPlayMode()"
+                            [disabled]="!permissionService.canSwitchPlayMode(createServiceDataTransfer())"></button>
                 </div>
             </div>
             <div class="row h-100 max-width align-items-center">
                 <div class="col-12 button-slot">
-                    <button type="button" class="btn end-turn-button menu-button" placement="top" ngbTooltip="End turn" [openDelay]="500" (click)="endTurn()"></button>
+                    <button type="button" class="btn end-turn-button menu-button" placement="top" ngbTooltip="End turn" [openDelay]="500" (click)="endTurn()"
+                            [disabled]="!permissionService.canEndTurn(createServiceDataTransfer())"></button>
                 </div>
             </div>
         </div>

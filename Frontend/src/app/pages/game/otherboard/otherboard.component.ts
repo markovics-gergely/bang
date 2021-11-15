@@ -77,6 +77,10 @@ export class OtherboardComponent implements OnInit {
     }
   }
 
+  setCardHovered(card: string) {
+    this.hoverItemEvent.emit({data: card, type: HoverEnum.Card});
+  }
+
   playerSelected() {
     this.selectEvent.emit({ id: this.player?.id, isCard: false });
   }

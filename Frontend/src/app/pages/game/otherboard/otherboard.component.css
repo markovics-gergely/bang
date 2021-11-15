@@ -27,6 +27,8 @@
     border-radius: 5px;
     text-align: center;
     min-height: 100px;
+    display: flex;
+    justify-content: center;
 }
 
 .max-height {

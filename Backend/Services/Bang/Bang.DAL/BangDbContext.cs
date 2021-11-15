@@ -40,6 +40,12 @@ namespace Bang.DAL
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<GameBoard>()
+                .HasOne(g => g.TargetedPlayer)
+                .WithOne()
+                .HasForeignKey<GameBoard>(d => d.TargetedPlayerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<GameBoard>()
                 .HasMany(g => g.DrawableGameBoardCards)
                 .WithOne(d => d.GameBoard)
                 .OnDelete(DeleteBehavior.NoAction);

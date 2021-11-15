@@ -401,8 +401,8 @@ namespace Bang.BLL.Infrastructure.Stores
             gameBoard.ActualPlayer = nextPlayer;
 
             var needsDiscard = nextPlayer.TablePlayerCards.Select(t => t.Card.CardType)
-                .Where(c => c == CardType.Dynamite || c == CardType.Jail);
-            if (needsDiscard.Count() == 2)
+                .Where(c => c == CardType.Dynamite || c == CardType.Jail).ToList();
+            if (needsDiscard.Count == 2)
             {
                 if (needsDiscard.ElementAtOrDefault(0) == CardType.Jail && needsDiscard.ElementAtOrDefault(1) == CardType.Dynamite)
                 {
@@ -413,7 +413,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 }
                 gameBoard.TurnPhase = PhaseEnum.Discarding;
             }
-            if (needsDiscard.Count() == 1)
+            if (needsDiscard.Count == 1)
             {
                 if (needsDiscard.ElementAtOrDefault(0) == CardType.Jail)
                 {
@@ -503,7 +503,7 @@ namespace Bang.BLL.Infrastructure.Stores
             Dictionary<CardType, CardEffect> cardEffectMap = CardEffectHandler.Instance.CardEffectMap;
 
             var effect = cardEffectMap[playerCard.Card.CardType] ?? throw new EntityNotFoundException("Nem található a cardeffect!");
-            CardEffectQuery query = new CardEffectQuery(playerCard, this, _cardStore, _playerStore, _accountStore);
+            var query = new CardEffectQuery(playerCard, this, _cardStore, _playerStore, _accountStore);
             await effect.Execute(query, cancellationToken);
             try
             {
@@ -516,8 +516,13 @@ namespace Bang.BLL.Infrastructure.Stores
                     throw new EntityNotFoundException("Nem található a playercard");
                 else throw;
             }
-            await _playerStore.AddPlayedCardAsync(playerCard.Card.CardType, cancellationToken);
-            await SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            var gameboard = await GetGameBoardByUserSimplifiedAsync(userId, cancellationToken);
+            if (gameboard.TargetedPlayerId != playerCard.PlayerId)
+            {
+                await _playerStore.AddPlayedCardAsync(playerCard.Card.CardType, cancellationToken);
+                await SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+            }
         }
 
         public async Task PlayCardAsync(long playerCardId, long targetPlayerCardId, bool isTargetPlayer, CancellationToken cancellationToken)
@@ -549,8 +554,13 @@ namespace Bang.BLL.Infrastructure.Stores
                     throw new EntityNotFoundException("Nem található a playercard");
                 else throw;
             }
-            await _playerStore.AddPlayedCardAsync(playerCard.Card.CardType, cancellationToken);
-            await SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+            var userId = _accountStore.GetActualAccountId();
+            var gameboard = await GetGameBoardByUserSimplifiedAsync(userId, cancellationToken);
+            if (gameboard.TargetedPlayerId != playerCard.PlayerId)
+            {
+                await _playerStore.AddPlayedCardAsync(playerCard.Card.CardType, cancellationToken);
+                await SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+            }
         }
 
         public async Task DrawGameBoardCardsToScatteredAsync(int count, CancellationToken cancellationToken)
@@ -723,6 +733,7 @@ namespace Bang.BLL.Infrastructure.Stores
                     gameBoard.TargetReason = null;
                     gameBoard.TurnPhase = PhaseEnum.Drawing;
                 }
+                var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
                 if (gameBoardCard.CardColorType == CardColorType.Spades && gameBoardCard.FrenchNumber >= 2 && gameBoardCard.FrenchNumber <= 9)
                 {
                     bool isOver = false;
@@ -747,11 +758,14 @@ namespace Bang.BLL.Infrastructure.Stores
                             }
                         }
                     }
+                    if (!isOver)
+                    {
+                        await _playerStore.DiscardCardAsync(dynamite.Id, cancellationToken);
+                    }
                 }
                 else
                 {
                     var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameBoard.ActualPlayerId, cancellationToken);
-                    var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
                     await _cardStore.PlacePlayerCardToAnotherTableAsync(dynamite, nextPlayer, cancellationToken);
                 }
             }
@@ -892,8 +906,70 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task UseBarrelAsync(long playerId, CancellationToken cancellationToken)
         {
+            var player = await _playerStore.GetPlayerAsync(playerId, cancellationToken);
+            var gameboard = await GetGameBoardByUserAsync(player.UserId, cancellationToken);
+            var discarded = await DiscardFromDrawableGameBoardCardAsync(cancellationToken);
+            if (discarded.CardColorType == CardColorType.Hearts)
+            {
+                if (gameboard.TargetReason == TargetReason.Bang)
+                {
+                    await SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                    await SetGameBoardTargetReasonAsync(null, cancellationToken);
+                }
+                else if (gameboard.TargetReason == TargetReason.Gatling)
+                {
+                    var next = await _playerStore.GetNextPlayerAliveByPlayerAsync(playerId, cancellationToken);
+                    if (next.Id == gameboard.ActualPlayerId)
+                    {
+                        await SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                        await SetGameBoardTargetReasonAsync(null, cancellationToken);
+                    }
+                    else
+                    {
+                        await SetGameBoardTargetedPlayerAsync(next.Id, cancellationToken);
+                        await SetGameBoardTargetReasonAsync(TargetReason.Gatling, cancellationToken);
+                    }
+                }
+            }
+        }
+
+        public async Task SetGameBoardLastTargetedPlayerAsync(long? lastTargetedPlayerId, CancellationToken cancellationToken)
+        {
             var userId = _accountStore.GetActualAccountId();
-            var gameboard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            GameBoard gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            gameBoard.LastTargetedPlayerId = lastTargetedPlayerId;
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else if (await _dbContext.Players
+                    .SingleOrDefaultAsync(p => p.Id == lastTargetedPlayerId) == null)
+                    throw new EntityNotFoundException("Nem található a player");
+                else throw;
+            }
+        }
+
+        public async Task SetGameBoardLobbyOwnerIdAsync(string lobbyOwnerId, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            GameBoard gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
+            gameBoard.LobbyOwnerId = lobbyOwnerId;
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
         }
     }
 }
