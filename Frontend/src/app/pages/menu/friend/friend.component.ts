@@ -61,8 +61,6 @@ export class FriendComponent implements OnInit, OnDestroy {
   getFriendList(){
     this.friendService.getAcceptedFriends().subscribe(
       response => {
-        console.log(response);
-
         this.friends = response;
       },
       error => {
@@ -72,8 +70,6 @@ export class FriendComponent implements OnInit, OnDestroy {
 
     this.friendService.getUnacceptedFriends().subscribe(
       response => {
-        console.log(response);
-
         this.unacceptedFriends = response;
       },
       error => {
@@ -85,8 +81,6 @@ export class FriendComponent implements OnInit, OnDestroy {
   removeFriend(friendName: string){
     this.friendService.removeFriend(friendName).subscribe(
       response => {
-        console.log(response);
-
         this.snackbar.open("Removed succesfully!");
         this.connection?.invoke("RemoveFriend", friendName);
         this.getFriendList();
@@ -104,8 +98,6 @@ export class FriendComponent implements OnInit, OnDestroy {
 
     this.friendService.addFriend(friendName).subscribe(
       response => {
-        console.log(response);
-
         this.snackbar.open("Added succesfully!");
         this.connection?.invoke("AddFriend", friendName);
       },
@@ -122,8 +114,6 @@ export class FriendComponent implements OnInit, OnDestroy {
   addFriendFromList(friendName: string){
     this.friendService.addFriend(friendName).subscribe(
       response => {
-        console.log(response);
-
         this.connection?.invoke("AcceptFriendRequest", friendName);
         this.getFriendList();
       },
@@ -136,8 +126,6 @@ export class FriendComponent implements OnInit, OnDestroy {
   sendInvite(friendName: string){
     this.lobbyService.sendInvite(friendName).subscribe(
       response => {
-        console.log(response);
-
         this.snackbar.open("Invited successfully!");
         this.connection?.invoke("InviteFriend", friendName);
       },
@@ -150,8 +138,6 @@ export class FriendComponent implements OnInit, OnDestroy {
   acceptInvite(friendName: string){
     this.lobbyService.acceptInvite(friendName).subscribe(
       response => {
-        console.log(response);
-
         this.router.navigate(['lobby']);
       },
       error => {

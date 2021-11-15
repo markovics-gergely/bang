@@ -99,5 +99,18 @@ namespace UserIdentity.BLL.Infrastructure.Stores
             var entry = _dbContext.Attach(ownInvites);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task UpdateIsInviteForAccountsAsync(List<LobbyAccount> accounts, bool isInvite, CancellationToken cancellationToken)
+        {
+            var invites = await _dbContext.Friends
+                .Where(f => accounts.Select(s => s.AccountId).Contains(f.SenderId) || accounts.Select(s => s.AccountId).Contains(f.ReceiverId))
+                .ToListAsync(cancellationToken);
+
+            foreach (var invite in invites)
+                invite.IsInvitedToGame = isInvite;
+
+            var entry = _dbContext.Attach(invites);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

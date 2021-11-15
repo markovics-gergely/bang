@@ -30,30 +30,11 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.lobbyService.getActualLobby().subscribe(
-      response => {
-        console.log(response);
-
-        if(response != null){
-          this.lobbyService.leaveLobby(response.id).subscribe(
-            response2 => {
-              console.log(response2);
-            }
-          );
-        }
-      },
-      error => {
-        console.log(error);
-      }
-    );
   }
-
 
   createLobby(){
     this.lobbyService.createLobby().subscribe(
       response => {
-        console.log(response);
-
         this.snackbar.open("Lobby created!");
         this.router.navigate(['lobby']);
       },
@@ -70,8 +51,6 @@ export class MenuComponent implements OnInit {
 
     this.lobbyService.joinLobby(password).subscribe(
       response => {
-        console.log(response);
-
         this.snackbar.open("Successful join!");
         this.router.navigate(['lobby']);
       },

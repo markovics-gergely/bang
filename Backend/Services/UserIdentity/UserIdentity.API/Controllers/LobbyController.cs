@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using MediatR;
+using UserIdentity.DAL.Domain;
 
 namespace UserIdentity.API.Controllers
 {
@@ -85,6 +86,16 @@ namespace UserIdentity.API.Controllers
         public async Task<IActionResult> UpdateLobbyInviteFalseAsync(string friendName, CancellationToken cancellationToken)
         {
             var command = new UpdateLobbyInviteFalseCommand(friendName);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPut("end-game/{ownerId}")]
+        public async Task<IActionResult> UpdateLobbyGameBoardIdAsync(string ownerId, CancellationToken cancellationToken)
+        {
+            var command = new UpdateLobbyGameBoardIdCommand(ownerId);
 
             await _mediator.Send(command, cancellationToken);
 

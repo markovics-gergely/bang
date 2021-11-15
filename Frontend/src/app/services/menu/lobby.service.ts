@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Account, Lobby } from 'src/app/models';
+import { Account, Lobby, PostGameBoard, UserId } from 'src/app/models';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -36,5 +36,11 @@ export class LobbyService {
 
   public acceptInvite(friendName: string): Observable<Object>{
     return this.client.put(`${environment.baseUrl}/api/lobby/accept-invite/${friendName}`, undefined);
+  }
+
+  public startGame(ownerId?: string, accounts?: UserId[], id?: number): Observable<Object>{
+    var gameBoard: PostGameBoard = { maxTurnTime: 5, lobbyOwnerId: ownerId, userIds: accounts};
+
+    return this.client.post(`${environment.baseUrl}/api/lobby/${id}/start-game`, gameBoard, { responseType: 'text' });
   }
 }

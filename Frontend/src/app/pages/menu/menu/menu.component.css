@@ -36,6 +36,21 @@
     text-align: center;
     width: 80%;
     height: 80px;
-    border: solid;
-    border-color: black;
-  }
+}
+
+.button {
+    background-color: #c0906d;     
+    margin: 0px 10px 10px 10px;
+    height: 50px;
+    width: calc(80% - 20px);
+    border-width: 2px;
+    border-color: #FFFDDD;
+    border-style: solid;  
+    color:black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    font-size: 40px;
+    font-family: Cambria;
+}
