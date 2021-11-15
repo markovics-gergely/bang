@@ -38,9 +38,7 @@ export class LobbyService {
     return this.client.put(`${environment.baseUrl}/api/lobby/accept-invite/${friendName}`, undefined);
   }
 
-  public startGame(ownerId: string, accounts: UserId[], id?: number): Observable<Object>{
-    var gameBoard: PostGameBoard = { maxTurnTime: 5, lobbyOwnerId: ownerId, userIds: accounts};
-
-    return this.client.post(`${environment.baseUrl}/api/lobby/${id}/start-game`, gameBoard, { responseType: 'text' });
+  public startGame(gameBoardId: number, id?: number): Observable<Object>{
+    return this.client.post(`${environment.baseUrl}/api/lobby/${id}/start-game?gameBoardId=${gameBoardId}`, undefined, { responseType: 'text' });
   }
 }

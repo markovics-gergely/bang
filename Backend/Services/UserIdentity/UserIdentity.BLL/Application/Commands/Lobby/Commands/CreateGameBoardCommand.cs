@@ -5,13 +5,13 @@ namespace UserIdentity.BLL.Application.Commands.Commands
 {
     public class CreateGameBoardCommand : IRequest
     {
-        public int LobbyId;
-        public GameBoardDto Dto;
+        public long LobbyId { get; set; }
+        public long GameBoardId { get; set; }
 
-        public CreateGameBoardCommand(int lobbyId, GameBoardDto dto)
+        public CreateGameBoardCommand(long lobbyId, long gameBoardId)
         {
             LobbyId = lobbyId;
-            Dto = dto;
+            GameBoardId = gameBoardId;
         }
     }
 }

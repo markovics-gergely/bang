@@ -102,20 +102,15 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
         public async Task<Unit> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
         {
             var accounts = (await _lobbyStore.GetLobbyAccountsAsync(request.LobbyId, cancellationToken)).ToList();
-            if(accounts.Count < 4)
+            if(accounts.Count < 4 || accounts.Count > 7)
             {
-                throw new InvalidActionException("There must be at least 4 people!");
+                throw new InvalidActionException("Minimum 4, maximum 7 people!");
             }
 
             await _friendStore.UpdateIsInviteForAccountsAsync(accounts, false, cancellationToken);
 
-            var data = new StringContent(JsonConvert.SerializeObject(request.Dto), Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync($"gameboard", data);
-            var gameBoardId = Int64.Parse(await response.Content.ReadAsStringAsync());
-
             var lobby = await _lobbyStore.GetLobbyByIdAsync(request.LobbyId, cancellationToken);
-            lobby.GameBoardId = gameBoardId;
+            lobby.GameBoardId = request.GameBoardId;
 
             await _lobbyStore.UpdateLobbyAsync(lobby, cancellationToken);
 

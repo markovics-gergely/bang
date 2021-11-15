@@ -58,22 +58,14 @@ export class LobbyComponent implements OnInit, OnDestroy {
       .build();
 
     this.connection?.on("RefreshLobbyUsers", lobbyId => this.refreshLobbyUsers(lobbyId));  
+    this.connection?.on("NavigateToGameboard", _ => this.navigateToGameboard());  
 
     this.connection?.start().then(() => {
       this.connection?.invoke("EnterRoom");
     });
   }
 
-  createGameBoard() {
-    /*this.gameBoardService.postGameBoard({maxTurnTime: 5, lobbyOwnerId: '', userIds: [{userId: 'adc14af4-2de0-4ea1-90b3-4ee3714448d3', userName: 'abc'},
-    {userId: '712fcfd7-ff83-475c-8d70-e0669fcb953c', userName: 'dummy1'},
-    {userId: '31d1f037-9071-49cb-bafb-c6e8cd56f294', userName: 'dummy2'},
-    {userId: '31bb9ea3-c3f2-4b1a-a7a7-ba63fa29209f', userName: 'dummy3'}]})
-        .subscribe(r => {
-          console.log(r);
-          this.router.navigateByUrl('/gameboard');
-        });*/
-        
+  createGameBoard() { 
     let userIds: UserId[] = [];
     if (this.players && this.lobbyId) {
       this.players.forEach(element => {
@@ -81,10 +73,22 @@ export class LobbyComponent implements OnInit, OnDestroy {
       });
   
       let owner = this.players.find(element => element.userName == this.tokenService.getUsername());
-      if (owner) {
-        this.lobbyService.startGame(owner.id, userIds, this.lobbyId);
+      if (owner) {    
+        this.gameBoardService.postGameBoard({maxTurnTime: 5, lobbyOwnerId: owner.id, userIds: userIds}).subscribe(
+          response => {
+            this.lobbyService.startGame(response, this.lobbyId).subscribe(
+              response2 => {
+                this.connection?.invoke("NavigateToGameboard");
+              }
+            );
+          }
+        );
       }
     }
+  }
+
+  navigateToGameboard() {
+    this.router.navigateByUrl('/gameboard');
   }
 
   refreshLobbyUsers(lobbyId: number) {

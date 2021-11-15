@@ -85,6 +85,15 @@ namespace UserIdentity.API.Hubs.Hubs
             }
         }
 
+        public async Task NavigateToGameboard()
+        {
+            var actId = _accountStore.GetActualAccountId();
+            var lobby = await _lobbyStore.GetActualLobbyAsync(actId, new CancellationToken());
+
+            var clients = Clients.Group(lobby.Password);
+            await clients.NavigateToGameboard();
+        }
+
         public async Task EnterRoom()
         {
             var actId = _accountStore.GetActualAccountId();
