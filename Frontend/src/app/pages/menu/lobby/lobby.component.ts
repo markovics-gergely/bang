@@ -62,7 +62,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.connection?.on("NavigateToGameboard", _ => this.navigateToGameboard());  
 
     this.connection?.start().then(() => {
-      this.connection?.invoke("EnterRoom");
+      this.connection?.invoke("EnterLobby");
     });
   }
 
@@ -113,16 +113,10 @@ export class LobbyComponent implements OnInit, OnDestroy {
     );
   }
 
-  @HostListener("window:beforeunload")
-  leaveLobbyPopup(){
-    
-  }
-
   leaveLobby(){
-    this.connection?.invoke("LeaveLobby");
-
     this.lobbyService.leaveLobby(this.lobbyId).subscribe(
-      response => {
+      response => {   
+        this.connection?.invoke("LeaveLobby", this.lobbyPassword, this.lobbyId);
         this.router.navigateByUrl('/menu');
       }
     );

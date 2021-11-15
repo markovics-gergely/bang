@@ -8,7 +8,7 @@
                     <p class="text-wrap" style="font-size: 17px; margin-right: 5px; font-weight: 500;">{{friend.name}}</p>  
                 </div>
                 <div class="button-content">
-                    <button class="friend-button" *ngIf="inLobby" style="font-size:15px; background-color:blue;" (click)="sendInvite(friend.name)">Inv</button> 
+                    <button class="friend-button" [disabled]="!canInvite(friend.name)" *ngIf="inLobby" style="font-size:15px; background-color:blue;" (click)="sendInvite(friend.name)">Inv</button> 
                     <button class="friend-button" *ngIf="friend.invitedFrom" style="font-size:15px; background-color:green;" (click)="acceptInvite(friend.name)" >Acc</button>
                     <button class="friend-button" style="font-size:15px; background-color:red;" (click)="removeFriend(friend.name)">Rem</button>
                 </div>

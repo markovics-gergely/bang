@@ -25,8 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'history',
-    component: HistoryComponent,
-    canActivate: [AuthGuard],
+    component: HistoryComponent
   },
   {
     path: 'lobby',

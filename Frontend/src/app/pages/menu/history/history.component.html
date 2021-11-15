@@ -1,13 +1,11 @@
 <div class="container-fluid">
-    <!--<div class="friend-list">
+    <div class="friend-list">
         <app-friend [inLobby]=false></app-friend>
-    </div>-->
+    </div>
 
     <p class="main-text">History</p>
 
-    <div>
-        <div class="list-content">
-            <div class="list-element" *ngFor="let history of histories"> {{history.placement}}: {{history.RoleType}} </div>
-        </div>
+    <div class="list-content">   
+        <div class="list-element" *ngFor="let history of histories"> {{history.placement}}.hely: {{history.playedRole | roleType}} </div>  
     </div>
 </div>

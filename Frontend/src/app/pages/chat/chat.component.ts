@@ -31,7 +31,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.scrollable?.scrollTo({bottom: 0, duration: 800});
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.userIdentityBaseUrl}/lobbyhub?token=${this.tokenService.getAccessToken()}`) 
+      .withUrl(`${environment.userIdentityBaseUrl}/chathub?token=${this.tokenService.getAccessToken()}`) 
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
@@ -39,7 +39,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.connection?.on("SetMessage", message => this.setMessage(message));  
 
     this.connection?.start().then(() => {
-      this.connection?.invoke("EnterRoom");
+      this.connection?.invoke("EnterLobby");
     });
   }
 
@@ -67,7 +67,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   sendMessage() {
     if (this.message) {
       setTimeout(() => this.scrollable?.scrollTo({bottom: 0, duration: 200}), 200);
-      this.connection?.invoke("SendMessageToRoom", this.message);
+      this.connection?.invoke("SendMessageToLobby", this.message);
       this.message = undefined;
     }
   }
