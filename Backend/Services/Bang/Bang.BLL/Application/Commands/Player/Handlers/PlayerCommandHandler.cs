@@ -49,9 +49,8 @@ namespace Bang.BLL.Application.Commands.Handlers
         {
             Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
             long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
-            await _gameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
-            await _gameBoardStore.SetGameBoardLastTargetedPlayerAsync(null, cancellationToken);
-            await _gameBoardStore.SetGameBoardTargetReasonAsync(null, cancellationToken);
+            await _gameBoardStore.SetGameBoardNextTargetedAsync(selectedPlayer.Id, selectedPlayer.GameBoardId, cancellationToken);
+
             if (selectedPlayer.CharacterType == CharacterType.BartCassidy)
             {
                 await _gameBoardStore.DrawGameBoardCardsFromTopAsync(1, selectedPlayer.Id, cancellationToken);

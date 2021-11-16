@@ -54,15 +54,15 @@ namespace Bang.API.SignalR
                     var perQuery = new GetPermissionsByUserQuery(users.UserId);
                     var gameboard = await mediator.Send(query, cancellationToken);
                     var permissions = await mediator.Send(perQuery, cancellationToken);
-                    await hub.Clients.Client(users.ConnectionId).RefreshBoard(gameboard);
-                    await hub.Clients.Client(users.ConnectionId).RefreshPermission(permissions);
+                    _ = hub.Clients.Client(users.ConnectionId).RefreshBoard(gameboard);
+                    _ = hub.Clients.Client(users.ConnectionId).RefreshPermission(permissions);
                 }
             }
         }
 
-        public async Task GameDeleted(string groupName, NavigateEnum navigate)
+        public void GameDeleted(string groupName, NavigateEnum navigate)
         {
-            await Clients.Group(groupName).GameDeleted(navigate);
+            _ = Clients.Group(groupName).GameDeleted(navigate);
         }
 
         public override async Task<Task> OnConnectedAsync()

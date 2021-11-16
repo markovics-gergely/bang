@@ -28,6 +28,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
             if(reason == null) { return; }
             switch(reason)
             {
+                case TargetReason.Gatling:
                 case TargetReason.Bang:
                     CanLoseHealth = true;
                     CanUseBarrelCard = true;

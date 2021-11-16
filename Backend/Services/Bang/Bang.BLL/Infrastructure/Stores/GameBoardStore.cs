@@ -142,14 +142,25 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken)
         {
-            var aid = _accountStore.GetActualAccountId();
-            Console.WriteLine(aid);
             return await _dbContext.GameBoards.Where(c => c.Id == id)
                 .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(c => (c as HandPlayerCard).Card)
                 .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(c => (c as TablePlayerCard).Card)
                 .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
                 .Include(g => g.ScatteredGameBoardCards).ThenInclude(s => s.Card)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoard not found!");
+        }
+
+        public async Task<GameBoard> GetGameBoardSimplifiedAsync(long id, CancellationToken cancellationToken)
+        {
+            return await _dbContext.GameBoards.Where(g => g.Id == id)
+                .Include(g => g.Players).ThenInclude(p => p.TablePlayerCards).ThenInclude(table => table.Card)
+                .Include(g => g.Players).ThenInclude(p => p.HandPlayerCards).ThenInclude(hand => hand.Card)
+                .Include(g => g.DrawableGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.DiscardedGameBoardCards).ThenInclude(d => d.Card)
+                .Include(g => g.ScatteredGameBoardCards).ThenInclude(s => s.Card)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!");
         }
@@ -367,6 +378,28 @@ namespace Bang.BLL.Infrastructure.Stores
             var userId = _accountStore.GetActualAccountId();
             var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
             gameBoard.TargetReason = targetReason;
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await _dbContext.GameBoards
+                    .SingleOrDefaultAsync(g => g.Id == gameBoard.Id) == null)
+                    throw new EntityNotFoundException("Nem található a gameboard");
+                else throw;
+            }
+        }
+
+        public async Task SetGameBoardTargetedPlayerAndReasonAsync(long? playerId, TargetReason? targetReason, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            var gameBoard = await _dbContext.GameBoards.Include(g => g.Players)
+                .SingleOrDefaultAsync(g => g.Players.Select(p => p.UserId).Contains(userId)) 
+                ?? throw new EntityNotFoundException("Nem található a gameboard");
+
+            gameBoard.TargetReason = targetReason;
+            gameBoard.TargetedPlayerId = playerId;
             try
             {
                 await _dbContext.SaveChangesAsync(cancellationToken);
@@ -982,6 +1015,46 @@ namespace Bang.BLL.Infrastructure.Stores
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("GameBoard not found!")).LobbyOwnerId;
+        }
+
+        public async Task<TargetReason?> GetGameBoardTargetReasonAsync(long id, CancellationToken cancellationToken)
+        {
+            return (await _dbContext.GameBoards.Where(g => g.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoard not found!")).TargetReason;
+        }
+
+        public async Task SetGameBoardNextTargetedAsync(long? playerId, long gameBoardId, CancellationToken cancellationToken)
+        {
+            var gameboard = await GetGameBoardSimplifiedAsync(gameBoardId, cancellationToken);
+            var targetReason = gameboard.TargetReason;
+
+            if (targetReason == TargetReason.Gatling || targetReason == TargetReason.Indians)
+            {
+                var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)playerId, cancellationToken);
+                if (nextPlayer.Id == gameboard.ActualPlayerId)
+                {
+                    await SetGameBoardTargetedPlayerAndReasonAsync(null, null, cancellationToken);
+                }
+                else if (targetReason == TargetReason.Indians)
+                {
+                    await SetGameBoardTargetedPlayerAndReasonAsync(nextPlayer.Id, TargetReason.Indians, cancellationToken);
+                }
+                else if (targetReason == TargetReason.Gatling)
+                {
+                    await SetGameBoardTargetedPlayerAndReasonAsync(nextPlayer.Id, TargetReason.Gatling, cancellationToken);
+                }
+            }
+            else if (targetReason == TargetReason.Bang || targetReason == TargetReason.Duel)
+            {
+                await SetGameBoardTargetedPlayerAndReasonAsync(null, null, cancellationToken);
+            }
+
+            if (targetReason == TargetReason.Duel)
+            {
+                await SetGameBoardLastTargetedPlayerAsync(null, cancellationToken);
+            }
         }
     }
 }
