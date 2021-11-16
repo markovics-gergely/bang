@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class FriendComponent implements OnInit, OnDestroy {
   @Input() inLobby: boolean | undefined;
+  @Input() lobbyPlayers: Account[] | undefined;
   public friends: Friend[] | undefined;
   public unacceptedFriends: Friend[] | undefined;
 
@@ -57,8 +58,18 @@ export class FriendComponent implements OnInit, OnDestroy {
   refreshFriendList(){
     this.getFriendList();
   }
+
+  canInvite(friendName: string): boolean {
+    if(this.lobbyPlayers){
+      if(this.lobbyPlayers?.map(m => m.userName).includes(friendName)){
+        return false;
+      }
+    }
+    return true;
+  }
   
   getFriendList(){
+    this.friends = [];
     this.friendService.getAcceptedFriends().subscribe(
       response => {
         this.friends = response;
@@ -146,5 +157,6 @@ export class FriendComponent implements OnInit, OnDestroy {
         this.snackbar.open(error.error.title);
       }
     );
+    this.refreshFriendList();
   }
 }

@@ -1,6 +1,6 @@
 <div class="container-fluid lobby">
     <div class="friend-list">
-        <app-friend [inLobby]=true></app-friend>
+        <app-friend [inLobby]=true [lobbyPlayers]=players></app-friend>
     </div>
 
     <p class="password">Password: {{lobbyPassword}}</p>
@@ -12,7 +12,7 @@
     </div>
 
     <div *ngIf="isLobbyOwner" class="button">
-        <button type="button" class="btn btn-success" (click)="createGameBoard()"> Start game </button>
+        <button type="button" [disabled]="!isStartable()" class="btn btn-success" (click)="createGameBoard()"> Start game </button>
     </div>
     <div class="button">
         <button type="button" class="btn btn-success" (click)="leaveLobby()"> Leave lobby </button>

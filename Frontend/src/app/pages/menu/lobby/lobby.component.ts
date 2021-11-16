@@ -20,6 +20,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   public lobbyPassword: string | undefined;
   public players: Account[] | undefined;
   public isLobbyOwner: boolean | undefined;
+  public isStarted: boolean = false;
 
   private connection: signalR.HubConnection | undefined;
 
@@ -61,12 +62,12 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.connection?.on("NavigateToGameboard", _ => this.navigateToGameboard());  
 
     this.connection?.start().then(() => {
-      this.connection?.invoke("EnterRoom");
+      this.connection?.invoke("EnterLobby");
     });
   }
 
   createGameBoard() { 
-    //this.gameBoardService.deleteGameBoard(1).subscribe(r => console.log(r));
+    this.isStarted = true;
     let userIds: UserId[] = [];
     if (this.players && this.lobbyId) {
       this.players.forEach(element => {
@@ -88,6 +89,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
     }
   }
 
+  isStartable(): boolean { 
+    if (this.players && !this.isStarted) { 
+      if(this.players?.length > 3 && this.players?.length < 8) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   navigateToGameboard() {
     this.router.navigateByUrl('/gameboard');
   }
@@ -103,16 +113,10 @@ export class LobbyComponent implements OnInit, OnDestroy {
     );
   }
 
-  @HostListener("window:beforeunload")
-  leaveLobbyPopup(){
-    
-  }
-
   leaveLobby(){
-    this.connection?.invoke("LeaveLobby");
-
     this.lobbyService.leaveLobby(this.lobbyId).subscribe(
-      response => {
+      response => {   
+        this.connection?.invoke("LeaveLobby", this.lobbyPassword, this.lobbyId);
         this.router.navigateByUrl('/menu');
       }
     );

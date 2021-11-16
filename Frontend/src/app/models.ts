@@ -213,7 +213,7 @@ export interface HistoryViewModel {
     id: number;
     placement: number;
     createdAt: Date;
-    roleType: RoleType;
+    playedRole: RoleType;
 }
 
 export interface Permissions {

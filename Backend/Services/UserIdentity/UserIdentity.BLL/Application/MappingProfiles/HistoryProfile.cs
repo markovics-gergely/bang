@@ -9,8 +9,7 @@ namespace UserIdentity.BLL.Application.MappingProfiles
     {
         public HistoryProfile()
         {
-            CreateMap<History, HistoryViewModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AccountId));
+            CreateMap<History, HistoryViewModel>();
         }
     }
 }

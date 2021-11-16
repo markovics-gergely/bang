@@ -27,6 +27,7 @@ import { LobbyComponent } from './pages/menu/lobby/lobby.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { JwtModule } from "@auth0/angular-jwt";
+import { HistoryComponent } from './pages/menu/history/history.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { JwtModule } from "@auth0/angular-jwt";
     LoginComponent,
     RegistrationComponent,
     FriendComponent,
+    HistoryComponent,
     GameboardComponent,
     OwnboardComponent,
     OtherboardComponent,

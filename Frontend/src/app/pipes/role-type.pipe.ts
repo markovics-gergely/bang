@@ -6,8 +6,8 @@ import { RoleType } from '../models';
 })
 export class RoleTypePipe implements PipeTransform {
   private static lookup = ["Outlaw", "Renegade", "Sheriff", "Vice"];
+  
   transform(value: RoleType): string {
     return RoleTypePipe.lookup[value];
   }
-
 }

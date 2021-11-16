@@ -15,6 +15,6 @@ export class HistoryService {
   }
 
   addHistory(history: HistoryViewModel){
-    return this.client.post(`${environment.baseUrl}/api/history`, history);
+    return this.client.post(`${environment.baseUrl}/api/history?playedRole=${history.playedRole}&placement=${history.placement}`, undefined);
   }
 }
