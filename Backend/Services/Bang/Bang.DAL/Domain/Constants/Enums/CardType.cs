@@ -35,6 +35,7 @@
                 case CardType.Schofield:
                 case CardType.Remingtion:
                 case CardType.Volcanic:
+                case CardType.Winchester:
                 case CardType.Karabine: return true;
                 default: return false;
             }

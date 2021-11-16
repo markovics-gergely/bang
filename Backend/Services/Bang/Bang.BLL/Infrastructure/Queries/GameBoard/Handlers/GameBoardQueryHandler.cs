@@ -21,7 +21,8 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>,
         IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>,
         IRequestHandler<GetGameBoardByUserSimplifiedQuery, GameBoardByUserViewModel>,
-        IRequestHandler<GetGameBoardByUserSimplifiedWithoutIdQuery, GameBoardByUserViewModel>
+        IRequestHandler<GetGameBoardByUserSimplifiedWithoutIdQuery, GameBoardByUserViewModel>,
+        IRequestHandler<GetGameBoardOwnerByUserQuery, string>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -170,6 +171,12 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                     dest.OtherPlayers = otherplayersViewModel;
                     dest.OwnPlayer = ownPlayer;
                 }));
+        }
+
+        public async Task<string> Handle(GetGameBoardOwnerByUserQuery request, CancellationToken cancellationToken)
+        {
+            var userId = _accountStore.GetActualAccountId();
+            return await _gameBoardStore.GetGameBoardOwnerByUserAsync(userId, cancellationToken);
         }
     }
 }

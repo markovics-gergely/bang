@@ -26,7 +26,7 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                     await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(actualPlayer.Id, cancellationToken);
                     await base.Execute(query, cancellationToken);
                 }
-                else if (lastPlayed == CardType.Gatling && gameboard.ActualPlayer.CharacterType == CharacterType.CalamityJanet)
+                else if (lastPlayed == CardType.Gatling && lastPlayed == CardType.Indians && gameboard.ActualPlayer.CharacterType == CharacterType.CalamityJanet)
                 {
                     var next = await query.PlayerStore.GetNextPlayerAliveByPlayerAsync(query.PlayerCard.PlayerId, cancellationToken);
                     if (next.Id == actualPlayer.Id)
@@ -37,7 +37,14 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                     else
                     {
                         await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(next.Id, cancellationToken);
-                        await query.GameBoardStore.SetGameBoardTargetReasonAsync(TargetReason.Gatling, cancellationToken);
+                        if (lastPlayed == CardType.Gatling)
+                        {
+                            await query.GameBoardStore.SetGameBoardTargetReasonAsync(TargetReason.Gatling, cancellationToken);
+                        }
+                        else if (lastPlayed == CardType.Indians)
+                        {
+                            await query.GameBoardStore.SetGameBoardTargetReasonAsync(TargetReason.Indians, cancellationToken);
+                        }
                     }
                 }
                 else if (lastPlayed == CardType.Bang)

@@ -63,6 +63,7 @@ export class CardService {
       case CardType.Karabine:
       case CardType.Remingtion:
       case CardType.Schofield:
+      case CardType.Winchester:
       case CardType.Volcanic:
         return true;
       default: return false;

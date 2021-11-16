@@ -47,6 +47,13 @@
                             alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" [ngClass]="permissionService.getStyle(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"/>
                     </div>
                 </div>
+                <div class="col-12 h-50 d-flex justify-content-center align-items-center">
+                    <div class="scattered" *ngFor="let scattered of gameboard.scatteredGameBoardCards">
+                            <app-card [width]="91" [height]="147" (cardHoverEvent)="hoverService.setOnlyCardHovered($event)" class="h-100" 
+                            *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="scattered"
+                            [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanDrawFromScattered, createServiceDataTransfer())"></app-card>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-3 order-md-3 col-6 order-2 my-auto max-height">
@@ -61,7 +68,7 @@
     </div>
     <div class="row dummy-lower-row"></div>
     <div class="row lower-row">
-        <app-ownboard class="p-0 h-100" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="hoverService.setCardHovered($event)" 
+        <app-ownboard class="p-0 h-100" (invalidateEvent)="invalidate()" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="hoverService.setCardHovered($event)" 
                       [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), gameboard.ownPlayer)" [player]="gameboard.ownPlayer" [permissions]="permissions" [targetPermissions]="targetPermission" [hoverActive]="hoverService.hovered"></app-ownboard>
     </div>
     <app-chat></app-chat>

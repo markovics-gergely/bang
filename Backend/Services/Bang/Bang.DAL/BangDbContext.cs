@@ -43,6 +43,7 @@ namespace Bang.DAL
                 .HasOne(g => g.TargetedPlayer)
                 .WithOne()
                 .HasForeignKey<GameBoard>(d => d.TargetedPlayerId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<GameBoard>()

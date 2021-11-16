@@ -971,5 +971,17 @@ namespace Bang.BLL.Infrastructure.Stores
                 else throw;
             }
         }
+
+        public async Task<string> GetGameBoardOwnerByUserAsync(string userId, CancellationToken cancellationToken)
+        {
+            Player player = await _dbContext.Players.Where(c => c.UserId == userId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+            return (await _dbContext.GameBoards.Where(g => g.Players.Contains(player))
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoard not found!")).LobbyOwnerId;
+        }
     }
 }

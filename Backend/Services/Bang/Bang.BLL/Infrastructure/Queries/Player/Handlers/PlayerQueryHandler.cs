@@ -122,7 +122,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         break;
                 }
             }
-
             return permission;
         }
 
@@ -138,14 +137,21 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                 permission.CanDoAnything = false;
                 return permission;
             }
-            else if (userId == board.TargetedPlayer?.UserId)
+            else if (userId == targeted?.UserId)
             {
                 permission.SetByTargetReason(board.TargetReason, targeted, actual);
             }
-            else if (userId == board.ActualPlayer.UserId)
+            else if (userId == actual.UserId)
             {
+                if (board.TargetedPlayerId == null)
+                {
+                    permission.CanEndTurn = true;
+                }
                 switch (board.TurnPhase)
                 {
+                    case PhaseEnum.Discarding:
+                        permission.CanDiscardFromDrawCard = true;
+                        break;
                     case PhaseEnum.Drawing:
                         permission.CanDrawCard = true;
                         if (actual.CharacterType == CharacterType.JesseJones)
@@ -156,6 +162,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                     case PhaseEnum.Playing:
                         permission.CanPlayCard = true;
                         permission.CanPlayMissedCard = true;
+                        permission.CanDiscardCard = true;
                         if (actual.PlayedCards.Contains(CardType.Bang) &&
                             (actual.CharacterType == CharacterType.WillyTheKid ||
                             actual.TablePlayerCards.Select(t => t.Card.CardType).Contains(CardType.Volcanic)))
@@ -176,7 +183,6 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         break;
                 }
             }
-
             return permission;
         }
 

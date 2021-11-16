@@ -53,6 +53,7 @@ namespace Bang.API.Controllers
 
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
             return NoContent();
         }
 

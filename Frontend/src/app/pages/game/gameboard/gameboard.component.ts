@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { Card, CardActionType, CardType, CharacterType, GameBoard, HoverEnum, OtherPlayer, PermissionQueryType, Permissions, PlayCardDto, Player, PlayerHighlightedType, RoleType, ServiceDataTransfer, TargetPermission, TargetType } from 'src/app/models';
+import { Card, CardActionType, CardType, CharacterType, GameBoard, HoverEnum, NavigateEnum, OtherPlayer, PermissionQueryType, Permissions, PlayCardDto, Player, PlayerHighlightedType, RoleType, ServiceDataTransfer, TargetPermission, TargetType } from 'src/app/models';
 import { GameboardService, Position } from 'src/app/services/game/gameboard.service';
 import { CardService } from 'src/app/services/game/card.service';
 import { RoleService } from 'src/app/services/game/role.service';
@@ -7,13 +7,13 @@ import { CharacterService } from 'src/app/services/game/character.service';
 import { PlayerService } from 'src/app/services/game/player.service';
 import { OwnboardComponent } from '../ownboard/ownboard.component';
 import { HoverService } from 'src/app/services/game/hover.service';
-import { AuthorizationService } from 'src/app/services/authorization/authorization.service';
 import * as signalR from '@microsoft/signalr';
 import { CharacterManagerService } from 'src/app/services/game/characters/character-manager.service';
 import { TargetService } from 'src/app/services/game/target.service';
 import { PermissionService } from 'src/app/services/game/permission.service';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { SignalServiceService } from 'src/app/services/game/signal-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gameboard',
@@ -38,7 +38,7 @@ export class GameboardComponent implements OnInit {
 
   constructor(public gameBoardService: GameboardService, public cardService: CardService, private modalService: NgbModal,
               public roleService: RoleService, public characterService: CharacterService,
-              public playerService: PlayerService, public hoverService: HoverService, 
+              public playerService: PlayerService, public hoverService: HoverService, private router: Router,
               public characterManagerService: CharacterManagerService, public targetService: TargetService, public permissionService: PermissionService,
               private signalService: SignalServiceService) { }
 
@@ -56,6 +56,13 @@ export class GameboardComponent implements OnInit {
     });
     hubConnection?.on('RefreshPermission', (data: Permissions) => {
       this.permissions = data;
+    });
+    hubConnection?.on('GameDeleted', (data: NavigateEnum) => {
+      if (data === NavigateEnum.ToLobby) {
+        this.router.navigateByUrl('/lobby');
+      } else if (data === NavigateEnum.ToMenu) {
+        this.router.navigateByUrl('/menu');
+      }
     });
   }
 
@@ -77,6 +84,7 @@ export class GameboardComponent implements OnInit {
   }
 
   public cardPackAction() {
+    this.invalidate();
     this.characterManagerService.cardPackAction(this);
   }
 
@@ -106,5 +114,10 @@ export class GameboardComponent implements OnInit {
     let transfer: ServiceDataTransfer = {gameboard: this.gameboard, player: this.gameboard?.ownPlayer, 
                                          targetPermission: this.targetPermission, permissions: this.permissions, ownboard: this.ownBoard};
     return transfer;
+  }
+
+  public invalidate() {
+    this.permissions = undefined;
+    this.targetPermission = undefined;
   }
 }

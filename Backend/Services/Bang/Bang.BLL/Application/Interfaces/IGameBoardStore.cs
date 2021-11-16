@@ -17,6 +17,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken);
         Task<GameBoard> GetGameBoardByUserSimplifiedAsync(string userId, CancellationToken cancellationToken);
         Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken);
+        Task<string> GetGameBoardOwnerByUserAsync(string userId, CancellationToken cancellationToken);
 
         Task<IEnumerable<Card>> GetCardsOnTopAsync(int count, CancellationToken cancellationToken);
         Task<IEnumerable<DrawableGameBoardCard>> GetGameBoardCardsOnTopAsync(int count, CancellationToken cancellationToken);

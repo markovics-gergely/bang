@@ -19,6 +19,7 @@ export class OwnboardComponent implements OnInit {
   @Input() highlight: PlayerHighlightedType = PlayerHighlightedType.None;
   @Output() hoverItemEvent = new EventEmitter<{data: string, type: HoverEnum}>();
   @Output() selectCardEvent = new EventEmitter<{type: TargetType | undefined, card: Card | undefined}>();
+  @Output() invalidateEvent = new EventEmitter();
 
   public playMode: boolean = true;
   public canChangePlayMode: boolean = true;
@@ -37,7 +38,7 @@ export class OwnboardComponent implements OnInit {
 
   public cardAction(card: Card) {
     if (this.permissionService.canPlayCardType(this.createServiceDataTransfer(), card.cardType, this.playMode) !== CardActionType.None) {
-      this.targetPermissions = {};
+      this.invalidateEvent.emit();
       if (this.playMode) {
         this.playCard(card);
       } else {
