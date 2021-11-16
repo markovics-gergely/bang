@@ -130,21 +130,20 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
         {
             var permission = new PermissionViewModel();
             var userId = request.UserId;
-            var board = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
-            if (board == null || (userId != board.ActualPlayer.UserId && userId != board.TargetedPlayer?.UserId))
+            var board = await _gameBoardStore.GetGameBoardByUserSimplifiedAsync(userId, cancellationToken);
+            var actual = board.Players.FirstOrDefault(p => p.Id == board.ActualPlayerId);
+            var targeted = board.Players.FirstOrDefault(p => p.Id == board.TargetedPlayerId);
+            if (board == null || (userId != actual.UserId && userId != targeted?.UserId))
             {
                 permission.CanDoAnything = false;
                 return permission;
             }
             else if (userId == board.TargetedPlayer?.UserId)
             {
-                var targeted = board.TargetedPlayer;
-                var actual = board.ActualPlayer;
                 permission.SetByTargetReason(board.TargetReason, targeted, actual);
             }
             else if (userId == board.ActualPlayer.UserId)
             {
-                var actual = board.ActualPlayer;
                 switch (board.TurnPhase)
                 {
                     case PhaseEnum.Drawing:
