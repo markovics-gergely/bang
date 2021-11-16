@@ -55,6 +55,7 @@ namespace Bang.API.Extensions
             services.AddTransient<IRequestHandler<GetGameBoardByUserQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetGameBoardByUserSimplifiedQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetGameBoardByUserSimplifiedWithoutIdQuery, GameBoardByUserViewModel>, GameBoardQueryHandler>();
+            services.AddTransient<IRequestHandler<GetGameBoardOwnerByUserQuery, string>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetGameBoardsQuery, IEnumerable<GameBoardViewModel>>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetGameBoardCardsOnTopQuery, IEnumerable<FrenchCardViewModel>>, GameBoardQueryHandler>();
             services.AddTransient<IRequestHandler<GetLastDiscardedGameBoardCardQuery, FrenchCardViewModel>, GameBoardQueryHandler>();

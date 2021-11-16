@@ -1,4 +1,5 @@
 ﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
+using Bang.DAL.Domain.Constants.Enums;
 using System.Threading.Tasks;
 
 namespace Bang.API.SignalR
@@ -7,7 +8,6 @@ namespace Bang.API.SignalR
     {
         Task RefreshBoard(GameBoardByUserViewModel gameBoard);
         Task RefreshPermission(PermissionViewModel permission);
-        Task AddToGroup(string groupName);
-        Task RemoveFromGroup(string groupName);
+        Task GameDeleted(NavigateEnum navigateTo);
     }
 }

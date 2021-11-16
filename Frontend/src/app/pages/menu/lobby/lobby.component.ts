@@ -66,6 +66,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   createGameBoard() { 
+    //this.gameBoardService.deleteGameBoard(1).subscribe(r => console.log(r));
     let userIds: UserId[] = [];
     if (this.players && this.lobbyId) {
       this.players.forEach(element => {

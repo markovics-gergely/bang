@@ -24,7 +24,6 @@ namespace Bang.BLL.Infrastructure.Stores
         public CardStore(BangDbContext dbContext, IAccountStore accountStore)
         {
             _dbContext = dbContext;
-            _accountStore = accountStore;
         }
 
         public async Task<Card> GetCardByTypeAsync(CardType type, CancellationToken cancellationToken)

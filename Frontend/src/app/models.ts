@@ -299,5 +299,11 @@ export enum PermissionQueryType {
     CanTargetOthers,
     CanTargetOthersHand,
     CanTargetOthersTable,
-    CanDiscardCard
+    CanDiscardCard,
+    CanDrawFromScattered
+}
+
+export enum NavigateEnum {
+    ToLobby,
+    ToMenu
 }

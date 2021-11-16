@@ -60,6 +60,9 @@ export class PermissionService {
       case PermissionQueryType.CanDiscardCard:
         canDo = this.canUseDiscardedPack(transferData);
         break;
+      case PermissionQueryType.CanDrawFromScattered:
+        canDo = this.canDrawFromScattered(transferData);
+        break;
     }
     if (canDo) {
       return CardActionType.Play;
@@ -196,6 +199,15 @@ export class PermissionService {
   public canLoseHealth(transferData: ServiceDataTransfer): boolean {
     if (transferData.targetPermission === undefined && transferData.permissions) {
       return transferData.permissions.canLoseHealth;
+    }
+    return false;
+  }
+
+  public canDrawFromScattered(transferData: ServiceDataTransfer): boolean {
+    if (transferData.targetPermission === undefined && transferData.permissions) {
+      return transferData.permissions.canDrawFromMiddle;
+    } else if (transferData.targetPermission) {
+      return transferData.targetPermission.canDrawTargetScattered || false;
     }
     return false;
   }

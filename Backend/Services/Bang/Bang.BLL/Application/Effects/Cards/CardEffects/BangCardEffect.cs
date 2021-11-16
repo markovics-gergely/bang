@@ -47,6 +47,21 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                         query.TargetPlayer = next;
                     }
                 }
+                else if (lastPlayed == CardType.Indians)
+                {
+                    var next = await query.PlayerStore.GetNextPlayerAliveByPlayerAsync(query.PlayerCard.PlayerId, cancellationToken);
+                    if (next.Id == actualPlayer.Id)
+                    {
+                        TargetReason = null;
+                        query.TargetPlayer = new Player();
+                        await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                    }
+                    else
+                    {
+                        TargetReason = DAL.Domain.Constants.Enums.TargetReason.Indians;
+                        query.TargetPlayer = next;
+                    }
+                }
             }
             await base.Execute(query, cancellationToken);
         }

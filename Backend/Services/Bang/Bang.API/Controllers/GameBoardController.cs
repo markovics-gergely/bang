@@ -82,18 +82,19 @@ namespace Bang.API.Controllers
         public async Task<ActionResult<long>> CreateGameBoardAsync([FromBody] GameBoardDto dto, CancellationToken cancellationToken)
         {
             var command = new CreateGameBoardCommand(dto);
-            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+            var newId = await _mediator.Send(command, cancellationToken);
 
-            return await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+            return newId;
         }
 
         [HttpPost("shuffle-cards")]
         public async Task ShuffleGameBoardCardsAsync(CancellationToken cancellationToken)
         {
             var command = new ShuffleGameBoardCardsCommand();
-            await GameHub.Refresh(_mediator, _hub, cancellationToken);
-
             await _mediator.Send(command, cancellationToken);
+
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
         }
 
         [HttpPost("discard-card-from-drawable")]
@@ -124,6 +125,7 @@ namespace Bang.API.Controllers
             var command = new DeleteGameBoardCommand(id);
 
             await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
 
             return Ok();
         }
