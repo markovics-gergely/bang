@@ -142,6 +142,8 @@ export class FriendComponent implements OnInit, OnDestroy {
       },
       error => {
         console.log(error);
+
+        this.snackbar.open(error.error.title);
       }
     );
   }

@@ -104,9 +104,10 @@ namespace UserIdentity.BLL.Infrastructure.Stores
         {
             var invites = await _dbContext.Friends
                 .Where(f => accounts.Select(s => s.AccountId).Contains(f.SenderId) || accounts.Select(s => s.AccountId).Contains(f.ReceiverId))
+                .Where(f => f.IsInvitedToGame == true)
                 .ToListAsync(cancellationToken);
 
-            if (invites.Count == 0) return;
+            if (invites == null || invites.Count == 0) return;
 
             foreach (var invite in invites)
                 invite.IsInvitedToGame = isInvite;

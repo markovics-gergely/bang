@@ -94,6 +94,11 @@ namespace UserIdentity.BLL.Application.Commands.Handlers
             var ownId = _accountStore.GetActualAccountId();
             var friendId = await _accountStore.GetAccountIdByName(request.AccountName, cancellationToken);
 
+            if(await _lobbyStore.GetActualLobbyAsync(friendId, cancellationToken) != null)
+            {
+                throw new InvalidActionException("Friend is already in a lobby!");
+            }
+
             await _friendStore.UpdateIsInviteAsync(ownId, friendId, true, cancellationToken);
 
             return Unit.Value;
