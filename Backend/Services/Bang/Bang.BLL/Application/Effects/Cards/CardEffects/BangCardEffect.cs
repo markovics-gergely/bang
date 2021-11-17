@@ -13,10 +13,12 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
 
         public override async Task Execute(CardEffectQuery query, CancellationToken cancellationToken)
         {
-            var gameboard = await query.GameBoardStore.GetGameBoardAsync(query.PlayerCard.Player.GameBoardId, cancellationToken);
+            TargetReason = DAL.Domain.Constants.Enums.TargetReason.Bang;
+
+            var gameboard = await query.GameBoardStore.GetGameBoardSimplifiedAsync(query.PlayerCard.Player.GameBoardId, cancellationToken);
             if (query.PlayerCard.PlayerId == gameboard.TargetedPlayerId)
             {
-                var actualPlayer = gameboard.ActualPlayer;
+                var actualPlayer = gameboard.Players.FirstOrDefault(p => p.Id == gameboard.ActualPlayerId);
                 var lastPlayed = actualPlayer.PlayedCards.Last();
                 if (lastPlayed == CardType.Duel)
                 {
@@ -32,33 +34,24 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
                     await query.GameBoardStore.SetGameBoardLastTargetedPlayerAsync(query.PlayerCard.PlayerId, cancellationToken);
                     TargetReason = DAL.Domain.Constants.Enums.TargetReason.Duel;
                 }
-                else if (lastPlayed == CardType.Gatling)
+                else if (lastPlayed == CardType.Gatling || lastPlayed == CardType.Indians)
                 {
                     var next = await query.PlayerStore.GetNextPlayerAliveByPlayerAsync(query.PlayerCard.PlayerId, cancellationToken);
                     if (next.Id == actualPlayer.Id)
                     {
                         TargetReason = null;
-                        query.TargetPlayer = new Player();
-                        await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
+                        query.TargetPlayer = null;
                     }
                     else
                     {
-                        TargetReason = DAL.Domain.Constants.Enums.TargetReason.Gatling;
-                        query.TargetPlayer = next;
-                    }
-                }
-                else if (lastPlayed == CardType.Indians)
-                {
-                    var next = await query.PlayerStore.GetNextPlayerAliveByPlayerAsync(query.PlayerCard.PlayerId, cancellationToken);
-                    if (next.Id == actualPlayer.Id)
-                    {
-                        TargetReason = null;
-                        query.TargetPlayer = new Player();
-                        await query.GameBoardStore.SetGameBoardTargetedPlayerAsync(null, cancellationToken);
-                    }
-                    else
-                    {
-                        TargetReason = DAL.Domain.Constants.Enums.TargetReason.Indians;
+                        if (lastPlayed == CardType.Gatling)
+                        {
+                            TargetReason = DAL.Domain.Constants.Enums.TargetReason.Gatling;
+                        }
+                        else if (lastPlayed == CardType.Indians)
+                        {
+                            TargetReason = DAL.Domain.Constants.Enums.TargetReason.Indians;
+                        }
                         query.TargetPlayer = next;
                     }
                 }

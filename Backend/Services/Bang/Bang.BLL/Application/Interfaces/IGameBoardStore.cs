@@ -14,10 +14,12 @@ namespace Bang.BLL.Application.Interfaces
     public interface IGameBoardStore
     {
         Task<GameBoard> GetGameBoardAsync(long id, CancellationToken cancellationToken);
+        Task<GameBoard> GetGameBoardSimplifiedAsync(long id, CancellationToken cancellationToken);
         Task<GameBoard> GetGameBoardByUserAsync(string userId, CancellationToken cancellationToken);
         Task<GameBoard> GetGameBoardByUserSimplifiedAsync(string userId, CancellationToken cancellationToken);
         Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken);
         Task<string> GetGameBoardOwnerByUserAsync(string userId, CancellationToken cancellationToken);
+        Task<TargetReason?> GetGameBoardTargetReasonAsync(long id, CancellationToken cancellationToken);
 
         Task<IEnumerable<Card>> GetCardsOnTopAsync(int count, CancellationToken cancellationToken);
         Task<IEnumerable<DrawableGameBoardCard>> GetGameBoardCardsOnTopAsync(int count, CancellationToken cancellationToken);
@@ -37,8 +39,10 @@ namespace Bang.BLL.Application.Interfaces
         Task SetGameBoardEndAsync(long id, CancellationToken cancellationToken);
         Task SetGameBoardActualPlayerAsync(long playerId, CancellationToken cancellationToken);
         Task SetGameBoardTargetedPlayerAsync(long? playerId, CancellationToken cancellationToken);
-        Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken);
         Task SetGameBoardTargetReasonAsync(TargetReason? targetReason, CancellationToken cancellationToken);
+        Task SetGameBoardTargetedPlayerAndReasonAsync(long? playerId, TargetReason? targetReason, CancellationToken cancellationToken);
+        Task SetGameBoardNextTargetedAsync(long? playerId, long gameBoardId, CancellationToken cancellationToken);
+        Task SetGameBoardPhaseAsync(PhaseEnum phaseEnum, CancellationToken cancellationToken);
         Task EndGameBoardTurnAsync(CancellationToken cancellationToken);
         Task SetGameBoardLastTargetedPlayerAsync(long? lastTargetedPlayerId, CancellationToken cancellationToken);
         Task SetGameBoardLobbyOwnerIdAsync(string? lobbyOwnerId, CancellationToken cancellationToken);

@@ -82,9 +82,10 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == actual.UserId)
             {
-                if (board.TargetedPlayerId == null)
+                if (board.TargetedPlayerId != null)
                 {
-                    permission.CanEndTurn = true;
+                    permission.CanDoAnything = false;
+                    return permission;
                 }
                 switch (board.TurnPhase)
                 {
@@ -99,6 +100,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         }
                         break;
                     case PhaseEnum.Playing:
+                        permission.CanEndTurn = true;
                         permission.CanPlayCard = true;
                         permission.CanPlayMissedCard = true;
                         permission.CanDiscardCard = true;
@@ -118,6 +120,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         }
                         break;
                     case PhaseEnum.Throwing:
+                        permission.CanEndTurn = true;
                         permission.CanDiscardCard = true;
                         break;
                 }
@@ -132,6 +135,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             var board = await _gameBoardStore.GetGameBoardByUserSimplifiedAsync(userId, cancellationToken);
             var actual = board.Players.FirstOrDefault(p => p.Id == board.ActualPlayerId);
             var targeted = board.Players.FirstOrDefault(p => p.Id == board.TargetedPlayerId);
+
             if (board == null || (userId != actual.UserId && userId != targeted?.UserId))
             {
                 permission.CanDoAnything = false;
@@ -143,9 +147,10 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == actual.UserId)
             {
-                if (board.TargetedPlayerId == null)
+                if (board.TargetedPlayerId != null)
                 {
-                    permission.CanEndTurn = true;
+                    permission.CanDoAnything = false;
+                    return permission;
                 }
                 switch (board.TurnPhase)
                 {
@@ -160,6 +165,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         }
                         break;
                     case PhaseEnum.Playing:
+                        permission.CanEndTurn = true;
                         permission.CanPlayCard = true;
                         permission.CanPlayMissedCard = true;
                         permission.CanDiscardCard = true;
@@ -179,6 +185,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
                         }
                         break;
                     case PhaseEnum.Throwing:
+                        permission.CanEndTurn = true;
                         permission.CanDiscardCard = true;
                         break;
                 }

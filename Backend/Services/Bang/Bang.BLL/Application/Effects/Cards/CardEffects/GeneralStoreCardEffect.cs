@@ -14,8 +14,8 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
         {
             await query.GameBoardStore.DrawGameBoardCardsToScatteredByPlayersAliveAsync(cancellationToken);
             var actual = query.PlayerCard.Player;
-            var newQuery = new CardEffectQuery(query.PlayerCard, actual, query.GameBoardStore, query.CardStore, query.PlayerStore, query.AccountStore);
-            await base.Execute(newQuery, cancellationToken);
+            query.TargetPlayer = actual;
+            await base.Execute(query, cancellationToken);
         }
     }
 }
