@@ -13,6 +13,7 @@ body {
 }
 
 .targetable {
+    background-color: rgb(3, 148, 63);
     cursor: pointer;
     box-shadow:
         -5px 5px 5px rgb(3, 148, 63),

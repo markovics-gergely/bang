@@ -63,8 +63,8 @@
         
         <div class="col-12 col-md-4 order-md-4 order-4 max-height table-block" [ngClass]="getHighLightStyle()">
             <div class="row table-row">
-                <div class="col-3 h-100 table-card-wrapper" *ngFor="let card of player.tablePlayerCards">
-                    <app-card *ngIf="!cardService.isWeaponType(card.cardType)" [width]="110" [height]="170" [card]="card" (cardHoverEvent)="cardHovered($event)"></app-card>
+                <div class="col-3 h-100 table-card-wrapper" *ngFor="let card of getNotWeapons()">
+                    <app-card [width]="110" [height]="170" [card]="card" (cardHoverEvent)="cardHovered($event)"></app-card>
                 </div>
             </div>
         </div>

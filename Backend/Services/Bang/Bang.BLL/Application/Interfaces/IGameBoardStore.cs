@@ -27,6 +27,7 @@ namespace Bang.BLL.Application.Interfaces
         Task<Card> GetLastDiscardedCardAsync(CancellationToken cancellationToken);
         Task<DiscardedGameBoardCard> GetLastDiscardedGameBoardCardAsync(CancellationToken cancellationToken);
         Task<GameBoardCard> GetGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
+        Task<GameBoardCard> GetGameBoardCardSimplifiedAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task<long> CreateGameBoardAsync(GameBoard gameBoard, CancellationToken cancellationToken);
         Task ShuffleCardsAsync(GameBoard gameBoard, CancellationToken cancellationToken);
         Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(CancellationToken cancellationToken);
@@ -35,6 +36,7 @@ namespace Bang.BLL.Application.Interfaces
         Task DeleteGameBoardCardAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task DeleteAllGameBoardCardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task<long> CreateGameBoardCardAsync(GameBoardCard gameBoardCard, CancellationToken cancellationToken);
+        Task SetGameBoardDrawnFromMiddleAsync(long gameBoardCardId, CancellationToken cancellationToken);
         Task SetGameBoardEndAsync(CancellationToken cancellationToken);
         Task SetGameBoardEndAsync(long id, CancellationToken cancellationToken);
         Task SetGameBoardActualPlayerAsync(long playerId, CancellationToken cancellationToken);
@@ -56,6 +58,6 @@ namespace Bang.BLL.Application.Interfaces
         Task DrawGameBoardCardsToScatteredByPlayersAliveAsync(CancellationToken cancellationToken);
         Task<bool> CalculatePlayerPlacementAsync(long deadPlayerId, CancellationToken cancellationToken);
         Task DeleteGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
-        Task UseBarrelAsync(long playerId, CancellationToken cancellationToken);
+        Task UseBarrelAsync(long gameBoardId, CancellationToken cancellationToken);
     }
 }

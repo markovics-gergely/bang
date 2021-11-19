@@ -142,6 +142,10 @@ export class OwnboardComponent implements OnInit {
     }
   }
 
+  getNotWeapons(): Card[] {
+    return this.player?.tablePlayerCards.filter(c => !this.cardService.isWeaponType(c.cardType)) || [];
+  }
+
   public createServiceDataTransfer(): ServiceDataTransfer {
     let transfer: ServiceDataTransfer = {player: this.player, targetPermission: this.targetPermissions, permissions: this.permissions, ownboard: this};
     return transfer;

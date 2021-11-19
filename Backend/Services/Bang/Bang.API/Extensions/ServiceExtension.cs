@@ -63,6 +63,7 @@ namespace Bang.API.Extensions
             services.AddTransient<IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>, GameBoardCommandHandler>();
             services.AddTransient<IRequestHandler<EndGameBoardTurnCommand, Unit>, GameBoardCommandHandler>();
             services.AddTransient<IRequestHandler<DeleteGameBoardCommand, Unit>, GameBoardCommandHandler>();
+            services.AddTransient<IRequestHandler<UseBarrelCommand, Unit>, GameBoardCommandHandler>();
         }
     }
 }

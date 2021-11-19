@@ -40,17 +40,19 @@
                     <div class="card-on-board">
                             <app-card [width]="91" [height]="151" (cardHoverEvent)="hoverService.setOnlyCardHovered($event)" class="h-100" 
                             *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="gameboard.lastDiscardedGameBoardCard"
-                            [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"></app-card>
+                            [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanUseDiscardedPack, createServiceDataTransfer())"></app-card>
                     </div>
                     <div class="card-on-board">
-                        <img class="h-100 img-fluid" src="../../../assets/cards/Cards/Background.png" (click)="characterManagerService.cardPackAction(createServiceDataTransfer())"
-                            alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" [ngClass]="permissionService.getStyle(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())"/>
+                        <div class="h-100 w-100" [ngClass]="permissionService.getStyle(permissionService.permissionQueryType.CanUseCardPack, createServiceDataTransfer())">
+                            <img class="h-100 img-fluid" src="../../../assets/cards/Cards/Background.png" (click)="characterManagerService.cardPackAction(createServiceDataTransfer())"
+                                alt="card-back" placement="top" ngbTooltip="Drawable cards" [openDelay]="500" />
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 h-50 d-flex justify-content-center align-items-center">
                     <div class="scattered" *ngFor="let scattered of gameboard.scatteredGameBoardCards">
                             <app-card [width]="91" [height]="147" (cardHoverEvent)="hoverService.setOnlyCardHovered($event)" class="h-100" 
-                            *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="scattered"
+                            *ngIf="gameboard.lastDiscardedGameBoardCard" [card]="scattered" (click)="cardService.drawCardById(scattered.id)"
                             [actionType]="permissionService.getPermissionByType(permissionService.permissionQueryType.CanDrawFromScattered, createServiceDataTransfer())"></app-card>
                     </div>
                 </div>
@@ -71,7 +73,7 @@
         <app-ownboard class="p-0 h-100" (invalidateEvent)="invalidate()" (selectCardEvent)="playCardSelected($event)" (hoverItemEvent)="hoverService.setCardHovered($event)" 
                       [highlight]="targetService.getTargetPlayerClass(createServiceDataTransfer(), gameboard.ownPlayer)" [player]="gameboard.ownPlayer" [permissions]="permissions" [targetPermissions]="targetPermission" [hoverActive]="hoverService.hovered"></app-ownboard>
     </div>
-    <app-chat></app-chat>
+    <app-chat [fromBottom]="200" [animated]="true"></app-chat>
 </div>
 <div class="card-data mx-auto my-auto container-fluid" *ngIf="hoverService.hovered" ng-disabled="true">
     <div class="row card-row max-width">

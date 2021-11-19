@@ -38,6 +38,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
                         CanPlayBangCard = true;
                     }
                     break;
+                case TargetReason.Indians:
                 case TargetReason.Duel:
                     CanLoseHealth = true;
                     CanPlayBangCard = true;
@@ -46,11 +47,9 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
                         CanPlayMissedCard = true;
                     }
                     break;
+                case TargetReason.KitCarlsonDraw:
                 case TargetReason.GeneralStore:
                     CanDrawFromMiddle = true;
-                    break;
-                case TargetReason.Indians:
-                    CanPlayBangCard = true;
                     break;
                 case TargetReason.Dynamite:
                 case TargetReason.DynamiteAndJail:

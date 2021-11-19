@@ -67,7 +67,7 @@ export class OtherboardComponent implements OnInit {
 
   setRoleHovered(e: MouseEvent, inside: boolean) {
     if (inside) {
-        if (this.player) {
+        if (this.player && (this.player.actualHP == 0 || this.player?.roleType === RoleType.Sheriff)) {
           let string = JSON.stringify(this.player.roleType);
           this.hoverItemEvent.emit({ data: string, type: HoverEnum.Role });
         }
@@ -105,5 +105,23 @@ export class OtherboardComponent implements OnInit {
       }
     }
     return '';
+  }
+
+  getNotWeapons(): Card[] {
+    return this.player?.tablePlayerCards.filter(c => !this.cardService.isWeaponType(c.cardType)) || [];
+  }
+
+  getCardCountPath(): string {
+    if (this.player) {
+      return `../../../../assets/cards/Numbers/number_${this.player.handPlayerCardCount > 9 ? 10 : this.player.handPlayerCardCount}.png`
+    }
+    return "";
+  }
+
+  canSeeRole(): boolean {
+    if (this.player) {
+      return this.player.roleType === RoleType.Sheriff || this.player.actualHP == 0;
+    }
+    return false;
   }
 }

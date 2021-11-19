@@ -9,7 +9,9 @@ namespace Bang.BLL.Application.Interfaces
     public interface IPlayerStore
     {
         Task<Player> GetPlayerAsync(long id, CancellationToken cancellationToken);
+        Task<Player> GetPlayerSimplifiedAsync(long id, CancellationToken cancellationToken);
         Task<Player> GetPlayerByUserIdAsync(string userId, CancellationToken cancellationToken);
+        Task<Player> GetPlayerByUserIdSimplifiedAsync(string userId, CancellationToken cancellationToken);
         Task<Player> GetOwnPlayerAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken);
         Task<IEnumerable<Player>> GetTargetablePlayersAsync(long id, CancellationToken cancellationToken);
