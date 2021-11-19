@@ -30,6 +30,7 @@ export class CardService {
   }
 
   public drawCardById(id: number): Observable<Object> {
+    console.log(id);
     return this.client.put(`${environment.baseUrl}/api/bang/card/draw-a-card/${id}`, undefined)
   }
 
