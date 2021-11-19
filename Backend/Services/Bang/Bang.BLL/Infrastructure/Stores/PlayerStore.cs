@@ -37,6 +37,14 @@ namespace Bang.BLL.Infrastructure.Stores
                 ?? throw new EntityNotFoundException("Player not found!");
         }
 
+        public async Task<Player> GetPlayerSimplifiedAsync(long id, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Players.Where(c => c.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+        }
+
         public async Task<IEnumerable<Player>> GetPlayersAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.Players
@@ -182,6 +190,14 @@ namespace Bang.BLL.Infrastructure.Stores
             return await _dbContext.Players.Where(c => c.UserId == userId)
                 .Include(p => p.HandPlayerCards).ThenInclude(c => c.Card)
                 .Include(p => p.TablePlayerCards).ThenInclude(c => c.Card)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new EntityNotFoundException("Player not found!");
+        }
+
+        public async Task<Player> GetPlayerByUserIdSimplifiedAsync(string userId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Players.Where(p => p.UserId == userId)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken)
                 ?? throw new EntityNotFoundException("Player not found!");
         }

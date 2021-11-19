@@ -28,7 +28,8 @@ namespace Bang.BLL.Application.Commands.Handlers
         IRequestHandler<ShuffleGameBoardCardsCommand>,
         IRequestHandler<DiscardFromDrawableGameBoardCardCommand, FrenchCardViewModel>,
         IRequestHandler<EndGameBoardTurnCommand, Unit>,
-        IRequestHandler<DeleteGameBoardCommand, Unit>
+        IRequestHandler<DeleteGameBoardCommand, Unit>,
+        IRequestHandler<UseBarrelCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -188,9 +189,10 @@ namespace Bang.BLL.Application.Commands.Handlers
         public async Task<FrenchCardViewModel> Handle(DiscardFromDrawableGameBoardCardCommand request, CancellationToken cancellationToken)
         {
             var userId = _accountStore.GetActualAccountId();
-            var gameboard = await _gameBoardStore.GetGameBoardByUserAsync(userId, cancellationToken);
+            var gameboard = await _gameBoardStore.GetGameBoardByUserSimplifiedAsync(userId, cancellationToken);
+            var actual = gameboard.Players.FirstOrDefault(p => p.Id == gameboard.ActualPlayerId);
 
-            if (gameboard.ActualPlayer.CharacterType == CharacterType.LuckyDuke)
+            if (actual.CharacterType == CharacterType.LuckyDuke)
             {
                 var firstDomain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
                 var secondDomain = await _gameBoardStore.DiscardFromDrawableGameBoardCardAsync(cancellationToken);
@@ -223,6 +225,12 @@ namespace Bang.BLL.Application.Commands.Handlers
         public async Task<Unit> Handle(DeleteGameBoardCommand request, CancellationToken cancellationToken)
         {
             await _gameBoardStore.DeleteGameBoardAsync(request.Id, cancellationToken);
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(UseBarrelCommand request, CancellationToken cancellationToken)
+        {
+            await _gameBoardStore.UseBarrelAsync(request.GameBoardId, cancellationToken);
             return Unit.Value;
         }
     }

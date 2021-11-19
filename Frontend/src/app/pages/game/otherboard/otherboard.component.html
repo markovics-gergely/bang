@@ -5,8 +5,8 @@
         </div>
         <div class="col-9" style="padding-left: 0;">
             <div class="row health">
-                <div class="col-2" *ngFor="let in of counter(player.actualHP); let i = index">
-                    <img class="card img-fluid rounded" src="../../../assets/images/hp.png" alt="hp {{i}}" />
+                <div class="col-2" *ngFor="let in of counter(player.actualHP)">
+                    <img class="card img-fluid rounded" src="../../../assets/images/hp.png" alt="hp" />
                 </div>
             </div>
         </div>
@@ -14,15 +14,17 @@
     <div class="row body-row">
         <div class="col-6 col-md-3">
             <div class="row max-height transparent">
-                <div class="card-container own-cards">
-                    <img class="card img-fluid rounded" src="../../../assets/cards/Cards/Background-plain.png"
+                <div class="card-list-container own-cards">
+                    <img class="card-overlap img-fluid" src="../../../assets/cards/Cards/Background-plain.png" *ngIf="player.handPlayerCardCount != 0"
+                        alt="card-back" placement="top" ngbTooltip="{{player.handPlayerCardCount}} cards" [openDelay]="500" />
+                    <img class="card-overlap img-fluid" [src]="getCardCountPath()" *ngIf="player.handPlayerCardCount != 0"
                         alt="card-back" placement="top" ngbTooltip="{{player.handPlayerCardCount}} cards" [openDelay]="500" />
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 role">
             <div class="card-container">
-                <img class="card img-fluid rounded" [src]="roleService.getRolePath(player.roleType | roleType)"
+                <img class="card img-fluid rounded" [src]="(canSeeRole() && roleService.getRolePath(player.roleType | roleType)) || '../../../assets/cards/Cards/Background.png'"
                         alt="role-pic" (mouseenter)="setRoleHovered($event, true)" (mouseleave)="setRoleHovered($event, false)" />
             </div>
         </div>
@@ -39,8 +41,8 @@
         </div>
     </div>
     <div class="row table-row">
-        <div class="col-3" *ngFor="let card of player.tablePlayerCards">
-            <app-card (click)="getTableClickable() && cardSelected(card)" [ngClass]="cardsTargetStyle()" *ngIf="!cardService.isWeaponType(card.cardType)" [card]="card"
+        <div class="col-3" *ngFor="let card of getNotWeapons()">
+            <app-card (click)="getTableClickable() && cardSelected(card)" [ngClass]="cardsTargetStyle()" [card]="card"
                        [width]="70" [height]="108" (cardHoverEvent)="setCardHovered($event)"></app-card>
         </div>
     </div>

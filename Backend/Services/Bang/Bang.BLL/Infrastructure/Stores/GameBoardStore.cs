@@ -102,19 +102,17 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task<DiscardedGameBoardCard> DiscardFromDrawableGameBoardCardAsync(CancellationToken cancellationToken)
         {
-            var userId = _accountStore.GetActualAccountId();
-            var gameBoard = await GetGameBoardByUserAsync(userId, cancellationToken);
             var domain = (await GetDrawableGameBoardCardsOnTopAsync(1, cancellationToken)).FirstOrDefault();
             var discarded = new DiscardedGameBoardCard()
             {
                 CardId = domain.Card.Id,
-                GameBoardId = gameBoard.Id, 
+                GameBoardId = domain.GameBoardId, 
                 CardColorType = domain.CardColorType,
                 FrenchNumber = domain.FrenchNumber
             };
             await DeleteGameBoardCardAsync(domain.Id, cancellationToken);
             long newId = await CreateGameBoardCardAsync(discarded, cancellationToken);
-            return (DiscardedGameBoardCard)await GetGameBoardCardAsync(newId, cancellationToken);
+            return (DiscardedGameBoardCard)await GetGameBoardCardSimplifiedAsync(newId, cancellationToken);
         }
 
         public async Task<IEnumerable<Card>> GetCardsOnTopAsync(int count, CancellationToken cancellationToken)
@@ -169,6 +167,15 @@ namespace Bang.BLL.Infrastructure.Stores
         {
             return await _dbContext.GameBoardCards.Where(c => c.Id == gameBoardCardId)
                 .Include(g => g.Card).FirstOrDefaultAsync(cancellationToken) ?? throw new EntityNotFoundException("GameBoardCard not found!");
+        }
+
+        public async Task<GameBoardCard> GetGameBoardCardSimplifiedAsync(long gameBoardCardId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.GameBoardCards.Where(c => c.Id == gameBoardCardId)
+                .Include(g => g.Card)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken) 
+                ?? throw new EntityNotFoundException("GameBoardCard not found!");
         }
 
         public async Task<IEnumerable<GameBoard>> GetGameBoardsAsync(CancellationToken cancellationToken)
@@ -755,18 +762,22 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task SetDiscardInDiscardingPhaseResultAsync(DiscardedGameBoardCard gameBoardCard, GameBoard gameBoard, CancellationToken cancellationToken)
         {
+            var domain = await _dbContext.GameBoards.SingleOrDefaultAsync(g => g.Id == gameBoard.Id, cancellationToken) 
+                    ?? throw new EntityNotFoundException("Nem található a gameboard");
+            var actual = gameBoard.Players.FirstOrDefault(p => p.Id == gameBoard.ActualPlayerId);
+
             if (gameBoard.TargetReason == TargetReason.Dynamite || gameBoard.TargetReason == TargetReason.DynamiteAndJail)
             {
                 if (gameBoard.TargetReason == TargetReason.DynamiteAndJail)
                 {
-                    gameBoard.TargetReason = TargetReason.Jail;
+                    domain.TargetReason = TargetReason.Jail;
                 }
                 else
                 {
-                    gameBoard.TargetReason = null;
-                    gameBoard.TurnPhase = PhaseEnum.Drawing;
+                    domain.TargetReason = null;
+                    domain.TurnPhase = PhaseEnum.Drawing;
                 }
-                var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
+                var dynamite = actual.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
                 if (gameBoardCard.CardColorType == CardColorType.Spades && gameBoardCard.FrenchNumber >= 2 && gameBoardCard.FrenchNumber <= 9)
                 {
                     bool isOver = false;
@@ -808,20 +819,20 @@ namespace Bang.BLL.Infrastructure.Stores
                 {
                     if (gameBoard.TargetReason == TargetReason.JailAndDynamite)
                     {
-                        gameBoard.TargetReason = TargetReason.Dynamite;
+                        domain.TargetReason = TargetReason.Dynamite;
                     }
                     else
                     {
-                        gameBoard.TargetReason = null;
-                        gameBoard.TurnPhase = PhaseEnum.Drawing;
+                        domain.TargetReason = null;
+                        domain.TurnPhase = PhaseEnum.Drawing;
                     }
                 }
                 else
                 {
-                    gameBoard.TargetReason = null;
-                    gameBoard.TurnPhase = PhaseEnum.Discarding;
+                    domain.TargetReason = null;
+                    domain.TurnPhase = PhaseEnum.Discarding;
                 }
-                var jail = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
+                var jail = actual.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
                 await _cardStore.PlacePlayerCardToDiscardedAsync(jail, cancellationToken);
             }
             try
@@ -842,16 +853,20 @@ namespace Bang.BLL.Infrastructure.Stores
 
         public async Task SetDiscardInDiscardingPhaseResultAsync(IEnumerable<DiscardedGameBoardCard> gameBoardCards, GameBoard gameBoard, CancellationToken cancellationToken)
         {
+            var domain = await _dbContext.GameBoards.SingleOrDefaultAsync(g => g.Id == gameBoard.Id, cancellationToken)
+                    ?? throw new EntityNotFoundException("Nem található a gameboard");
+            var actual = gameBoard.Players.FirstOrDefault(p => p.Id == gameBoard.ActualPlayerId);
+
             if (gameBoard.TargetReason == TargetReason.Dynamite || gameBoard.TargetReason == TargetReason.DynamiteAndJail)
             {
                 if (gameBoard.TargetReason == TargetReason.DynamiteAndJail)
                 {
-                    gameBoard.TargetReason = TargetReason.Jail;
+                    domain.TargetReason = TargetReason.Jail;
                 }
                 else
                 {
-                    gameBoard.TargetReason = null;
-                    gameBoard.TurnPhase = PhaseEnum.Drawing;
+                    domain.TargetReason = null;
+                    domain.TurnPhase = PhaseEnum.Drawing;
                 }
                 bool goodResult = false;
                 foreach (var gameBoardCard in gameBoardCards)
@@ -890,7 +905,7 @@ namespace Bang.BLL.Infrastructure.Stores
                 else
                 {
                     var nextPlayer = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameBoard.ActualPlayerId, cancellationToken);
-                    var dynamite = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
+                    var dynamite = actual.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Dynamite);
                     await _cardStore.PlacePlayerCardToAnotherTableAsync(dynamite, nextPlayer, cancellationToken);
                 }
             }
@@ -908,20 +923,20 @@ namespace Bang.BLL.Infrastructure.Stores
                 {
                     if (gameBoard.TargetReason == TargetReason.JailAndDynamite)
                     {
-                        gameBoard.TargetReason = TargetReason.Dynamite;
+                        domain.TargetReason = TargetReason.Dynamite;
                     }
                     else
                     {
-                        gameBoard.TargetReason = null;
-                        gameBoard.TurnPhase = PhaseEnum.Drawing;
+                        domain.TargetReason = null;
+                        domain.TurnPhase = PhaseEnum.Drawing;
                     }
                 }
                 else
                 {
-                    gameBoard.TargetReason = null;
-                    gameBoard.TurnPhase = PhaseEnum.Discarding;
+                    domain.TargetReason = null;
+                    domain.TurnPhase = PhaseEnum.Discarding;
                 }
-                var jail = gameBoard.ActualPlayer.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
+                var jail = actual.TablePlayerCards.FirstOrDefault(t => t.Card.CardType == CardType.Jail);
                 await _cardStore.PlacePlayerCardToDiscardedAsync(jail, cancellationToken);
             }
             try
@@ -937,30 +952,26 @@ namespace Bang.BLL.Infrastructure.Stores
             }
         }
 
-        public async Task UseBarrelAsync(long playerId, CancellationToken cancellationToken)
+        public async Task UseBarrelAsync(long gameBoardId, CancellationToken cancellationToken)
         {
-            var player = await _playerStore.GetPlayerAsync(playerId, cancellationToken);
-            var gameboard = await GetGameBoardByUserAsync(player.UserId, cancellationToken);
+            var gameboard = await GetGameBoardSimplifiedAsync(gameBoardId, cancellationToken);
             var discarded = await DiscardFromDrawableGameBoardCardAsync(cancellationToken);
             if (discarded.CardColorType == CardColorType.Hearts)
             {
                 if (gameboard.TargetReason == TargetReason.Bang)
                 {
-                    await SetGameBoardTargetedPlayerAsync(null, cancellationToken);
-                    await SetGameBoardTargetReasonAsync(null, cancellationToken);
+                    await SetGameBoardTargetedPlayerAndReasonAsync(null, null, cancellationToken);
                 }
-                else if (gameboard.TargetReason == TargetReason.Gatling)
+                else if (gameboard.TargetReason == TargetReason.Gatling && gameboard.TargetedPlayerId != null)
                 {
-                    var next = await _playerStore.GetNextPlayerAliveByPlayerAsync(playerId, cancellationToken);
+                    var next = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameboard.TargetedPlayerId, cancellationToken);
                     if (next.Id == gameboard.ActualPlayerId)
                     {
-                        await SetGameBoardTargetedPlayerAsync(null, cancellationToken);
-                        await SetGameBoardTargetReasonAsync(null, cancellationToken);
+                        await SetGameBoardTargetedPlayerAndReasonAsync(null, null, cancellationToken);
                     }
                     else
                     {
-                        await SetGameBoardTargetedPlayerAsync(next.Id, cancellationToken);
-                        await SetGameBoardTargetReasonAsync(TargetReason.Gatling, cancellationToken);
+                        await SetGameBoardTargetedPlayerAndReasonAsync(next.Id, TargetReason.Gatling, cancellationToken);
                     }
                 }
             }
@@ -1054,6 +1065,30 @@ namespace Bang.BLL.Infrastructure.Stores
             if (targetReason == TargetReason.Duel)
             {
                 await SetGameBoardLastTargetedPlayerAsync(null, cancellationToken);
+            }
+        }
+
+        public async Task SetGameBoardDrawnFromMiddleAsync(long gameBoardCardId, CancellationToken cancellationToken)
+        {
+            var gamBoardCard = await _dbContext.GameBoardCards
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.Id == gameBoardCardId, cancellationToken)
+                ?? throw new EntityNotFoundException("GameBoardCard not found!");
+
+            var gameboard = await GetGameBoardSimplifiedAsync(gamBoardCard.GameBoardId, cancellationToken);
+
+            if (gameboard.TargetReason == TargetReason.GeneralStore && gameboard.TargetedPlayerId != null)
+            {
+                var actual = gameboard.Players.FirstOrDefault(p => p.Id == gameboard.ActualPlayerId);
+                var next = await _playerStore.GetNextPlayerAliveByPlayerAsync((long)gameboard.TargetedPlayerId, cancellationToken);
+                if (next.Id == actual.Id)
+                {
+                    await SetGameBoardTargetedPlayerAndReasonAsync(null, null, cancellationToken);
+                }
+                else
+                {
+                    await SetGameBoardTargetedPlayerAndReasonAsync(next.Id, TargetReason.GeneralStore, cancellationToken);
+                }
             }
         }
     }

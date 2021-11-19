@@ -86,13 +86,14 @@ namespace Bang.BLL.Application.Commands.Handlers
         {
             await _gameBoardStore.DrawGameBoardCardAsync(request.Id, cancellationToken);
             await _gameBoardStore.SetGameBoardPhaseAsync(PhaseEnum.Playing, cancellationToken);
+            await _gameBoardStore.SetGameBoardDrawnFromMiddleAsync(request.Id, cancellationToken);
             return Unit.Value;
         }
 
         public async Task<Unit> Handle(DrawCardFromPlayerCommand request, CancellationToken cancellationToken)
         {
             var userId = _accountStore.GetActualAccountId();
-            var ownPlayer = await _playerStore.GetPlayerByUserIdAsync(userId, cancellationToken);
+            var ownPlayer = await _playerStore.GetPlayerByUserIdSimplifiedAsync(userId, cancellationToken);
             var player = await _playerStore.GetPlayerAsync(request.PlayerId, cancellationToken);
 
             var rnd = new Random();
