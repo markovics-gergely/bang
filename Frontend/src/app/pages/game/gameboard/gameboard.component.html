@@ -108,7 +108,7 @@
     <div class="modal-body h-100">
       
     </div>
-    <div class="modal-footer" *ngIf="gameboard?.lobbyOwnerId === gameboard?.ownPlayer?.id">
-      
+    <div class="modal-footer" *ngIf="gameboard?.lobbyOwnerId === gameboard?.ownPlayer?.userId">
+        <button type="button" class="btn btn-success" (click)="backToLobby()"> Go back to lobby </button>
     </div>
 </ng-template>

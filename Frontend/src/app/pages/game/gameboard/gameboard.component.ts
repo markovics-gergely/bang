@@ -14,6 +14,7 @@ import { PermissionService } from 'src/app/services/game/permission.service';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { SignalServiceService } from 'src/app/services/game/signal-service.service';
 import { Router } from '@angular/router';
+import { LobbyService } from 'src/app/services/menu/lobby.service';
 
 @Component({
   selector: 'app-gameboard',
@@ -40,10 +41,9 @@ export class GameboardComponent implements OnInit {
               public roleService: RoleService, public characterService: CharacterService,
               public playerService: PlayerService, public hoverService: HoverService, private router: Router,
               public characterManagerService: CharacterManagerService, public targetService: TargetService, public permissionService: PermissionService,
-              private signalService: SignalServiceService) { }
+              private signalService: SignalServiceService, public lobbyService: LobbyService) { }
 
   ngOnInit(): void {
-    //this.gameBoardService.deleteGameBoard(2).subscribe(r => console.log(r));
     this.signalService.startConnection(this);
   }
 
@@ -119,5 +119,17 @@ export class GameboardComponent implements OnInit {
   public invalidate() {
     this.permissions = undefined;
     this.targetPermission = undefined;
+  }
+
+  backToLobby() {
+    this.lobbyService.endGame(this.gameboard?.lobbyOwnerId).subscribe(
+      response => {
+        this.gameBoardService.deleteGameBoard(this.gameboard?.id).subscribe(
+          response2 => {
+            this.signalService.hubConnection?.invoke("GameDeleted", NavigateEnum.ToLobby);
+          }
+        )
+      }
+    );
   }
 }

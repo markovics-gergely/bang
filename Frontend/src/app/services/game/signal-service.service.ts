@@ -12,7 +12,7 @@ export class SignalServiceService {
 
   constructor(private auth: AuthorizationService, private gameBoardService: GameboardService) { }
 
-  private hubConnection: signalR.HubConnection | undefined;
+  public hubConnection: signalR.HubConnection | undefined;
   
   public startConnection(gameboardComponent: GameboardComponent) {
     this.auth.getActualUserId()

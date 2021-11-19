@@ -41,4 +41,8 @@ export class LobbyService {
   public startGame(gameBoardId: number, id?: number): Observable<Object>{
     return this.client.post(`${environment.baseUrl}/api/lobby/${id}/start-game?gameBoardId=${gameBoardId}`, undefined, { responseType: 'text' });
   }
+
+  public endGame(ownerId?: string/*history: History[]*/): Observable<Object>{
+    return this.client.put(`${environment.baseUrl}/api/lobby/end-game/${ownerId}`, undefined);
+  }
 }

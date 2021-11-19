@@ -147,7 +147,7 @@
       "UpstreamHttpMethod": [ "Post" ]
     },
     {
-      "DownstreamPathTemplate": "/Lobby/{id}/end-game",
+      "DownstreamPathTemplate": "/Lobby/end-game/{ownerId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -155,8 +155,8 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/lobby/{id}/end-game",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamPathTemplate": "/api/lobby/end-game/{ownerId}",
+      "UpstreamHttpMethod": [ "Put" ]
     },
 
 

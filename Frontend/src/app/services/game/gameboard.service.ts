@@ -31,7 +31,7 @@ export class GameboardService {
     return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined);
   }
 
-  public deleteGameBoard(id: number) {
+  public deleteGameBoard(id?: number) {
     return this.client.delete(`${environment.baseUrl}/api/bang/gameboard/${id}`);
   }
 
