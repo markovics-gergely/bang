@@ -75,7 +75,7 @@
     </div>
     <app-chat [fromBottom]="200" [animated]="true"></app-chat>
 </div>
-<div class="card-data mx-auto my-auto container-fluid" *ngIf="hoverService.hovered" ng-disabled="true">
+<div class="card-data mx-auto my-auto container-fluid" *ngIf="hoverService.hovered" ng-disabled="true" style="pointer-events: none;">
     <div class="row card-row max-width">
         <div class="col-12 max-height" *ngIf="hoverService.hoveredCard">
             <div class="card-container">
