@@ -62,6 +62,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   setMessage(message: Message) {
     this.messages.push(message);
     setTimeout(() => this.scrollable?.scrollTo({bottom: 0, duration: 200}), 200);
+    /*this.animated = true;
+    this.setHovered(false);
+    setTimeout(() => {this.setHovered(true); this.animated = false}, 2000);*/
   }
   
   sendMessage() {

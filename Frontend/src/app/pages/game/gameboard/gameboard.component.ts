@@ -126,7 +126,10 @@ export class GameboardComponent implements OnInit {
       response => {
         this.gameBoardService.deleteGameBoard(this.gameboard?.id).subscribe(
           response2 => {
-            this.signalService.hubConnection?.invoke("GameDeleted", NavigateEnum.ToLobby);
+            this.signalService.hubConnection?.invoke("GameDeleted", this.gameboard?.lobbyOwnerId, NavigateEnum.ToLobby);
+          },
+          error => {
+            this.signalService.hubConnection?.invoke("GameDeleted", this.gameboard?.lobbyOwnerId, NavigateEnum.ToLobby);
           }
         )
       }
