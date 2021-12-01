@@ -24,14 +24,14 @@ namespace UserIdentity.API.Extensions
                 options.Map<InvalidParameterException>(
                 (ctx, ex) =>
                 {
-                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status401Unauthorized);
+                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status404NotFound);
                     pd.Title = ex.Message;
                     return pd;
                 });
                 options.Map<InvalidActionException>(
                 (ctx, ex) =>
                 {
-                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status401Unauthorized);
+                    var pd = StatusCodeProblemDetails.Create(StatusCodes.Status404NotFound);
                     pd.Title = ex.Message;
                     return pd;
                 });
