@@ -31,6 +31,10 @@ export class GameboardService {
     return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined);
   }
 
+  public useBarrel(gameBoardId: number): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/gameboard/use-barrel/${gameBoardId}`, undefined);
+  }
+
   public deleteGameBoard(id: number) {
     return this.client.delete(`${environment.baseUrl}/api/bang/gameboard/${id}`);
   }

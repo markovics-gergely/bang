@@ -1,31 +1,22 @@
 ﻿using Bang.BLL.Application.Interfaces;
 using Bang.BLL.Application.Commands.Commands;
-using Bang.DAL.Domain;
-using Bang.DAL.Domain.Catalog.Cards;
-using Bang.BLL.Application.Commands.DataTransferObjects;
-using Bang.DAL.Domain.Joins.GameBoardCards;
-using Bang.DAL.Domain.Constants;
-using Bang.BLL.Application.Exceptions;
-using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
-using Bang.DAL.Domain.Joins;
-using Bang.BLL.Application.Commands.ViewModels;
 
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 
 using AutoMapper;
 using MediatR;
-using Bang.DAL.Domain.Joins.PlayerCards;
+using Bang.BLL.Application.Effects.Characters;
+using System.Collections.Generic;
+using Bang.BLL.Application.Exceptions;
 
 namespace Bang.BLL.Application.Commands.Handlers
 {
     public class PlayerCommandHandler :
         IRequestHandler<DecrementPlayerHealthCommand, Unit>,
-        IRequestHandler<GainHealthForCardsCommand, Unit>
+        IRequestHandler<GainHealthForCardsCommand, Unit>,
+        IRequestHandler<UseCharacterCommand, Unit>
     {
         private readonly IMapper _mapper;
         private readonly IGameBoardStore _gameBoardStore;
@@ -47,7 +38,7 @@ namespace Bang.BLL.Application.Commands.Handlers
 
         public async Task<Unit> Handle(DecrementPlayerHealthCommand request, CancellationToken cancellationToken)
         {
-            Player selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
+            var selectedPlayer = await _playerStore.GetOwnPlayerAsync(cancellationToken);
             long newHP = await _playerStore.DecrementPlayerHealthAsync(cancellationToken);
             await _gameBoardStore.SetGameBoardNextTargetedAsync(selectedPlayer.Id, selectedPlayer.GameBoardId, cancellationToken);
 
@@ -69,6 +60,13 @@ namespace Bang.BLL.Application.Commands.Handlers
         public async Task<Unit> Handle(GainHealthForCardsCommand request, CancellationToken cancellationToken)
         {
             await _playerStore.GainHealthForCardsAsync(request.Cards, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(UseCharacterCommand request, CancellationToken cancellationToken)
+        {
+            await _gameBoardStore.UseCharacterAsync(request.CharacterDto, cancellationToken);
 
             return Unit.Value;
         }

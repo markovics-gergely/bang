@@ -1,4 +1,5 @@
-﻿using Bang.BLL.Infrastructure.Queries.ViewModels;
+﻿using Bang.BLL.Application.Commands.Player.DataTransferObjects;
+using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain;
 using Bang.DAL.Domain.Catalog.Cards;
 using Bang.DAL.Domain.Constants.Enums;
@@ -59,5 +60,6 @@ namespace Bang.BLL.Application.Interfaces
         Task<bool> CalculatePlayerPlacementAsync(long deadPlayerId, CancellationToken cancellationToken);
         Task DeleteGameBoardAsync(long gameBoardId, CancellationToken cancellationToken);
         Task UseBarrelAsync(long gameBoardId, CancellationToken cancellationToken);
+        Task UseCharacterAsync(CharacterDto characterDto, CancellationToken cancellationToken);
     }
 }

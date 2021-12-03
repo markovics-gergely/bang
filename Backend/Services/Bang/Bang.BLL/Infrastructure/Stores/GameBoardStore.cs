@@ -16,6 +16,8 @@ using Bang.DAL.Domain.Constants;
 using System;
 using Bang.DAL.Domain.Joins.PlayerCards;
 using Bang.BLL.Application.Effects.Cards;
+using Bang.BLL.Application.Commands.Player.DataTransferObjects;
+using Bang.BLL.Application.Effects.Characters;
 
 namespace Bang.BLL.Infrastructure.Stores
 {
@@ -1089,6 +1091,26 @@ namespace Bang.BLL.Infrastructure.Stores
                 {
                     await SetGameBoardTargetedPlayerAndReasonAsync(next.Id, TargetReason.GeneralStore, cancellationToken);
                 }
+            }
+        }
+
+        public async Task UseCharacterAsync(CharacterDto characterDto, CancellationToken cancellationToken)
+        {
+            Dictionary<CharacterType, CharacterEffect> characterEffectMap = CharacterEffectHandler.Instance.CharacterEffectMap;
+
+            var effect = characterEffectMap[characterDto.CharacterType] ?? throw new EntityNotFoundException("Nem található funkció a karakterre!");
+            var query = new CharacterEffectQuery(characterDto, this, _cardStore, _playerStore, _accountStore);
+            await effect.Execute(query, cancellationToken);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (characterDto.TargetPlayerId != null && await _dbContext.PlayerCards
+                    .SingleOrDefaultAsync(p => p.Id == characterDto.TargetPlayerId) == null)
+                    throw new EntityNotFoundException("Nem található a player");
+                else throw;
             }
         }
     }

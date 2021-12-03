@@ -324,6 +324,18 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
+      "DownstreamPathTemplate": "/Player/use-character",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/player/use-character",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
       "DownstreamPathTemplate": "/Card/play-card",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -466,6 +478,18 @@
       ],
       "UpstreamPathTemplate": "/api/bang/gameboard/{id}",
       "UpstreamHttpMethod": [ "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Gameboard/use-barrel/{gameBoardId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bang.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/bang/gameboard/use-barrel/{gameBoardId}",
+      "UpstreamHttpMethod": [ "Put" ]
     }
   ]
 }

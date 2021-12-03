@@ -12,6 +12,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Bang.API.SignalR;
+using Bang.BLL.Application.Commands.Player.DataTransferObjects;
 
 namespace Bang.API.Controllers
 {
@@ -84,6 +85,17 @@ namespace Bang.API.Controllers
         public async Task<ActionResult> GainHealthForCardsAsync([FromBody] IEnumerable<long> cards, CancellationToken cancellationToken)
         {
             var command = new GainHealthForCardsCommand(cards);
+
+            await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPut("use-character")]
+        public async Task<ActionResult> UseCharacterAsync([FromBody] CharacterDto characterDto, CancellationToken cancellationToken)
+        {
+            var command = new UseCharacterCommand(characterDto);
 
             await _mediator.Send(command, cancellationToken);
             await GameHub.Refresh(_mediator, _hub, cancellationToken);

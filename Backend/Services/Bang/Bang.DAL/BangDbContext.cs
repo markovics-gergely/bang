@@ -9,11 +9,7 @@ using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.GameBoardCards;
 using Bang.DAL.Domain.Joins.PlayerCards;
 
-using System.Linq;
-
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Bang.DAL.Converters;
 using Bang.DAL.Comparers;

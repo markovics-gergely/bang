@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { OtherPlayer, Permissions, PlayCardDto } from '../../models';
+import { CharacterDto, OtherPlayer, Permissions, PlayCardDto } from '../../models';
 
 @Injectable({
   providedIn: 'root'
@@ -27,16 +27,20 @@ export class PlayerService {
     return this.client.get<OtherPlayer[]>(`${environment.baseUrl}/api/bang/player/${id}/targetable`);
   }
 
+  public useCharacter(characterDto: CharacterDto): Observable<Object> {
+    return this.client.put(`${environment.baseUrl}/api/bang/player/use-character`, characterDto);
+  }
+
   public discardFromHand(playerCardId: number): Observable<Object> {
-    return this.client.put(`${environment.baseUrl}/api/bang/card/discard-card/${playerCardId}`, undefined)
+    return this.client.put(`${environment.baseUrl}/api/bang/card/discard-card/${playerCardId}`, undefined);
   }
 
   public playFromHand(playCardDto: PlayCardDto): Observable<Object> {
-    return this.client.put(`${environment.baseUrl}/api/bang/card/play-card`, playCardDto)
+    return this.client.put(`${environment.baseUrl}/api/bang/card/play-card`, playCardDto);
   }
 
   public endTurn(): Observable<Object> {
-    return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined)
+    return this.client.put(`${environment.baseUrl}/api/bang/gameboard/end-turn`, undefined);
   }
 
   public gainHealthForCards(cards: number[]): Observable<Object> {

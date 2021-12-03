@@ -1,5 +1,4 @@
 ﻿using Bang.BLL.Application.Interfaces;
-using Bang.DAL;
 using Bang.DAL.Domain;
 using Bang.DAL.Domain.Joins;
 using Bang.DAL.Domain.Joins.PlayerCards;

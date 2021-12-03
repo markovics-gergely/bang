@@ -21,7 +21,7 @@ namespace Bang.BLL.Infrastructure.Stores
     {
         private readonly BangDbContext _dbContext;
 
-        public CardStore(BangDbContext dbContext, IAccountStore accountStore)
+        public CardStore(BangDbContext dbContext)
         {
             _dbContext = dbContext;
         }

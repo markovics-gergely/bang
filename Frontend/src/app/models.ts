@@ -307,3 +307,9 @@ export enum NavigateEnum {
     ToLobby,
     ToMenu
 }
+
+export interface CharacterDto {
+    characterType: CharacterType,
+    targetPlayerId: number,
+    cardIds: number[]
+}

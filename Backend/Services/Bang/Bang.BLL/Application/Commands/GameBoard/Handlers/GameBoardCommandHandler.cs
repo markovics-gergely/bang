@@ -8,7 +8,6 @@ using Bang.DAL.Domain.Constants;
 using Bang.BLL.Application.Exceptions;
 using Bang.BLL.Infrastructure.Queries.ViewModels;
 using Bang.DAL.Domain.Constants.Enums;
-using Bang.DAL.Domain.Joins;
 using Bang.BLL.Application.Commands.ViewModels;
 
 using System.Threading.Tasks;
@@ -131,7 +130,7 @@ namespace Bang.BLL.Application.Commands.Handlers
                     MaxHP = userTuple.Character.MaxHP + (userTuple.RoleType == RoleType.Sheriff ? 1 : 0),
                     ActualHP = userTuple.Character.MaxHP + (userTuple.RoleType == RoleType.Sheriff ? 1 : 0)
                 };
-                var playerDomain = _mapper.Map<Player>(player);
+                var playerDomain = _mapper.Map<DAL.Domain.Player>(player);
                 long playerId = await _playerStore.CreatePlayerAsync(playerDomain, cancellationToken);
 
                 if(playerDomain.RoleType == RoleType.Sheriff)

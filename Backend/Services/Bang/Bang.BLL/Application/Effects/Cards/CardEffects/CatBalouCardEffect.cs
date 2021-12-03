@@ -11,7 +11,10 @@ namespace Bang.BLL.Application.Effects.Cards.CardEffects
     {
         public override async Task Execute(CardEffectQuery query, CancellationToken cancellationToken)
         {
-            if (query.TargetPlayer == null && query.TargetCard == null) throw new ArgumentNullException(nameof(query), "Cat Balou Target not set");
+            if (query.TargetPlayer == null && query.TargetCard == null)
+            {
+                throw new ArgumentNullException(nameof(query), "Cat Balou Target not set");
+            }
             if (query.TargetPlayer != null)
             {
                 var player = query.TargetPlayer;

@@ -1,5 +1,4 @@
 ﻿using Bang.BLL.Application.Effects.Cards.CardEffects;
-using Bang.BLL.Application.Interfaces;
 using Bang.DAL.Domain.Constants.Enums;
 
 using System.Collections.Generic;

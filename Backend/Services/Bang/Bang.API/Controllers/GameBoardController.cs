@@ -119,6 +119,17 @@ namespace Bang.API.Controllers
             return NoContent();
         }
 
+        [HttpPut("use-barrel/{gameBoardId}")]
+        public async Task<ActionResult> UseBarrelAsync(long gameBoardId, CancellationToken cancellationToken)
+        {
+            var command = new UseBarrelCommand(gameBoardId);
+
+            await _mediator.Send(command, cancellationToken);
+            await GameHub.Refresh(_mediator, _hub, cancellationToken);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGameboardAsync(long id, CancellationToken cancellationToken)
         {

@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Bang.DAL\Bang.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Effects\Characters\CharacterEffects\" />
-  </ItemGroup>
-
 </Project>
