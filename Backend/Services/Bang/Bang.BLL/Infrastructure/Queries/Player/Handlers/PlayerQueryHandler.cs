@@ -79,7 +79,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == targeted?.UserId)
             {
-                permission.SetByTargetReason(board.TargetReason, targeted, actual);
+                permission.SetByTargetReason(board.TargetReason, targeted);
             }
             else if (userId == actual.UserId)
             {
@@ -144,7 +144,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == targeted?.UserId)
             {
-                permission.SetByTargetReason(board.TargetReason, targeted, actual);
+                permission.SetByTargetReason(board.TargetReason, targeted);
             }
             else if (userId == actual.UserId)
             {
@@ -216,7 +216,7 @@ namespace Bang.BLL.Infrastructure.Queries.Handlers
             }
             else if (userId == targeted?.UserId)
             {
-                permission.SetByTargetReason(board.TargetReason, targeted, actual);
+                permission.SetByTargetReason(board.TargetReason, targeted);
             }
             else if (userId == actual.UserId)
             {

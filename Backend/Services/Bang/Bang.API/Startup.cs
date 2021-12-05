@@ -10,10 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Hangfire;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
-using System;
 
 namespace Bang.API
 {

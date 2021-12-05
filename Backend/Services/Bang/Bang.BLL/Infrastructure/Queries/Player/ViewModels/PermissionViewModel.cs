@@ -23,7 +23,7 @@ namespace Bang.BLL.Infrastructure.Queries.ViewModels
         public bool CanUseBarrelCard { get; set; } = false;
         public bool CanEndTurn { get; set; } = false;
 
-        public void SetByTargetReason(TargetReason? reason, Player targeted, Player actual)
+        public void SetByTargetReason(TargetReason? reason, Player targeted)
         {
             if(reason == null) { return; }
             switch(reason)

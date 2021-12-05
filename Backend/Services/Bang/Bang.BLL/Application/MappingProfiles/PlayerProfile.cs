@@ -3,7 +3,6 @@
 using Bang.DAL.Domain;
 
 using AutoMapper;
-using Bang.BLL.Application.Commands.DataTransferObjects;
 
 namespace Bang.BLL.Application.MappingProfiles
 {
